@@ -19,6 +19,7 @@ public class POTest extends Setup {
 	
 	@Test
 	public void testPO() throws Exception {
+//		testing git commit
 		RequestVO request = new RequestVO();
 		request.setSupplierId(1);
 		request.setFromDate1(DateUtil.convertString2Date("2002-01-01", "yyyy-MM-dd"));
