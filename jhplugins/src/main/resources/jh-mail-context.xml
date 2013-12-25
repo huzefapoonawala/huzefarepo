@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd"
+	profile="website_sync"
+>
+
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="poonawalahuzefa@gmail.com" />
+		<property name="password" value="huzi1983" />
+		<property name="javaMailProperties">
+			<util:properties>
+				<!-- <prop key="mail.smtp.host">smtp.gmail.com</prop>
+				<prop key="mail.smtp.port">587</prop> -->
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<!-- <prop key="mail.smtp.socketFactory.port">25</prop>
+				<prop key="mail.smtp.socketFactory.fallback">false</prop> -->
+				<prop key="mail.debug">false</prop>
+				<!-- <prop key="mail.from">trako_care@trimble.com</prop> -->
+			</util:properties>
+		</property>
+	</bean>
+	
+	<bean id="emailSenderUtil" class="com.jh.util.EmailSenderUtil">
+		<property name="mailSender" ref="mailSender"></property>
+		<property name="emailIds">
+			<list>
+				<value>poonawalahuzefa@gmail.com</value>
+			</list>
+		</property>
+		<property name="notificationEmailIds">
+			<list>
+				<value>poonawalahuzefa@gmail.com</value>
+			</list>
+		</property>
+	</bean>
+	
+</beans>

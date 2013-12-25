@@ -1,0 +1,79 @@
+{
+	identifier:'sku',
+	items:[{
+		sku:'6783633',
+		image:'http://jamaicahardware.com/image/data/6783633.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'1043470',
+		image:'http://jamaicahardware.com/image/data/1043470.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'6264337',
+		image:'http://jamaicahardware.com/image/data/6264337.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'6783634',
+		image:'http://jamaicahardware.com/image/data/6783633.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'1043471',
+		image:'http://jamaicahardware.com/image/data/1043470.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'6264338',
+		image:'http://jamaicahardware.com/image/data/6264337.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'6783631',
+		image:'http://jamaicahardware.com/image/data/6783633.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'1043472',
+		image:'http://jamaicahardware.com/image/data/1043470.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'6264339',
+		image:'http://jamaicahardware.com/image/data/6264337.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'6783638',
+		image:'http://jamaicahardware.com/image/data/6783633.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'1043477',
+		image:'http://jamaicahardware.com/image/data/1043470.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'6264332',
+		image:'http://jamaicahardware.com/image/data/6264337.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'6783612',
+		image:'http://jamaicahardware.com/image/data/6783633.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'1043445',
+		image:'http://jamaicahardware.com/image/data/1043470.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	},{
+		sku:'6264312',
+		image:'http://jamaicahardware.com/image/data/6264337.jpg',
+		retailPrice:15.5, costPrice:12, stockorderQuantity: 15, restockLevel:27, orderQuantity:12, totalOrderCost: 180, reorderLevel:17,
+		description:"This is test data"
+	}]
+}

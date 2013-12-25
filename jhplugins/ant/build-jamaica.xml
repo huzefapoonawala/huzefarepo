@@ -1,0 +1,90 @@
+<project name="empty" basedir="../" default="deploy">
+
+    <!-- Local system paths -->
+    <property file="${basedir}/ant/build.properties"/>
+    <property name="webroot.dir" value="${basedir}/WebContent"/>
+    <property name="webinf.dir" value="${webroot.dir}/WEB-INF"/>
+    <property name="build.dir" value="build"/>
+
+    <!-- Project settings -->
+    <property name="project.distname" value="jhplugins"/>
+	<property name="deploy.dir" value="E:\jboss-6.1.0.Final\server\jbossweb-standalone\deploy"/>
+
+	<property name="profile.active" value="jamaica,website"></property>
+	
+    <!-- classpath for Struts 1.1 -->
+    <path id="compile.classpath">
+        <pathelement path ="${webinf.dir}/classes"/>
+        <pathelement path ="${classpath.external}"/>
+        <pathelement path ="${classpath}"/>
+    	<fileset dir="${deploy.dir}\..\lib" includes="*.jar"/>
+    	<fileset dir="${deploy.dir}\..\..\..\common\lib" includes="*.jar"></fileset>
+    </path>
+
+    <!-- Check timestamp on files -->
+    <target name="prepare">
+        <tstamp/>
+    </target>
+
+    <!-- Copy any resource or configuration files -->
+    <target name="resources">
+        <copy todir="${webinf.dir}/classes" includeEmptyDirs="yes">
+            <fileset dir="src/main/resources">
+            <patternset>
+                <include name="**/*.conf"/>
+                <include name="**/*.properties"/>
+                <include name="**/*.xml"/>
+            	<include name="**/tpl/**"/>
+            </patternset>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Normal build of application -->
+    <target name="compile" depends="prepare,resources">
+        <javac srcdir="src/main/java" destdir="${webinf.dir}/classes">
+            <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+
+    <!-- Remove classes directory for clean build -->
+    <target name="clean"
+      description="Prepare for clean build">
+      <delete dir="${webinf.dir}/classes"/>
+      <mkdir  dir="${webinf.dir}/classes"/>
+    </target>
+
+    <!-- Build entire project -->
+    <target name="build" depends="prepare,compile"/>
+    <target name="rebuild" depends="clean,prepare,compile"/>
+	
+	<target name="updatewebxml">
+			<mkdir dir="${build.dir}/WEB-INF" />
+			<copy file="${webinf.dir}/web.xml" todir="${build.dir}/WEB-INF">
+				<filterchain>
+					<expandproperties/>
+				</filterchain>
+			</copy>
+	</target>
+	
+    <!-- Create binary distribution -->
+    <target name="war" depends="rebuild,updatewebxml">
+    	<mkdir dir="${build.dir}" />
+      <war
+        basedir="${webroot.dir}"
+        warfile="${build.dir}/${project.distname}.war"
+        webxml="${build.dir}/WEB-INF/web.xml" >
+        <exclude name="WEB-INF/${build.dir}/**"/>
+        <exclude name="WEB-INF/src/**"/>
+        <exclude name="WEB-INF/web.xml"/>
+       </war>
+    </target>
+
+    <target name="deploy" depends="war">
+       <delete file="${deploy.dir}/${project.distname}.war"/>
+       <delete dir="${deploy.dir}/${project.distname}"/>
+       <copy file="${build.dir}/${project.distname}.war" todir="${deploy.dir}"/>
+       <delete dir="${build.dir}"/>
+    </target>
+
+</project>
