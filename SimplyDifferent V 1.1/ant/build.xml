@@ -1,0 +1,91 @@
+<project name="empty" basedir="../" default="deploy">
+
+    <!-- Local system paths -->
+    <property file="${basedir}/ant/build.properties"/>
+    <property name="webroot.dir" value="${basedir}/WebContent"/>
+    <property name="webinf.dir" value="${webroot.dir}/WEB-INF"/>
+    <property name="build.dir" value="build"/>
+
+    <!-- Project settings -->
+    <property name="project.distname" value="simplydifferent"/>
+	<property name="deploy.dir" value="E:\jboss-6.1.0.Final\server\jbossweb-standalone\deploy"/>
+	<property name="dojo.port" value="8080"></property>
+
+    <!-- classpath for Struts 1.1 -->
+    <path id="compile.classpath">
+        <pathelement path ="${webinf.dir}/classes"/>
+        <pathelement path ="${classpath.external}"/>
+        <pathelement path ="${classpath}"/>
+    	<fileset dir="${deploy.dir}\..\lib" includes="*.jar"/>
+    	<fileset dir="${deploy.dir}\..\..\..\common\lib" includes="*.jar"></fileset>
+    </path>
+
+    <!-- Check timestamp on files -->
+    <target name="prepare">
+        <tstamp/>
+    </target>
+
+    <!-- Copy any resource or configuration files -->
+    <target name="resources">
+        <copy todir="${webinf.dir}/classes" includeEmptyDirs="yes">
+            <fileset dir="src">
+            <patternset>
+                <include name="**/*.conf"/>
+                <include name="**/*.properties"/>
+                <include name="**/*.xml"/>
+            </patternset>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Normal build of application -->
+    <target name="compile" depends="prepare,resources">
+        <javac srcdir="src" destdir="${webinf.dir}/classes">
+            <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+
+    <!-- Remove classes directory for clean build -->
+    <target name="clean"
+      description="Prepare for clean build">
+      <delete dir="${webinf.dir}/classes"/>
+      <mkdir  dir="${webinf.dir}/classes"/>
+    </target>
+
+    <!-- Build entire project -->
+    <target name="build" depends="prepare,compile"/>
+    <target name="rebuild" depends="clean,prepare,compile"/>
+
+	<target name="updatefileswithprops">
+		<mkdir dir="${build.dir}/tpl/jsp/common"/>
+		<copy file="${webroot.dir}/jsp/common/header.html_tpl" tofile="${build.dir}/tpl/jsp/common/header.html" verbose="true">
+			<filterchain>
+				<replacetokens>
+					<token key="dojo.port" value="${dojo.port}"/>
+				</replacetokens>
+			</filterchain>
+		</copy>
+	</target>
+	
+    <!-- Create binary distribution -->
+    <target name="war" depends="rebuild,updatefileswithprops">
+      <war
+        basedir="${webroot.dir}"
+        warfile="${build.dir}/${project.distname}.war"
+        webxml="${webinf.dir}/web.xml" >
+      	<fileset dir="${build.dir}/tpl"></fileset>
+        <exclude name="WEB-INF/${build.dir}/**"/>
+        <exclude name="WEB-INF/src/**"/>
+        <exclude name="WEB-INF/web.xml"/>
+      	<exclude name="**/*.*_tpl"/>
+       </war>
+    </target>
+
+    <target name="deploy" depends="war">
+       <delete file="${deploy.dir}/${project.distname}.war"/>
+       <delete dir="${deploy.dir}/${project.distname}"/>
+       <copy file="${build.dir}/${project.distname}.war" todir="${deploy.dir}"/>
+       <delete dir="${build.dir}"/>
+    </target>
+
+</project>

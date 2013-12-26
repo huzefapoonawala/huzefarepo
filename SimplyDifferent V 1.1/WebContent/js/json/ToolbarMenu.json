@@ -1,0 +1,34 @@
+[
+	{
+		label:"Master",
+		children:[
+		          {label:"Brand Manager", url:"../forward/master_BrandManager.action"},
+		          {label:"Product Manager",url:"../forward/master_ProductManager.action", shortcutKey:"F1"},
+		          {label:"Customer Manager",url:"../forward/master_CustomerManager.action"},
+		          {label:"Supplier Manager",url:"../forward/master_SupplierManager.action"}
+		]
+	},
+	{label:"Inventory", url:""},
+	{
+		label:"Purchase",
+		children:[
+			{label:"Purchase Invoice", url:"../forward/purchase_PurchaseInvoice.action", shortcutKey:"F2"},
+			{label:"Payment Against Purchase",url:""},
+			{label:"Outstanding Against Purchase",url:""}
+		]
+	},
+	{
+		label:"Sales", 
+		children:[
+			{label:"Sales Invoice", url:"../forward/sales_SalesInvoice.action", shortcutKey:"F3"},
+			{label:"Sales Receipt", url:"../forward/sales_SalesReceipt.action", shortcutKey:"F4"}
+		]
+	},
+	{
+		label:"Report",
+		children:[
+			{label:"Purchase Report", url:"../forward/reports_PurchaseReport.action"},
+			{label:"Stock Report", url:"../forward/reports_ProductStockReport.action"}
+		] 
+	}
+]

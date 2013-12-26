@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "struts-2.0.dtd">
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.custom.i18n.resources" value="package" />
+	<constant name="struts.multipart.maxSize" value="11485760"/>
+
+	<package name="default" namespace="/" extends="struts-default">
+		<default-action-ref name="home" />
+		<action name="home">
+			 <result type="redirectAction">
+                <param name="actionName">home</param>
+                <param name="namespace">/forward</param>
+            </result>
+		</action>
+    </package>
+    <package name="forward2jsp" namespace="/forward" extends="struts-default">
+    	<action name="home">
+    		<result>/jsp/common/home.jsp</result>
+    	</action>
+    	<action name="*_*">
+    		<result>/jsp/{1}/{2}.jsp</result>
+    	</action>
+    </package>
+    
+    <package name="forward2json" namespace="/json" extends="json-default">
+    	<action name="*_*" class="com.simplydifferent.action.{1}" method="{2}">
+    		<result type="json">
+    			<param name="excludeNullProperties">true</param>
+    			<param name="noCache">true</param>
+    		</result>
+    	</action>
+    </package>
+    
+    <package name="forward2process" namespace="/process" extends="struts-default">
+    	<action name="SaveItems" class="com.simplydifferent.action.ItemManager" method="saveItems">
+    		<result type="redirectAction">
+    			<param name="actionName">purchase_PurchaseManager</param>
+                <param name="namespace">/forward/jsp</param>
+                <param name="breadcrum">${#request.parameters.breadcrum}</param>
+    		</result>
+    	</action>
+    	<action name="Save*" class="com.simplydifferent.action.{1}Manager" method="save">
+    		<result>/jsp/master/{1}Manager.jsp</result>
+    	</action>
+    </package>
+    
+    <package name="forward2processwithjson" namespace="/processwithjson/action" extends="json-default">
+    	<interceptors>
+    		<interceptor-stack name="jsonStack">
+    			<interceptor-ref name="defaultStack"></interceptor-ref>
+    			<interceptor-ref name="json"></interceptor-ref>
+    		</interceptor-stack>
+    	</interceptors>
+    	<default-interceptor-ref name="jsonStack"></default-interceptor-ref>
+    </package>
+    
+    <package name="forward2download" namespace="/download" extends="struts-default">
+    	<action name="generateSalesInvoicePdf" class="com.simplydifferent.action.SalesManager" method="generateInvoicePdf"></action>
+    </package>
+</struts>

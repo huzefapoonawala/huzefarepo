@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">	
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="packagesToScan">
+			<list>
+				<value>com.simplydifferent.vo</value>
+			</list>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+				<value>com.simplydifferent.entity.CategoryMaster</value>
+				<value>com.simplydifferent.entity.ProductMaster</value>
+				<value>com.simplydifferent.entity.VariantMaster</value>
+				<value>com.simplydifferent.entity.SupplierMaster</value>
+			</list>
+		</property>
+		<property name="configurationClass">
+			<value>org.hibernate.cfg.AnnotationConfiguration</value>
+		</property> 
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+		<property name="dataSource" ref="sdDS"></property>
+	</bean>
+	<bean id="datasource" class="com.simplydifferent.datasouce.impl.DatasourceImpl">
+		<property name="hibernateTemplate">
+			<bean class="org.springframework.orm.hibernate3.HibernateTemplate">
+				<constructor-arg>
+					<ref local="sessionFactory"/>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="masterDAO" class="com.simplydifferent.dao.impl.MasterDAOImpl">
+		<property name="datasource" ref="datasource"></property>
+	</bean>
+	<bean id="purchaseDAO" class="com.simplydifferent.dao.impl.PurchaseDAOImpl">
+		<property name="datasource" ref="datasource"></property>
+		<property name="masterDAO" ref="masterDAO"></property>
+	</bean>
+	<bean id="salesDAO" class="com.simplydifferent.dao.impl.SalesDAOImpl">
+		<property name="datasource" ref="datasource"></property>
+		<property name="masterDAO" ref="masterDAO"></property>
+		<property name="pdfGenerator" ref="pdfGenerator"></property>
+	</bean>
+	<bean id="reportDAO" class="com.simplydifferent.dao.impl.ReportDAOImpl">
+		<property name="datasource" ref="datasource"></property>
+	</bean>
+	
+	<tx:annotation-driven />
+	<beans profile="production">
+		<bean id="sdDS" class="org.springframework.jndi.JndiObjectFactoryBean">
+			<property name="jndiName" value="java:jdbc/SimplyDifferentDBDS"></property>
+		</bean>
+		<bean id="pdfGenerator" class="com.simplydifferent.util.PdfGenerator" init-method="initFonts">
+			<property name="templatePath" value="#{servletContext.getRealPath('\')}templates\salesinvoice.pdf"></property>
+			<property name="headerFontPath" value="#{servletContext.getRealPath('\')}fonts\PALAB.TTF"></property>
+			<property name="textFontPath" value="#{servletContext.getRealPath('\')}fonts\PALA.TTF"></property>
+		</bean>
+		<bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"/>
+	</beans>	
+</beans>

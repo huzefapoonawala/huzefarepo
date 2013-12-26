@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" profile="testing">
+
+	<!-- <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="packagesToScan">
+			<list>
+				<value>com.simplydifferent.vo</value>
+			</list>
+		</property> 
+		<property name="configurationClass">
+			<value>org.hibernate.cfg.AnnotationConfiguration</value>
+		</property> 
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+		
+	</bean>
+	<bean id="datasource" class="com.simplydifferent.datasouce.impl.DatasourceImpl">
+		<property name="hibernateTemplate">
+			<bean class="org.springframework.orm.hibernate3.HibernateTemplate">
+				<constructor-arg>
+					<ref local="sessionFactory"/>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean> 
+	
+	<bean id="masterDAO" class="com.simplydifferent.dao.impl.MasterDAOImpl">
+		<property name="datasource" ref="datasource"></property>
+	</bean>
+	<bean id="purchaseDAO" class="com.simplydifferent.dao.impl.PurchaseDAOImpl">
+		<property name="datasource" ref="datasource"></property>
+		<property name="masterDAO" ref="masterDAO"></property>
+	</bean>
+	<bean id="salesDAO" class="com.simplydifferent.dao.impl.SalesDAOImpl">
+		<property name="datasource" ref="datasource"></property>
+		<property name="masterDAO" ref="masterDAO"></property>
+		<property name="pdfGenerator" ref="pdfGenerator"></property>
+	</bean> -->
+	<bean id="sdDS" class="org.apache.commons.dbcp.BasicDataSource">
+				<property name="driverClassName" >
+					<value>com.mysql.jdbc.Driver</value>
+				</property>
+				<property name="url">
+					<value>jdbc:mysql://localhost:3312/simplydifferent</value>
+				</property>
+				<property name="username">
+					<value>root</value>
+				</property>
+				<property name="password">
+					<value>root</value>
+				</property>
+			</bean>
+	<bean id="pdfGenerator" class="com.simplydifferent.util.PdfGenerator" init-method="initFonts">
+		<property name="templatePath" value="E:\workspace_latest\SimplyDifferent V 1.1\WebContent\templates\salesinvoice.pdf"></property>
+		<property name="headerFontPath" value="E:\workspace_latest\SimplyDifferent V 1.1\WebContent\fonts\PALAB.TTF"></property>
+		<property name="textFontPath" value="E:\workspace_latest\SimplyDifferent V 1.1\WebContent\fonts\PALA.TTF"></property>
+	</bean>
+</beans>
