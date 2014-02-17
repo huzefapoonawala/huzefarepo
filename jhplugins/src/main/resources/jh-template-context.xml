@@ -3,7 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd" 
+	profile="website,website_sync,nowebsite">
 
 	<util:map id="templatePaths">
 		<entry key="edi.orgill.850" value="edi/orgill/850.tpl"></entry>
@@ -14,7 +15,7 @@
 		<property name="templateConfigurer" ref="templateConfigurer"></property>
 	</bean>
 	
-	<beans profile="website">
+	<beans profile="website,nowebsite">
 		<bean id="templateConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 			<property name="templateLoaderPath" value="/WEB-INF/classes/tpl/"></property>
 		</bean>

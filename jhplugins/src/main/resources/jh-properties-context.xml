@@ -26,5 +26,8 @@
 	<beans profile="website_sync">
 		<context:property-placeholder location="classpath:datasource-websitesync.properties" ignore-unresolvable="true" ignore-resource-not-found="false" order="1"/>
 	</beans>
+	<beans profile="client1">
+		<context:property-placeholder location="classpath:datasource-client1.properties" ignore-unresolvable="true" ignore-resource-not-found="false" order="1"/>
+	</beans>
 	
 </beans>

@@ -22,20 +22,35 @@
 	</bean>
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	
-	<bean id="websiteDS" class="org.apache.commons.dbcp.BasicDataSource">
-				<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-				<property name="url" value="${website.database.url}"></property>
-				<property name="username" value="${website.database.username}"></property>
-				<property name="password" value="${website.database.password}"></property>
-				<property name="initialSize" value="5"></property>
-				<property name="minIdle" value="5"></property>
-				<property name="maxActive" value="10"></property>
-				<property name="testOnBorrow" value="true"></property>
-				<property name="testOnReturn" value="true"></property>
-				<property name="validationQuery" value="SELECT CURRENT_TIMESTAMP"></property>
-	</bean>
-	<bean id="websiteTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
-		<constructor-arg name="dataSource" ref="websiteDS"></constructor-arg>
-	</bean>
+	<beans profile="website,website_sync">
+		<bean id="websiteDS" class="org.apache.commons.dbcp.BasicDataSource">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+			<property name="url" value="${website.database.url}"></property>
+			<property name="username" value="${website.database.username}"></property>
+			<property name="password" value="${website.database.password}"></property>
+			<property name="initialSize" value="5"></property>
+			<property name="minIdle" value="5"></property>
+			<property name="maxActive" value="10"></property>
+			<property name="testOnBorrow" value="true"></property>
+			<property name="testOnReturn" value="true"></property>
+			<property name="validationQuery" value="SELECT CURRENT_TIMESTAMP"></property>
+		</bean>
+		
+		<bean id="websiteTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+			<constructor-arg name="dataSource" ref="websiteDS"></constructor-arg>
+		</bean>
+	</beans>
+	<beans profile="nowebsite">
+		<bean id="websiteTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate" lazy-init="true">
+			<constructor-arg name="dataSource">
+				<bean class="org.apache.commons.dbcp.BasicDataSource">
+					<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+					<property name="url" value="test"></property>
+					<property name="username" value="test"></property>
+					<property name="password" value="test"></property>
+				</bean>
+			</constructor-arg>
+		</bean>
+	</beans>
 
 </beans>

@@ -4,13 +4,13 @@
     <property file="${basedir}/ant/build.properties"/>
     <property name="webroot.dir" value="${basedir}/WebContent"/>
     <property name="webinf.dir" value="${webroot.dir}/WEB-INF"/>
-    <property name="build.dir" value="build"/>
+    <property name="build.dir" value="${basedir}/build"/>
 
     <!-- Project settings -->
     <property name="project.distname" value="jhplugins"/>
 	<property name="deploy.dir" value="E:\jboss-6.1.0.Final\server\jbossweb-standalone\deploy"/>
-
-	<property name="profile.active" value="development,website"></property>
+	<property name="application.title" value="Jamaica Hardware"/>
+	<property name="toolbar" value="ToolbarMenu.json"></property>
 	
     <!-- classpath for Struts 1.1 -->
     <path id="compile.classpath">
@@ -67,23 +67,42 @@
 	
 	<target name="updatewebxml">
 			<mkdir dir="${build.dir}/WEB-INF" />
-			<copy file="${webinf.dir}/web.xml" todir="${build.dir}/WEB-INF">
+			<copy file="${webinf.dir}/web.xml" todir="${build.dir}/WEB-INF" verbose="true">
 				<filterchain>
 					<expandproperties/>
 				</filterchain>
 			</copy>
 	</target>
 	
+	<target name="updatefileswithprops">
+		<mkdir dir="${build.dir}/tpl/pages/common" />
+		<copy file="${webroot.dir}/pages/common/header.html" todir="${build.dir}/tpl/pages/common" verbose="true">
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</copy>
+		<mkdir dir="${build.dir}/tpl/js/json"/>
+		<copy file="${webroot.dir}/js/json/${toolbar}" tofile="${build.dir}/tpl/js/json/ToolbarMenu.json" verbose="true">
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</copy>
+	</target>
+	
     <!-- Create binary distribution -->
-    <target name="war" depends="rebuild,updatewebxml">
-    	<mkdir dir="${build.dir}" />
+    <target name="war" depends="rebuild,updatewebxml,updatefileswithprops">
+    	<mkdir dir="${build.dir}" /> 
       <war
         basedir="${webroot.dir}"
         warfile="${build.dir}/${project.distname}.war"
-        webxml="${build.dir}/WEB-INF/web.xml" >
-        <exclude name="WEB-INF/${build.dir}/**"/>
+        webxml="${build.dir}/WEB-INF/web.xml">
+      	<fileset dir="${build.dir}/tpl"></fileset>
+        <!-- <exclude name="WEB-INF/${build.dir}/**"/> -->
         <exclude name="WEB-INF/src/**"/>
         <exclude name="WEB-INF/web.xml"/>
+      	<exclude name="**/header.html"/>
+      	<exclude name="**/ToolbarMenu.json"/>
+      	<exclude name="**/${toolbar}"/>
        </war>
     </target>
 

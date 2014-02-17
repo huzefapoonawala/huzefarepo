@@ -6,42 +6,14 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 	
-	<util:list id="ftpUsers">
-		<map>
-			<entry key="username" value="353987"></entry>
-			<entry key="password" value="m2P7Gj6r"></entry>
-		</map>
-		<map>
-			<entry key="username" value="081877"></entry>
-			<entry key="password" value="m2P7Gj6r"></entry>
-		</map>
-	</util:list>
-	
 	<bean id="purchaseInvoiceFTPReader" class="com.jh.util.FTPReader" p:server="orders.Orgill.com" p:ftpUsers-ref="ftpUsers">
 	</bean>
 	
 	<bean id="ftpWriter" class="com.jh.util.FTPWriter"></bean>
 
-	<util:list id="webfilesFTPUsers">
-		<map>
-			<entry key="username" value="FTP353987"></entry>
-			<entry key="password" value="BTS392K"></entry>
-		</map>
-	</util:list>
 	<bean id="webfilesFTPReader" class="com.jh.util.FTPReader" 
 		p:server="ftp.orgill.com" 
 		p:ftpUsers-ref="webfilesFTPUsers"
-		p:downloadFilePath="${jhplugins.path.local.webfiles.orgill}">
-	</bean>
-	<util:list id="godaddyFTPUsers">
-		<map>
-			<entry key="username" value="n1768237"></entry>
-			<entry key="password" value="Paints!10"></entry>
-		</map>
-	</util:list>
-	<bean id="godaddyFTPReader" class="com.jh.util.FTPReader" 
-		p:server="176.5eb.myftpupload.com" 
-		p:ftpUsers-ref="godaddyFTPUsers"
 		p:downloadFilePath="${jhplugins.path.local.webfiles.orgill}">
 	</bean>
 	
@@ -74,5 +46,49 @@
 			p:ftpFolderPath="${jhplugins.path.remote.images.orgill}"
 			p:localFolderPath="${jhplugins.path.local.images.orgill}"
 		></bean>
+	</beans>
+	
+	<beans profile="jamaica,empire">
+		<util:list id="ftpUsers">
+			<map>
+				<entry key="username" value="353987"></entry>
+				<entry key="password" value="m2P7Gj6r"></entry>
+			</map>
+			<map>
+				<entry key="username" value="081877"></entry>
+				<entry key="password" value="m2P7Gj6r"></entry>
+			</map>
+		</util:list>
+		<util:list id="webfilesFTPUsers">
+			<map>
+				<entry key="username" value="FTP353987"></entry>
+				<entry key="password" value="BTS392K"></entry>
+			</map>
+		</util:list>
+		<util:list id="godaddyFTPUsers">
+			<map>
+				<entry key="username" value="n1768237"></entry>
+				<entry key="password" value="Paints!10"></entry>
+			</map>
+		</util:list>
+		<bean id="godaddyFTPReader" class="com.jh.util.FTPReader" 
+			p:server="176.5eb.myftpupload.com" 
+			p:ftpUsers-ref="godaddyFTPUsers"
+			p:downloadFilePath="${jhplugins.path.local.webfiles.orgill}">
+		</bean>
+	</beans>
+	<beans profile="client1">
+		<util:list id="ftpUsers">
+			<map>
+				<entry key="username" value="353987"></entry>
+				<entry key="password" value="m2P7Gj6r"></entry>
+			</map>
+		</util:list>
+		<util:list id="webfilesFTPUsers">
+			<map>
+				<entry key="username" value="FTP406942"></entry>
+				<entry key="password" value="G326HJ7"></entry>
+			</map>
+		</util:list>
 	</beans>
 </beans>
