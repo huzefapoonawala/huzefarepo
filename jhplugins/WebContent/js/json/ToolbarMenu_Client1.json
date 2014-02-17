@@ -1,0 +1,11 @@
+[
+	{
+		label:"Plugins",
+		children:[
+		          {label:"Purchase Order Creator", url:"../forward/plugin_PurchaseOrder.action"},
+		          {label:"Item Updater", url:"../forward/plugin_ItemUpdater.action"},
+		          {label:"Invoice Uploader", url:"../forward/plugin_InvoiceUploader.action"},
+		          {label:"Orgill Item Sync", url:"../forward/plugin_OrgillItemSync.action"}
+		]
+	}
+]

@@ -1,0 +1,7 @@
+<project name="empty" basedir="../" default="deploy">
+
+	<property name="profile.active" value="development,website"></property>
+	
+	<import file="build.xml"/>
+	
+</project>
