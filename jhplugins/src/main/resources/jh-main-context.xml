@@ -36,7 +36,7 @@
 	<bean id="commonUtil" class="com.jh.util.CommonUtil">
 		<!-- <property name="imageFilePath" value="${file.path.image}"></property> -->
 		<property name="imageFilePath" value="../download/skuImage.action?sku="></property>
-		<property name="orgillImageFileUrl" value="http://images.orgill.com/200x200/"></property>
+		<property name="orgillImageFileUrl" value="${jhplugins.url.images.orgill}"></property>
 		<property name="orgillImageFilePath" value="${file.systempath.image}"></property>
 	</bean>
 

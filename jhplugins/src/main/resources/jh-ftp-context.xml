@@ -80,8 +80,8 @@
 	<beans profile="client1">
 		<util:list id="ftpUsers">
 			<map>
-				<entry key="username" value="353987"></entry>
-				<entry key="password" value="m2P7Gj6r"></entry>
+				<entry key="username" value="NA"></entry>
+				<entry key="password" value="NA"></entry>
 			</map>
 		</util:list>
 		<util:list id="webfilesFTPUsers">
