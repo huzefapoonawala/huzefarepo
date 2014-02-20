@@ -48,7 +48,7 @@
 		></bean>
 	</beans>
 	
-	<beans profile="jamaica,empire">
+	<beans profile="jamaica,empire,development">
 		<util:list id="ftpUsers">
 			<map>
 				<entry key="username" value="353987"></entry>

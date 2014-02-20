@@ -2,6 +2,7 @@ package com.jh.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -65,11 +66,16 @@ public class CommonUtil {
 	}
 
 	public void loadImageFromFileSystem(String filename, OutputStream out) {
-		if (System.getenv("file.systempath.image") == null) {
+		/*if (System.getenv("file.systempath.image") == null) {
 			logger.warn("Image file path might not be set, please set system variable 'file.systempath.image' with the file path of the image folder.");
-		}
+		}*/
 		try {
-			FileInputStream in = new FileInputStream(this.orgillImageFilePath+filename);
+			File file = new File(this.orgillImageFilePath);
+			if (!file.isDirectory()) {
+				file.mkdir();
+			}
+			file = new File(this.orgillImageFilePath, filename);
+			FileInputStream in = new FileInputStream(file);
 			byte[] bs = null;
 			while (in.available() > 0) {
 				bs = new byte[in.available() < 1024 ? 1024 : in.available()];
@@ -77,7 +83,10 @@ public class CommonUtil {
 				out.write(bs);
 			}
 			in.close();
-		} catch (Exception e) {
+		} catch (FileNotFoundException e) {
+			logger.warn("Image file not found '"+this.orgillImageFilePath+filename+"'");
+		}
+		catch (Exception e) {
 			logger.error("", e);
 		}
 	}

@@ -12,11 +12,11 @@
 		
 	<import resource="jh-datasource-context.xml"/>
 	<import resource="jh-website-context.xml"/>
-	<import resource="jh-properties-context.xml"/>
 	<import resource="jh-template-context.xml"/>
 	<import resource="jh-mail-context.xml"/>
 	<import resource="jh-common-context.xml"/>
 	<import resource="jh-ftp-context.xml"/>
+	<import resource="jh-properties-context.xml"/>
 	
 	<bean id="supplierDAO" class="com.jh.dao.supplier.SupplierDAOImpl">
 		<property name="dynamicsTemplate" ref="dynamicsTemplate"></property>
