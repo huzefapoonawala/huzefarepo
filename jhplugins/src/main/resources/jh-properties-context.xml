@@ -14,7 +14,7 @@
 		<property name="locations">
 			<list>
 				<value>classpath:jh-plugins.properties</value>
-				<value>file:/${jhplugins.path.properties}</value>
+				<value>file:/#{systemEnvironment['jhplugins.path.properties'] ?: 'NA.properties'}</value>
 			</list>
 		</property>
 		<property name="propertiesArray" >
