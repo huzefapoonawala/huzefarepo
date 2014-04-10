@@ -25,6 +25,10 @@
 		</property>
 	</bean>
 	
+	<bean id="propertiesUtil" class="com.jh.util.PropertiesUtil">
+		<property name="applicationProperties" ref="applicationProperties"></property>
+	</bean>
+	
 	<context:property-placeholder properties-ref="applicationProperties" system-properties-mode="FALLBACK" ignore-unresolvable="false" ignore-resource-not-found="false" order="2"/>
 	
 	<util:properties id="dbconfigs.website"></util:properties>

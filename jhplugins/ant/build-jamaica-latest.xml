@@ -1,0 +1,11 @@
+<project name="empty" basedir="../" default="deploy">
+
+	<property name="profile.active" value="jamaica,website"></property>
+	<property name="project.distname" value="jhplugins"/>
+	<property name="application.title" value="Ezzi Solutions, Inc."/>
+	<!-- <property name="toolbar" value="ToolbarMenu_Client1.json"></property> -->
+	<!-- <property name="deploy.dir" value="E:\jboss-6.1.0.Final\server\jbossweb-standalone\deploy"/> -->
+	
+	<import file="build.xml"/>
+	
+</project>

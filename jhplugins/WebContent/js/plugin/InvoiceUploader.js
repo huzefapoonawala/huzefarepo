@@ -430,7 +430,7 @@
 	         "dijit/form/Textarea",
 	         "dijit/form/Select",
 	         "dojo/domReady!"], function() {
-		dojo.publish('jh/set/breadcrum',['Plugins >> Invoice Uploader']);
+		dojo.publish('jh/set/breadcrum',['Invoice Uploader']);
 		dojo.parser.parse();
 		dijit.byId('uploadForm').placeAt('bodyDiv');
 		dijit.byId('uploadForm').attr({

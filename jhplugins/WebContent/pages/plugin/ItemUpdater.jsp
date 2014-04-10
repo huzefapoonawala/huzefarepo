@@ -27,7 +27,7 @@
 			<td width="10px">&nbsp;</td>
 			<td>
 				<div data-dojo-type="dijit.form.Button" data-dojo-props="label:'Search',type:'submit'"></div>
-				<div data-dojo-type="dijit.form.Button" data-dojo-props="label:'Reset',type:'reset'"></div>
+				<div data-dojo-type="dijit.form.Button" data-dojo-props="label:'Reset',type:'reset'" style="display: none;"></div>
 			</td>
 		</tr>
 	</table>
@@ -39,6 +39,7 @@
 	<input type="hidden" id="id" name="id">
 	<input type="hidden" id="reasonCodeId" name="reasonCodeId">
 	<input type="hidden" id="changeQuantity" name="changeQuantity">
+	<input type="hidden" id="binLocation" value="">
 	<table id="editTable">
 		<tr>
 			<td>&nbsp;</td>
@@ -60,10 +61,17 @@
 		</tr>
 		<tr>
 			<td>Quantity In Stock</td>
-			<td><div data-dojo-type="dijit.form.NumberTextBox" id="stockQuantity" data-dojo-props="label:'Quantity In Stock', name:'stockQuantity', required:true"></div></td>
+			<td><div data-dojo-type="dijit.form.NumberTextBox" id="stockQuantity" onkeyup="dojo.publish('iu/reasoncode/display',[]);" data-dojo-props="label:'Quantity In Stock', name:'stockQuantity', required:true"></div></td>
 			<td width="30px">&nbsp;</td>
 			<td>Quantity Committed</td>
 			<td><div data-dojo-type="dijit.form.NumberTextBox" id="committedQuantity" data-dojo-props="label:'Quantity Committed', name:'committedQuantity', readonly:true"></div></td>
+		</tr>
+		<tr id="reasonCodeEl" style="display: none;">
+			<td>Reason Code</td>
+			<td>
+				<div data-dojo-type="dijit.form.Select" id="reasonCode" data-dojo-props="required:true, disabled:true"></div>&nbsp;&nbsp;
+			</td>
+			<td colspan="3">&nbsp;</td>
 		</tr>
 		<tr>
 			<td>On Order</td>
@@ -107,7 +115,9 @@
 		</tr>
 		<tr class="dijitDialogPaneActionBar">
 			<td colspan="2">
+				<span id="itemupdatedmsg" style="display:none;"><b>Changes saved successfully</b></span>
 				<div data-dojo-type="dijit.form.Button" data-dojo-props="label:'Save Changes',type:'submit'"></div>
+				<div id="printLabelButton" data-dojo-type="dijit.form.Button" data-dojo-props="label:'Print Label',type:'button'"></div>
 				<div data-dojo-type="dijit.form.Button" data-dojo-props="label:'Cancel',type:'reset'"></div>
 			</td>
 		</tr>
@@ -133,7 +143,7 @@
 	</table>
 	</div>
 </div>
-<div data-dojo-type="dijit.Dialog" style="width:350px;" data-dojo-props="title:'Select Reason Code'" id="rcDialog">
+<!-- <div data-dojo-type="dijit.Dialog" style="width:350px;" data-dojo-props="title:'Select Reason Code'" id="rcDialog">
 	<table align="center">
 		<tr>
 			<td valign="top">Reason Code&nbsp;&nbsp;</td>
@@ -145,10 +155,17 @@
 			</td>
 		</tr>
 	</table>
-</div>
+</div> -->
 <!-- <div data-dojo-type="dijit.Dialog" style="width:320px;" data-dojo-props="title:'Delete Alias'" id="deleteAliasDialog">
 	<div id="aliasGrid"></div>
 </div> -->
 </div>
+<form action="../download/generateitemlabel.action" target="_label" id="labelForm" method="post">
+	<input type="hidden" id="label_sku" name="item.sku">
+	<input type="hidden" id="label_rp" name="item.retailPrice">
+	<input type="hidden" id="label_desc" name="item.description">
+	<input type="hidden" id="label_bl" name="item.binLocation">
+	<input type="hidden" id="label_alias" name="item.aliases">
+</form>
 </body>
 </html>

@@ -3,19 +3,7 @@
 	function createDataGrid() {
 		var struct = [{
             type: "dojox.grid._CheckBoxSelector"
-        },/*{
-			defaultCell: { width: "80px" },
-			noscroll: true,
-			cells: [
-			        {name:'Image', field:'image', width:'120px', align:'center',
-			        	formatter: function(value) { 
-			                var src = value; 
-			                return "<img src=\"" + src + "\" width=\"90px\" height=\"90px\" />"; 
-			            } 
-			        },
-			        {name: "SKU #", field: "sku"}
-			]
-		},*/{
+        },{
 			defaultCell: { width: "90px" },
 			cells: [
 				[
@@ -48,15 +36,19 @@
 		var grid = new dojox.grid.EnhancedGrid({
 			id:'dataGrid',
 			structure:struct,
-			selectionMode:'multiple',
+			selectionMode:'extended',
 			style:{height:'550px'},
 			store:gridStore,
-			singleClickEdit:true,
-			keepSelection:true,
+			singleClickEdit:false,
+			keepSelection:false,
 			noDataMessage:'Please select/enter criterias from the "Filter Panel" above.'
 		}).placeAt('gridForm','first');
 		grid.startup();
-		grid.attr({noDataMessage:'No data found for the selected/entered criterias.'});
+		grid.attr({
+			noDataMessage:'No data found for the selected/entered criterias.',
+			onRowClick: function(e){},
+			onRowDblClick: function(e) {}
+		});
 	}
 	
 	function getSuppliers() {
@@ -242,7 +234,7 @@
 	         "dijit/Dialog",
 	         "dojox/math/round",
 	         "dojo/domReady!"], function() {
-		dojo.publish('jh/set/breadcrum',['Plugins >> Purchase Order Creator']);
+		dojo.publish('jh/set/breadcrum',['Purchase Order Creator']);
 		dojo.parser.parse();
 		dijit.byId('fpanel').placeAt('bodyDiv');
 		dijit.byId('gridForm').placeAt('bodyDiv');

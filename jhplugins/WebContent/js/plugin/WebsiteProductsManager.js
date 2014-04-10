@@ -87,7 +87,7 @@
 	         "dojox/grid/EnhancedGrid",
 	         "dojox/grid/_CheckBoxSelector",
 	         "dojo/domReady!"], function() {
-		dojo.publish('jh/set/breadcrum',['Plugins >> Website Product Sync']);
+		dojo.publish('jh/set/breadcrum',['Website Product Sync']);
 		dojo.parser.parse();
 		dijit.byId('uploadForm').placeAt('bodyDiv');
 		dijit.byId('uploadForm').attr({

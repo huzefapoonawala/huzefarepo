@@ -46,4 +46,8 @@
 		<property name="itemDAO" ref="itemDAO"></property>
 		<property name="purchaseInvoiceFTPReader" ref="purchaseInvoiceFTPReader"></property>
 	</bean>
+	
+	<bean id="itemLabelGenerator" class="com.jh.util.ItemLabelGenerator">
+		<property name="propertiesUtil" ref="propertiesUtil"></property>
+	</bean>
 </beans>

@@ -1,5 +1,5 @@
 (function() {
-	var itemData = [], oldSQty;	
+	var itemData = [], oldSQty, storeName = '';	
 	function configureEditDialog() {
 		dojo.subscribe('jh/iu/edititem', function(rIdx){
 //			var grid = dijit.byId('dataGrid'), store = grid.get('store'), item = grid.getItem(rIdx);
@@ -11,6 +11,7 @@
 			});
 			dojo.attr('rIdx','value',rIdx);
 			dojo.attr('id','value',/*store.getIdentity(item)*/itemData[rIdx]['id']);
+			dojo.attr('binLocation','value',itemData[rIdx]['binLocation'] ? itemData[rIdx]['binLocation'] : '');
 			oldSQty = itemData[rIdx]['stockQuantity'];
 			dojo.empty('itemImage');
 			dojo.attr('itemImage','innerHTML','<img width="90px" height="90px" src="'+/*store.getValue(item,'image')*/itemData[rIdx]['image']+'" alt="No image found">');
@@ -46,7 +47,7 @@
 					isValid = false;
 				}
 				if (isValid && confirm('Are you sure, you want to save changes made to item details.')) {
-					if (dijit.byId('stockQuantity').get('value') != oldSQty) {
+					/*if (dijit.byId('stockQuantity').get('value') != oldSQty) {
 						dojo.attr('reasonCodeId','disabled',false);
 						dojo.attr('changeQuantity','disabled',false);
 						dijit.byId('rcDialog').show();
@@ -55,7 +56,12 @@
 						dojo.attr('reasonCodeId','disabled',true);
 						dojo.attr('changeQuantity','disabled',true);
 						executeUpdate();
+					}*/
+					if (!dijit.byId('reasonCode').get('disabled')) {
+						dojo.attr('reasonCodeId','value',dijit.byId('reasonCode').get('value'));
+						dojo.attr('changeQuantity','value',dijit.byId('stockQuantity').get('value')-oldSQty);
 					}
+					executeUpdate();
 //					var grid = dijit.byId('dataGrid'), store = grid.get('store'), item = grid.getItem(dojo.attr('rIdx','value'));
 					/*for(key in formData){
 						if (['id'].indexOf(key) > -1) {
@@ -70,6 +76,8 @@
 			onReset: function() {
 //				dijit.byId('editDialog').hide();
 				dijit.byId('editDiv').attr({style:{display:'none'}});
+				dojo.style('itemupdatedmsg','display','none');
+				manageRCDisplay(false);
 				this.inherited("onReset", arguments);
 			}
 		});
@@ -85,7 +93,10 @@
 			sync:true,
 			load: function(response) {
 				oldSQty = dijit.byId('stockQuantity').get('value');
-				alert('Changes saved successfully');
+//				alert('Changes saved successfully');
+				dojo.style('itemupdatedmsg','display','');
+				manageRCDisplay(false);
+				resetAndFocusSearchSku();
 			}
 		});
 	}
@@ -124,14 +135,34 @@
 				dijit.byId('reasonCode').setStore(new dojo.data.ItemFileWriteStore({data:{identifier:'id',label:'description',items:items}}));
 			}
 		});
-		dijit.byId('rcButton').attr({
+		/*dijit.byId('rcButton').attr({
 			onClick: function() {
 				dojo.attr('reasonCodeId','value',dijit.byId('reasonCode').get('value'));
 				dojo.attr('changeQuantity','value',dijit.byId('stockQuantity').get('value')-oldSQty);
 				dijit.byId('rcDialog').hide();
 				executeUpdate();
 			}
-		});
+		});*/
+	}
+	
+	function resetAndFocusSearchSku() {
+		var el = dijit.byId('ssku');
+		el.reset();
+		el.focus();
+	}
+	
+	function manageRCDisplay(isShow) {
+		if (isShow) {
+			dojo.style('reasonCodeEl','display','');
+			dijit.byId('reasonCode').set('disabled',false);
+			dojo.attr('reasonCodeId','disabled',false);
+			dojo.attr('changeQuantity','disabled',false);
+		} else {
+			dojo.style('reasonCodeEl','display','none');
+			dijit.byId('reasonCode').set('disabled',true);
+			dojo.attr('reasonCodeId','disabled',true);
+			dojo.attr('changeQuantity','disabled',true);
+		}
 	}
 	
 	require(["dojo",
@@ -148,8 +179,9 @@
 	         "dojo/data/ItemFileWriteStore",
 	         "dojox/grid/EnhancedGrid",
 	         "dijit/TitlePane",
+	         "dojo/cookie",
 	         "dojo/domReady!"], function() {
-		dojo.publish('jh/set/breadcrum',['Plugins >> Item Updater']);
+		dojo.publish('jh/set/breadcrum',['Item Updater']);
 		dojo.parser.parse();
 		dijit.byId('searchForm').placeAt('bodyDiv');
 		dijit.byId('searchForm').attr({
@@ -173,6 +205,9 @@
 							} else {
 								alert('No data found for the entered sku/alias');
 							}
+							resetAndFocusSearchSku();
+							manageRCDisplay(false);
+							dojo.style('itemupdatedmsg','display','none');
 //							dijit.byId('dataGrid').setStore(new dojo.data.ItemFileWriteStore({data:{identifier:'id',items:response.items}}));
 						}
 					});
@@ -240,6 +275,58 @@
 						store.save();
 					}
 				});
+			}
+		});
+		dojo.subscribe('iu/reasoncode/display', function() {
+			var qty = dijit.byId('stockQuantity').get('value');
+			if (!isNaN(qty)) {
+				manageRCDisplay(dijit.byId('stockQuantity').get('value') != oldSQty);
+			}
+			else {
+				manageRCDisplay(false);
+			}
+		});
+		dojo.xhrPost({
+			url:'../json/Common_fetchApplicationProperties.action',
+			content:{'properties[0].propertyKey':'jhplugins.productlabel.storename'},
+			handleAs:'json',
+			sync:true,
+			load: function(response) {
+				if (response.properties) {
+					storeName = response.properties[0].propertyValue;
+				}
+			}
+		});
+		dijit.byId('printLabelButton').attr({
+			onClick : function() {
+				var upcCode = '';
+				try {
+					if (dijit.byId('aliasGrid')) {
+						var alGrid = dijit.byId('aliasGrid');
+						upcCode = alGrid.get('store').getIdentity(alGrid.getItem(0));
+					}
+				} catch (e) {
+					console.log(e);
+				}
+				if (upcCode.length == 0) {
+					upcCode = dijit.byId('sku').get('value');
+				}
+				/*var data = {
+					sku:dijit.byId('sku').get('value'),
+					description:dijit.byId('description').get('value'),
+					retailPrice:dijit.byId('retailPrice').get('value'),
+					upcCode: upcCode,
+					binLocation:dojo.attr('binLocation','value'),
+					storeName:storeName
+				};
+				dojo.cookie('label.data', dojo.toJson(data));
+				window.open('../forward/itemlabelgenerator.action', null, null, null);*/
+				dojo.attr('label_sku','value',dijit.byId('sku').get('value'));
+				dojo.attr('label_rp','value',dijit.byId('retailPrice').get('value'));
+				dojo.attr('label_desc','value',dijit.byId('description').get('value'));
+				dojo.attr('label_bl','value',dojo.attr('binLocation','value'));
+				dojo.attr('label_alias','value',upcCode);
+				dojo.byId('labelForm').submit();				
 			}
 		});
 //		createDataGrid();

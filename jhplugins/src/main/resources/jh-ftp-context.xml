@@ -6,13 +6,15 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 	
-	<bean id="purchaseInvoiceFTPReader" class="com.jh.util.FTPReader" p:server="orders.Orgill.com" p:ftpUsers-ref="ftpUsers">
+	<bean id="purchaseInvoiceFTPReader" class="com.jh.util.FTPReader" 
+		p:server="${jhplugins.hostname.pi.orgill}" 
+		p:ftpUsers-ref="ftpUsers">
 	</bean>
 	
 	<bean id="ftpWriter" class="com.jh.util.FTPWriter"></bean>
 
 	<bean id="webfilesFTPReader" class="com.jh.util.FTPReader" 
-		p:server="ftp.orgill.com" 
+		p:server="${jhplugins.hostname.webfiles.orgill}" 
 		p:ftpUsers-ref="webfilesFTPUsers"
 		p:downloadFilePath="${jhplugins.path.local.webfiles.orgill}">
 	</bean>
@@ -80,14 +82,14 @@
 	<beans profile="client1">
 		<util:list id="ftpUsers">
 			<map>
-				<entry key="username" value="7182771079"></entry>
-				<entry key="password" value="E4d9AT8a"></entry>
+				<entry key="username" value="${jhplugins.username.pi.orgill}"></entry>
+				<entry key="password" value="${jhplugins.password.pi.orgill}"></entry>
 			</map>
 		</util:list>
 		<util:list id="webfilesFTPUsers">
 			<map>
-				<entry key="username" value="FTP406942"></entry>
-				<entry key="password" value="G326HJ7"></entry>
+				<entry key="username" value="${jhplugins.username.webfiles.orgill}"></entry>
+				<entry key="password" value="${jhplugins.password.webfiles.orgill}"></entry>
 			</map>
 		</util:list>
 	</beans>

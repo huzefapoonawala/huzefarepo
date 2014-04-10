@@ -15,6 +15,12 @@
 	<br>
 	<table>
 		<tr>
+			<td colspan="3">
+				<div data-dojo-type="dijit.form.Button" id="ftpButton" data-dojo-props="label:'Browse Files From FTP'"></div>
+				<br>OR<br>
+			</td>
+		</tr>
+		<tr>
 			<td>
 				Select File To Upload&nbsp;&nbsp;
 				<input type="file" id="invoiceFile" name="invoiceFile" >
@@ -23,12 +29,6 @@
 			<td>
 				<div data-dojo-type="dijit.form.Button" data-dojo-props="label:'Show Invoices',type:'submit'"></div>			
 				<!-- <div data-dojo-type="dijit.form.Button" id="uploadFormReset" data-dojo-props="label:'Reset',type:'reset'" ></div> -->
-			</td>
-		</tr>
-		<tr>
-			<td colspan="3">
-				OR<br>
-				<div data-dojo-type="dijit.form.Button" id="ftpButton" data-dojo-props="label:'Browse Files From FTP'"></div>
 			</td>
 		</tr>
 	</table>

@@ -9,6 +9,7 @@ import org.apache.struts2.interceptor.ServletResponseAware;
 
 import com.jh.dao.item.ItemDAO;
 import com.jh.util.CommonUtil;
+import com.jh.util.ItemLabelGenerator;
 import com.jh.vo.ReasonCode;
 import com.jh.vo.RequestVO;
 import com.opensymphony.xwork2.ActionSupport;
@@ -55,6 +56,14 @@ public class Item extends ActionSupport implements ModelDriven<RequestVO>, Servl
 		this.httpResponse = servletResponse;
 		
 	}
+	
+	private com.jh.vo.Item item;
+	public com.jh.vo.Item getItem() {
+		return item;
+	}
+	public void setItem(com.jh.vo.Item item) {
+		this.item = item;
+	}
 
 	private ItemDAO itemDAO;	
 	public void setItemDAO(ItemDAO itemDAO) {
@@ -64,6 +73,11 @@ public class Item extends ActionSupport implements ModelDriven<RequestVO>, Servl
 	private CommonUtil commonUtil;	
 	public void setCommonUtil(CommonUtil commonUtil) {
 		this.commonUtil = commonUtil;
+	}
+	
+	private ItemLabelGenerator itemLabelGenerator;	
+	public void setItemLabelGenerator(ItemLabelGenerator itemLabelGenerator) {
+		this.itemLabelGenerator = itemLabelGenerator;
 	}
 	
 	public String fetchItemDetails() throws Exception {
@@ -165,5 +179,16 @@ public class Item extends ActionSupport implements ModelDriven<RequestVO>, Servl
 			httpResponse.setContentType("image/jpeg");
 			commonUtil.loadImageFromFileSystem(request.getSku(), httpResponse.getOutputStream());
 		}
+	}
+	
+	public void generateLabel() throws Exception {
+		try {
+			httpResponse.setContentType("application/pdf");
+			itemLabelGenerator.generateLabel(item, httpResponse.getOutputStream());
+		} catch (Exception e) {
+			logger.error("Error occurred while generating item label.", e);
+			throw e;
+		}
+//		return SUCCESS;
 	}
 }

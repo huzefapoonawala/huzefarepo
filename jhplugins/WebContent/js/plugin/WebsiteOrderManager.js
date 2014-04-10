@@ -171,7 +171,7 @@
 	         "dijit/form/Textarea",
 	         "dijit/form/Select",
 	         "dojo/domReady!"], function() {
-		dojo.publish('jh/set/breadcrum',['Plugins >> Website Order Manager']);
+		dojo.publish('jh/set/breadcrum',['Website Order Manager']);
 		dojo.parser.parse();
 		dijit.byId('confirmForm').placeAt('bodyDiv');
 		dijit.byId('confirmForm').attr({

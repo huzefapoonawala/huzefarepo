@@ -2,18 +2,23 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>JH Godaddy</title>
+<title>Item Label Generator</title>
+<style type="text/css">
+	#body{
+		top: 0px;
+		left: 0px;
+	}
+</style>
 <script src="../js/jquery-latest.min.js"></script>
 <script type="text/javascript" src="../js/jquery-barcode.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.7/dojo/dojo.js"></script>
 <script type="text/javascript">
-	function loadLabel() {
-		
+
+	function generateBarcode(value) {
+		$("#barcodeTarget").html("").show().barcode(value, 'code39',{barHeight:12, barWidth:1, output:'css', showHRI:false});
 	}
 	
-	function generateBarcode(value) {
-		$("#barcodeTarget").html("").show().barcode(value, 'code39',{barHeight:12, barWidth:1, output:'bmp'});
-	}
+	var descMaxLength = 30;
 	
 	dojo.addOnLoad(function() {
 		require(['dojo/cookie'], function(cookie) {
@@ -21,13 +26,13 @@
 			if (data) {
 				data = dojo.fromJson(data);
 				if (data.description) {
-					dojo.attr('labelDescription','innerHTML',data.description.length <= 30 ? data.description.toUpperCase() : data.description.substr(0,30).toUpperCase())
+					dojo.attr('labelDescription','innerHTML',data.description.length <= descMaxLength ? data.description.toUpperCase() : data.description.substr(0,descMaxLength).toUpperCase())
 				}
 				if (data.storeName) {
 					dojo.attr('labelStoreName','innerHTML',data.storeName.toUpperCase())
 				}
-				if(data.price){
-					dojo.attr('labelPrice','innerHTML','$'+data.price)
+				if(data.retailPrice){
+					dojo.attr('labelRetailPrice','innerHTML','$'+data.retailPrice)
 				}
 				if(data.sku){
 					dojo.attr('labelSku','innerHTML',data.sku)
@@ -41,6 +46,7 @@
 			}
 		});
 	});
+	
 </script>
 </head>
 <body onload="">
@@ -49,7 +55,7 @@
 	<tr>
 		<td colspan="2" style="font-size: 8px; font-weight: bold;" align="center">
 			<span id="labelDescription"></span>
-			<hr style="height: 1px;">
+			<hr />
 		</td>
 	</tr>
 	<tr>
@@ -57,14 +63,14 @@
 			<span id="labelStoreName"></span>
 		</td>
 		<td align="right" valign="top">
-			<span style="font-weight: bold; font-size: 14px;" id="labelPrice"></span>
+			<span style="font-weight: bold; font-size: 14px;" id="labelRetailPrice"></span>
 		</td>
 	</tr>
 	<tr>
 		<td style="font-size: 12px;" align="center">
 			<span id="labelSku"></span>
 		</td>
-		<td style="border: 1px solid black; font-size: 8px;" align="center">
+		<td style="border: 1px solid black; font-size: 8px; overflow: hidden;" align="center">
 			<span id="labelBinLocation"></span>
 		</td>
 	</tr>

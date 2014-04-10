@@ -15,9 +15,9 @@
 <div id="poForm" style="width: 100%" data-dojo-type="dijit.form.Form" data-dojo-props="method:'post'">
 	<div id="formTable" data-dojo-type="dojox.layout.TableContainer" data-dojo-props="cols:3,orientation:'vert',showLabels:true">
 		<div id="fromDate1" data-dojo-type="dijit.form.DateTextBox" data-dojo-props="label:'From Date 1',constraints:{selector: 'date', datePattern: 'dd-MMM-yyyy', locale: 'en-us'},style:'width:120px;', name:'fromDate1', required:true, value:dojo.date.add(new Date(),'year',-1)"></div>
-		<div id="toDate1" data-dojo-type="dijit.form.DateTextBox" data-dojo-props="label:'To Date 1',constraints:{selector: 'date', datePattern: 'dd-MMM-yyyy', locale: 'en-us'},style:'width:120px;', name:'toDate1', required:true, value:dojo.date.add(dojo.date.add(new Date(),'year',-1),'week',2)"></div>
-		<div data-dojo-type="dijit.form.FilteringSelect" id="supplierId" data-dojo-props="label:'Supplier',placeHolder:'Enter Supplier Name', maxHeight:'200', style:'width: 200px;', searchAttr:'supplierName', highlightMatch:'any', autoComplete:false, name:'supplierId', required:true"></div>
 		<div id="fromDate2" data-dojo-type="dijit.form.DateTextBox" data-dojo-props="label:'From Date 2',constraints:{selector: 'date', datePattern: 'dd-MMM-yyyy', locale: 'en-us'},style:'width:120px;', name:'fromDate2', required:true, value:dojo.date.add(new Date(),'week',-2)"></div>
+		<div data-dojo-type="dijit.form.FilteringSelect" id="supplierId" data-dojo-props="label:'Supplier',placeHolder:'Enter Supplier Name', maxHeight:'200', style:'width: 200px;', searchAttr:'supplierName', highlightMatch:'any', autoComplete:false, name:'supplierId', required:true"></div>
+		<div id="toDate1" data-dojo-type="dijit.form.DateTextBox" data-dojo-props="label:'To Date 1',constraints:{selector: 'date', datePattern: 'dd-MMM-yyyy', locale: 'en-us'},style:'width:120px;', name:'toDate1', required:true, value:dojo.date.add(dojo.date.add(new Date(),'year',-1),'week',2)"></div>
 		<div id="toDate2" data-dojo-type="dijit.form.DateTextBox" data-dojo-props="label:'To Date 2',constraints:{selector: 'date', datePattern: 'dd-MMM-yyyy', locale: 'en-us'},style:'width:120px;', name:'toDate2', required:true, value:dojo.date.add(new Date(),'day',1)"></div>
 		<div data-dojo-type="dijit.layout.ContentPane">
 		</div>

@@ -76,6 +76,20 @@
 		grid.startup();
 	}
 	
+	function loadImagePath() {
+		dojo.xhrPost({
+			url:'../json/Common_fetchApplicationProperties.action',
+			handleAs:'json',
+			content:{'properties[0].propertyKey':'file.systempath.image'},
+			sync:true,
+			load: function(response) {
+				if (response.properties) {
+					dijit.byId('imagePath').set('value',response.properties[0].propertyValue);
+				}
+			}
+		});
+	}
+	
 	require(["dojo",
 	         "dojo/parser",
 	         "dijit/form/Button",
@@ -87,7 +101,7 @@
 	         "dojox/grid/EnhancedGrid",
 	         "dojox/grid/_CheckBoxSelector",
 	         "dojo/domReady!"], function() {
-		dojo.publish('jh/set/breadcrum',['Plugins >> Orgill Item Sync']);
+		dojo.publish('jh/set/breadcrum',['Orgill Item Sync']);
 		dojo.parser.parse();
 		dijit.byId('uploadForm').placeAt('bodyDiv');
 		dijit.byId('uploadForm').attr({
@@ -245,12 +259,12 @@
 		function manageItemsForDeleteButton() {
 			dijit.byId('deleteItemsButton').attr({style:{display:''}});
 			dijit.byId('addItemsButton').attr({style:{display:'none'}});
-			dojo.attr('newImageDiv',{style:{display:'none'}});
+//			dojo.attr('newImageDiv',{style:{display:'none'}});
 		}
 		function manageItemsForAddButton() {
 			dijit.byId('deleteItemsButton').attr({style:{display:'none'}});
 			dijit.byId('addItemsButton').attr({style:{display:''}});
-			dojo.attr('newImageDiv',{style:{display:''}});
+//			dojo.attr('newImageDiv',{style:{display:''}});
 		}
 		function hideAllGrids() {
 			dijit.byId('manageForm').attr({
@@ -352,5 +366,6 @@
 			}
 			return false;
 		}
+		loadImagePath();
 	});
 })();

@@ -36,6 +36,7 @@ public class Item {
 	private String deptCode;
 	private String categoryCode;
 	private String toOrderQuantity;
+	private String binLocation;
 	
 	public Item() {
 		super();
@@ -237,5 +238,11 @@ public class Item {
 	}
 	public void setToOrderQuantity(String toOrderQuantity) {
 		this.toOrderQuantity = toOrderQuantity;
+	}
+	public String getBinLocation() {
+		return binLocation;
+	}
+	public void setBinLocation(String binLocation) {
+		this.binLocation = binLocation;
 	}
 }

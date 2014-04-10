@@ -1,1 +1,1 @@
-setx "jhplugins.path.properties" "<FILE PATH OF JHPLUGINS PROPERTIES FILE>"
+setx "jhplugins.path.properties" "<FILE PATH OF JHPLUGINS PROPERTIES FILE>" -m

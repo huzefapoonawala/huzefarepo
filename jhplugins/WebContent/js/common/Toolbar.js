@@ -65,7 +65,7 @@
 					label: smData.label,
 					onClick:dojo.partial(executeClick,menuObj)
 				});
-				checkAndAdd2SKey(menuObj);
+//				checkAndAdd2SKey(menuObj);
 			}
 			menuToolbar.addChild(sbMenu);
 		});
