@@ -255,3 +255,51 @@ END
 
 GO
 
+
+
+/****** Object:  UserDefinedFunction [dbo].[GetWebCategories]    Script Date: 04/10/2014 16:37:56 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE FUNCTION [dbo].[GetWebCategories] 
+(
+	-- Add the parameters for the function here
+	@request xml
+)
+RETURNS 
+@pct TABLE 
+(
+	-- Add the column definitions for the TABLE variable here
+	CATEGORY_ID nvarchar(20), PARENT_WEBSITE_CATEGORY_IDS nvarchar(MAX)
+)
+AS
+BEGIN
+	DECLARE @ct table(categoryId nvarchar(20));
+	INSERT INTO @ct
+	SELECT d.value('@id','nvarchar(20)') from @request.nodes('/request/category') as ref(d);
+	
+	;WITH cte as (
+		select CATEGORY_ID as cateId,* FROM web_categories WITH(NOLOCK) where CATEGORY_ID IN (SELECT categoryId from @ct)
+		UNION ALL
+		SELECT c.cateId,p.* FROM cte c inner JOIN web_categories p ON c.PARENT_ID = p.CATEGORY_ID
+	)
+	INSERT INTO @pct
+	SELECT CATEGORY_ID, c.* from web_categories w WITH (NOLOCK)
+	CROSS APPLY(
+		SELECT parentIds = stuff((select ','+cast(WEBSITE_CATEGORY_ID AS NVARCHAR(10)) FROM cte where cateId = w.CATEGORY_ID and HIERARCHY_LEVEL <= 3 AND (WEBSITE_CATEGORY_ID IS NOT NULL AND WEBSITE_CATEGORY_ID > 0) FOR XML PATH('')),1,1,'')
+	) c
+	WHERE EXISTS (SELECT categoryId from @ct where w.CATEGORY_ID = categoryId)
+	
+	RETURN 
+END
+
+GO
+
