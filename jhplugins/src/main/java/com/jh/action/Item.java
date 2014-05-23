@@ -1,5 +1,6 @@
 package com.jh.action;
 
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -188,6 +189,19 @@ public class Item extends ActionSupport implements ModelDriven<RequestVO>, Servl
 		} catch (Exception e) {
 			logger.error("Error occurred while generating item label.", e);
 			throw e;
+		}
+//		return SUCCESS;
+	}
+	
+	public void generateLabelImage() throws Exception {
+		try {
+			httpResponse.setContentType("image/png");
+			OutputStream out = httpResponse.getOutputStream();
+			itemLabelGenerator.generateLabelImage(item, out);
+			out.close();
+		} catch (Exception e) {
+			logger.error("Error occurred while generating item label image. "+e.getMessage()+".");
+//			throw e;
 		}
 //		return SUCCESS;
 	}

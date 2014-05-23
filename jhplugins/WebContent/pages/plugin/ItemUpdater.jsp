@@ -160,7 +160,7 @@
 	<div id="aliasGrid"></div>
 </div> -->
 </div>
-<form action="../download/generateitemlabel.action" target="_label" id="labelForm" method="post">
+<form action="../download/generateitemlabelimage.action" target="_label" id="labelForm" method="post">
 	<input type="hidden" id="label_sku" name="item.sku">
 	<input type="hidden" id="label_rp" name="item.retailPrice">
 	<input type="hidden" id="label_desc" name="item.description">
