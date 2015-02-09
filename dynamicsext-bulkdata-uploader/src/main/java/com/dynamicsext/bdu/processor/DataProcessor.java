@@ -56,14 +56,15 @@ public class DataProcessor {
 			try {
 				String productQuery = "if(select count(*) from dbo.Item where ItemLookupCode = ?) = 0 "+
 						" INSERT INTO [dbo].[Item]([BinLocation],[BuydownPrice],[BuydownQuantity],[CommissionAmount],[CommissionMaximum],[CommissionMode],[CommissionPercentProfit],[CommissionPercentSale],[Description],[FoodStampable],[HQID],[ItemNotDiscountable],[LastReceived],[LastUpdated],[Notes],[QuantityCommitted],[SerialNumberCount],[TareWeightPercent],[ItemLookupCode],[DepartmentID],[CategoryID],[MessageID],[Price],[PriceA],[PriceB],[PriceC],[SalePrice],[SaleStartDate],[SaleEndDate],[QuantityDiscountID],[TaxID],[ItemType],[Cost],[Quantity],[ReorderPoint],[RestockLevel],[TareWeight],[SupplierID],[TagAlongItem],[TagAlongQuantity],[ParentItem],[ParentQuantity],[BarcodeFormat],[PriceLowerBound],[PriceUpperBound],[PictureName],[LastSold],[ExtendedDescription],[SubDescription1],[SubDescription2],[SubDescription3],[UnitOfMeasure],[SubCategoryID],[QuantityEntryNotAllowed],[PriceMustBeEntered],[BlockSalesReason],[BlockSalesAfterDate],[Weight],[Taxable],[BlockSalesBeforeDate],[LastCost],[ReplacementCost],[WebItem],[BlockSalesType],[BlockSalesScheduleID],[SaleType],[SaleScheduleID],[Consignment],[LastCounted],[DoNotOrder],[MSRP],[DateCreated],[Content],[UsuallyShip]) " +
-						" values (?,0,0,0,0,0,0,0,?,0,0,0,NULL,current_timestamp,NULL,0,0,0,?,isnull((select top 1 ID from Department where Name = ?),0),isnull((select top 1 ID from Category where Name = ?),0),0,?,0,0,0,0,NULL,NULL,0,(select top 1 ID from ItemTax with (NOLOCK) order by ID),0,?,0,0,0,0,isnull((select top 1 ID from Supplier where SupplierName = ?),0),0,0,0,0,3,0,0,?,NULL,'','','','',substring(?,0,5),0,0,0,'',NULL,0,1,NULL,0,0,0,0,0,0,0,0,NULL,0,0,current_timestamp,'','') ",
+						" values (?,0,0,0,0,0,0,0,?,0,0,0,NULL,current_timestamp,NULL,0,0,0,?,isnull((select top 1 ID from Department where Name = ?),0),isnull((select top 1 ID from Category where Name = ?),0),0,?,0,0,0,0,NULL,NULL,0,(select top 1 ID from ItemTax with (NOLOCK) order by ID),0,?,0,0,0,0,isnull((select top 1 ID from Supplier where SupplierName = ?),0),0,0,0,0,3,0,0,?,NULL,'','','','',substring(?,0,5),0,0,0,'',NULL,0,1,NULL,0,0,0,0,0,0,0,0,NULL,0,0,current_timestamp,'',''); "+
+						" INSERT INTO SupplierList (MinimumOrder,ItemID,SupplierID,Cost,ReorderNumber,MasterPackQuantity,TaxRate) select 0, ID, SupplierID, Cost, '', 0, 0 from Item where ItemLookupCode = ?; " ,
 				aliasQuery =" IF(select count(*) from Alias where Alias = ?) = 0 " +
 						" INSERT INTO Alias (ItemID,Alias) SELECT TOP 1 i.ID, ? from Item i where i.ItemLookupCode = ?";
 				reader = new CSVReader(new FileReader(fileName2Upload),',','"',1);
 				while ((csvLine = reader.readNext()) != null) {
 					lineNo += 1;
 					try {
-						int count = dynamicsTemplate.update(productQuery, csvLine[0], csvLine[9], csvLine[3], csvLine[0], csvLine[1], csvLine[2], csvLine[4], csvLine[5], csvLine[6], csvLine[8], csvLine[7]);
+						int count = dynamicsTemplate.update(productQuery, csvLine[0], csvLine[9], csvLine[3], csvLine[0], csvLine[1], csvLine[2], csvLine[4], csvLine[5], csvLine[6], csvLine[8], csvLine[7], csvLine[0]);
 						if (count > 0) {
 							if (StringUtils.isNotBlank(csvLine[10])) {
 								for (String alias : csvLine[10].split("\\|")) {
