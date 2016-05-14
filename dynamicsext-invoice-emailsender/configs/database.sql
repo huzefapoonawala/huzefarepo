@@ -1,0 +1,1 @@
+alter table [Transaction] add IsEmailSent tinyint DEFAULT(0) NULL;

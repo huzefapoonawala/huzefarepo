@@ -1,0 +1,173 @@
+<html>
+	<body>
+		<table style="width: 850px;">
+			<tr>
+				<td width="50%" valign="top">
+					<table>
+						<tr>
+							<td><img alt="" src="${storeLogoImg}"></td>
+						</tr>
+						#if($showStoreAddress)
+						<tr>
+							<td align="center" style="font-size: 12px;">
+								131-01 Jamaica Ave. <br>
+								Richmond Hill, NY 11418 <br>
+								Tel. & Fax: 718-880-1258 <br>
+								Email: Sales@JamaicaHardware.com <br>
+								Website: www.jamaicahardware.com <br>
+							</td>
+						</tr>
+						#end
+					</table>
+				</td>
+				<td width="50%" >
+					<table style="width: 100%">
+						<tr>
+							<td colspan="2" align="right"><h1>Invoice&nbsp;&nbsp;</h1></td>
+						</tr>
+						<tr>
+							<td valign="top" style="width: 69px;">&nbsp;</td>
+							<td align="left">
+								<table style="padding: 0px;">
+									<tr>
+										<td style="width: 149px; ">
+											Transaction #:<br>
+											Account #:<br>
+											Date:<br>
+											Time:<br>
+											Cashier:<br>
+											<!-- Register #: -->
+										</td>
+										<td>
+											${transaction.transactionNumber}<br>
+											${transaction.accountNumber}<br>
+											${transaction.transactionDatePart}<br>
+											${transaction.transactionTimePart}<br>
+											${transaction.cashier}<br>
+											<!-- 3 -->
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr><td>&nbsp;</td></tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td valign="top" style="width: 69px; "> 
+								Bill To:
+							</td>
+							<td>
+								${transaction.billToDetailsInHtmlFormat}
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td align="left">
+					<table>
+						<tr>
+							<td valign="top" style="width: 69px;"> 
+								Ship To:
+							</td>
+							<td>
+								${transaction.shipToDetailsInHtmlFormat}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td valign="top" style="width: 69px;"> 
+								Reference:
+							</td>
+							<td>
+								${transaction.reference}
+							</td>
+						</tr>
+						<tr>
+							<td valign="top" style="width: 69px;"> 
+								Comment:
+							</td>
+							<td>
+								${transaction.comment}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr><td>&nbsp;</td></tr>
+			<tr>
+				<td colspan="2">
+					<table style="width: 100%; padding: 0px;" cellspacing="0" cellpadding="0">
+						<tr style="background-color: yellow;">
+							<td width="20%" style="border: 1px solid black;">
+								&nbsp;Item No.
+							</td>
+							<td width="40%" style="border: 1px solid black;">
+								&nbsp;Description
+							</td>
+							<td width="10%" align="right" style="border: 1px solid black;">
+								QTY&nbsp;
+							</td>
+							<td width="15%" align="right" style="border: 1px solid black;">
+								Price&nbsp;
+							</td>
+							<td width="15%" align="right" style="border: 1px solid black;">
+								Ext. Price&nbsp;
+							</td>
+						</tr>
+						#foreach ($tent in $transactionEntries)
+						<tr valign="top">
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;${tent.itemLookupCode}
+							</td>
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;${tent.description}
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								${tent.quantity}&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								${tent.priceInHtmlFormat}&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								${tent.extPriceInHtmlFormat}&nbsp;
+							</td>
+						</tr>
+						#end
+						<tr style="background-color: yellow;">
+							<td colspan="5" style="border-top: 1px solid black;">&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="4" align="right" style="font-weight: bold;">
+								Sub Total <br>
+								Sales Tax <br>
+								Total <br><br>
+								#foreach ($te in $tenders)
+									${te.description} Tendered <br> 
+								#end
+								Change Due <br>
+							</td>
+							<td align="right">
+								${subTotal} <br>
+								${transaction.salesTaxInDisplayFormat} <br>
+								${transaction.grandTotalInDisplayFormat} <br><br>
+								#foreach ($te in $tenders)
+									${te.amountInDisplayFormat} <br> 
+								#end
+								${changeDue} <br>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
