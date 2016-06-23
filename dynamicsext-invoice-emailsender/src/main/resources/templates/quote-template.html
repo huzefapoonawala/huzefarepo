@@ -25,7 +25,7 @@
 				<td width="50%" >
 					<table style="width: 100%">
 						<tr>
-							<td colspan="2" align="right"><h1>Invoice&nbsp;&nbsp;</h1></td>
+							<td colspan="2" align="right"><h1>Quote&nbsp;&nbsp;</h1></td>
 						</tr>
 						<tr>
 							<td valign="top" style="width: 69px;">&nbsp;</td>
@@ -41,11 +41,11 @@
 											<!-- Register #: -->
 										</td>
 										<td>
-											${transaction.transactionNumber}<br>
-											${transaction.accountNumber}<br>
-											${transaction.transactionDatePart}<br>
-											${transaction.transactionTimePart}<br>
-											${transaction.cashier}<br>
+											${order.transactionNumber}<br>
+											${order.accountNumber}<br>
+											${order.transactionDatePart}<br>
+											${order.transactionTimePart}<br>
+											${order.cashier}<br>
 											<!-- 3 -->
 										</td>
 									</tr>
@@ -64,7 +64,7 @@
 								Bill To:
 							</td>
 							<td>
-								${transaction.billToDetailsInHtmlFormat}
+								${order.billToDetailsInHtmlFormat}
 							</td>
 						</tr>
 					</table>
@@ -76,7 +76,7 @@
 								Ship To:
 							</td>
 							<td>
-								${transaction.shipToDetailsInHtmlFormat}
+								${order.shipToDetailsInHtmlFormat}
 							</td>
 						</tr>
 					</table>
@@ -90,7 +90,7 @@
 								Reference:
 							</td>
 							<td>
-								${transaction.reference}
+								${order.reference}
 							</td>
 						</tr>
 						<tr>
@@ -98,7 +98,7 @@
 								Comment:
 							</td>
 							<td>
-								${transaction.comment}
+								${order.comment}
 							</td>
 						</tr>
 					</table>
@@ -151,20 +151,12 @@
 							<td colspan="4" align="right" style="font-weight: bold;">
 								Sub Total <br>
 								Sales Tax <br>
-								Total <br><br>
-								#foreach ($te in $tenders)
-									${te.description} Tendered <br> 
-								#end
-								Change Due <br>
+								Total <br>
 							</td>
 							<td align="right">
 								${subTotal} <br>
-								${transaction.salesTaxInDisplayFormat} <br>
-								${transaction.grandTotalInDisplayFormat} <br><br>
-								#foreach ($te in $tenders)
-									${te.amountInDisplayFormat} <br> 
-								#end
-								${changeDue} <br>
+								${order.salesTaxInDisplayFormat} <br>
+								${order.grandTotalInDisplayFormat} <br>
 							</td>
 						</tr>
 					</table>

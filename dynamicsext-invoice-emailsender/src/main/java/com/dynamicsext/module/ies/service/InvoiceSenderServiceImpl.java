@@ -39,8 +39,10 @@ public class InvoiceSenderServiceImpl implements InvoiceSenderService {
 	
 	@Value("${invoice.email.subject}") private String emailSubject;
 	@Value("${invoice.email.bcc}") private String emailBccTo;
-	@Value("${invoice.store.address.show}") private Boolean showStoreAddress;
-	@Value("${invoice.store.logo}") private String storeLogoImg;
+
+	@Value("${store.logo.image}") private String storeLogoImg;
+	@Value("${store.address}") private String storeAddress;
+	@Value("${store.logo.text}") private String storeLogoText;
 	
 	@Value("${invoice.topreview.file.path}") private String toPreviewFilePath;
 	@Value("${invoice.previewed.file.path}") private String previewedFilePath;
@@ -84,8 +86,10 @@ public class InvoiceSenderServiceImpl implements InvoiceSenderService {
 						model.put("transactionEntries", transactionEntries);
 						model.put("changeDue", CommonUtil.convertAmountInHtmlFormat(changeDue));
 						model.put("subTotal", CommonUtil.convertAmountInHtmlFormat(t.getGrandTotal()-t.getSalesTax()));
-						model.put("showStoreAddress", showStoreAddress);
+						
 						model.put("storeLogoImg", storeLogoImg);
+						model.put("storeAddress", storeAddress);
+						model.put("storeLogoText", storeLogoText);
 						
 						String text = generateInvoice(model);
 						saveInvoice(toPreviewFile ,text, Integer.valueOf(t.getTransactionNumber()).toString());

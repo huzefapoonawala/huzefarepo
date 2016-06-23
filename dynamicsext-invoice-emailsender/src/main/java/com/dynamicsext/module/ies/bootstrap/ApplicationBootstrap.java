@@ -14,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import com.dynamicsext.module.ies.service.InvoiceSenderService;
+import com.dynamicsext.module.ies.service.OrderGeneratorService;
 
 @Configuration
 @EnableAutoConfiguration
@@ -22,13 +23,24 @@ public class ApplicationBootstrap{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ApplicationBootstrap.class);
 	private static final String FIRSTRUN_TIME_DELTA_PROPERTY_KEY = "firstrun.time.delta";
+	private static final String SET_PROFILE = "profile";
+	private static final String ORDER_GENERATOR_PROFILE = "ordergenerator";
+	private static final String ORDER_IDS = "order.ids";
 	
 	@Autowired private InvoiceSenderService invoiceSenderService;
+	@Autowired private OrderGeneratorService orderGeneratorService;
 	
     public static void main( String[] args ){
+    	String profile = System.getProperty(SET_PROFILE);
         ConfigurableApplicationContext ctx = SpringApplication.run(ApplicationBootstrap.class, args);
         ApplicationBootstrap this_ = ctx.getBean(ApplicationBootstrap.class);
-        this_.init();
+        if (StringUtils.equalsIgnoreCase(ORDER_GENERATOR_PROFILE, profile)) {
+        	this_.initOrderGenerator();
+		}
+        else{
+        	this_.init();
+        }
+        
     }
     
     private void init() {
@@ -47,5 +59,20 @@ public class ApplicationBootstrap{
 			LOG.error("Error occurred while sending emails.", e);
 		}
 		LOG.debug("End: Fetch & send invoices");
+	}
+    
+    private void initOrderGenerator() {
+    	if (StringUtils.isNotBlank(System.getProperty(ORDER_IDS))) {
+    		for (String orderId : System.getProperty(ORDER_IDS).split(",")) {
+    			try {
+            		orderGeneratorService.generateOrder(Long.valueOf(orderId));
+    			} catch (Exception e) {
+    				LOG.error(String.format("Error occurred while generating order with id '%s'.", orderId),e);
+    			}
+			}
+		}
+    	else{
+    		LOG.info("No order/s found to be generated.");
+    	}
 	}
 }

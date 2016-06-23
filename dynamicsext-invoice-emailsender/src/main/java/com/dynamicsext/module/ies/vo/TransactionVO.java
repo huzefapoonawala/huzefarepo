@@ -33,6 +33,7 @@ public class TransactionVO {
 	private String shipToPhone;
 	private String emailAddress;
 	private Boolean isOptForEmail;
+	private Integer orderType;
 	
 	public int getTransactionNumber() {
 		return transactionNumber;
@@ -294,5 +295,13 @@ public class TransactionVO {
 
 	public void setIsOptForEmail(Boolean isOptForEmail) {
 		this.isOptForEmail = isOptForEmail;
+	}
+
+	public Integer getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(Integer orderType) {
+		this.orderType = orderType;
 	}
 }
