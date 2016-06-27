@@ -9,6 +9,8 @@ public class TransactionEntryVO {
 	private Integer quantity;
 	private Double price;
 	private Double extPrice;
+	private Integer quantityOnOrder;
+	private Integer quantityRTD;
 	public String getItemLookupCode() {
 		return itemLookupCode;
 	}
@@ -44,5 +46,17 @@ public class TransactionEntryVO {
 	}
 	public void setExtPrice(Double extPrice) {
 		this.extPrice = extPrice;
+	}
+	public Integer getQuantityOnOrder() {
+		return quantityOnOrder;
+	}
+	public void setQuantityOnOrder(Integer quantityOnOrder) {
+		this.quantityOnOrder = quantityOnOrder;
+	}
+	public Integer getQuantityRTD() {
+		return quantityRTD;
+	}
+	public void setQuantityRTD(Integer quantityRTD) {
+		this.quantityRTD = quantityRTD;
 	}
 }

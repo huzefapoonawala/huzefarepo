@@ -25,7 +25,7 @@
 				<td width="50%" >
 					<table style="width: 100%">
 						<tr>
-							<td colspan="2" align="right"><h1>Quote&nbsp;&nbsp;</h1></td>
+							<td colspan="2" align="right"><h1>Work Order&nbsp;&nbsp;</h1></td>
 						</tr>
 						<tr>
 							<td valign="top" style="width: 69px;">&nbsp;</td>
@@ -115,7 +115,7 @@
 							<td width="40%" style="border: 1px solid black;">
 								&nbsp;Description
 							</td>
-							<td width="10%" align="center" style="border: 1px solid black;">
+							<td width="10%" align="right" style="border: 1px solid black;">
 								QTY&nbsp;
 							</td>
 							<td width="15%" align="right" style="border: 1px solid black;">
@@ -132,9 +132,17 @@
 							</td>
 							<td style="border-left: 1px solid black; border-right: 1px solid black;">
 								&nbsp;${tent.description}
+								#if($tent.quantityOnOrder > 0)
+									<br>&nbsp;Quantity RTD:
+									<br>&nbsp;Quantity On Order:
+								#end
 							</td>
-							<td align="center" style="border-left: 1px solid black; border-right: 1px solid black;">
-								${tent.quantity}&nbsp;
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								${tent.quantity}#if($tent.quantityOnOrder == 0)&nbsp;#end
+								#if($tent.quantityOnOrder > 0)
+									<br>${tent.quantityRTD}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<br>${tent.quantityOnOrder}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								#end
 							</td>
 							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
 								${tent.priceInHtmlFormat}&nbsp;
@@ -142,6 +150,13 @@
 							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
 								${tent.extPriceInHtmlFormat}&nbsp;
 							</td>
+						</tr>
+						<tr height="10px">
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">&nbsp;</td>
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">&nbsp;</td>
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">&nbsp;</td>
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">&nbsp;</td>
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">&nbsp;</td>
 						</tr>
 						#end
 						<tr style="background-color: yellow;">
@@ -151,15 +166,27 @@
 							<td colspan="2" style="border: 1px solid black;">
 								${storeNotes}
 							</td>
-							<td colspan="2" align="right" style="font-weight: bold;" valign="top">
+							<td colspan="2" align="right" style="font-weight: bold;">
 								Sub Total <br>
 								Sales Tax <br>
-								Total <br>
+								Total <br><br>
+								#if($tenders)
+									#foreach ($te in $tenders)
+										${te.description} #if($te.description=="Deposit") Payment #else Tendered #end <br> 
+									#end
+									<br>New Balance <br>
+								#end
 							</td>
-							<td align="right" valign="top" style="font-weight: bold;">
+							<td align="right" style="font-weight: bold;">
 								${subTotal} <br>
 								${order.salesTaxInDisplayFormat} <br>
-								${order.grandTotalInDisplayFormat} <br>
+								${order.grandTotalInDisplayFormat} <br><br>
+								#if($tenders)
+									#foreach ($te in $tenders)
+										${te.amountInDisplayFormat} <br> 
+									#end
+									<br>${newBalance} <br>
+								#end
 							</td>
 						</tr>
 					</table>

@@ -19,6 +19,7 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.dynamicsext.module.ies.util.CommonUtil;
 import com.dynamicsext.module.ies.util.Defaults;
+import com.dynamicsext.module.ies.vo.TenderVO;
 import com.dynamicsext.module.ies.vo.TransactionEntryVO;
 import com.dynamicsext.module.ies.vo.TransactionVO;
 
@@ -30,17 +31,25 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 	@Autowired private JdbcTemplate jdbcTemplate;
 	@Autowired private VelocityEngine engine;
 	
-	@Value("${order.topreview.file.path}") private String toPreviewFilePath;
+	@Value("${workorder.file.path}") private String workOrderFilePath;
+	@Value("${quote.file.path}") private String quoteFilePath;
 	@Value("${store.logo.image}") private String storeLogoImg;
 	@Value("${store.address}") private String storeAddress;
 	@Value("${store.logo.text}") private String storeLogoText;
+	@Value("${store.notes}") private String storeNotes;
+	
+	private static final int WORK_ORDER_TYPE = 2;
 	
 	public void generateOrder(Long orderId) {
 		LOG.debug(String.format("Start: Generating order for id %s", orderId));
 		
-		File toPreviewFolder = new File(toPreviewFilePath);
-		if (StringUtils.isBlank(toPreviewFilePath) || !toPreviewFolder.exists()) {
-			LOG.error("'order.topreview.file.path' is not set or does not exist, hence cannot execute this process");
+		File workOrderFolder = new File(workOrderFilePath), quoteFolder = new File(quoteFilePath);
+		if (StringUtils.isBlank(workOrderFilePath) || !workOrderFolder.exists()) {
+			LOG.error("'workorder.file.path' is not set or does not exist, hence cannot execute this process");
+			System.exit(0);
+		}
+		if (StringUtils.isBlank(quoteFilePath) || !quoteFolder.exists()) {
+			LOG.error("'quote.file.path' is not set or does not exist, hence cannot execute this process");
 			System.exit(0);
 		}
 		
@@ -50,10 +59,11 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 		}
 		
 		for (TransactionVO o : orders) {
-			List<TransactionEntryVO> transactionEntries = jdbcTemplate.query("select i.ItemLookupCode, t.Description+ case when t.Comment is not null and len(t.Comment) > 0 then '<br>&nbsp;'+t.Comment else '' end as description, t.QuantityOnOrder as Quantity, t.Price, t.QuantityOnOrder*t.Price as extPrice from OrderEntry t inner join Item i on t.ItemID = i.ID where t.OrderID = ?", new BeanPropertyRowMapper<TransactionEntryVO>(TransactionEntryVO.class), o.getTransactionNumber());
+			List<TransactionEntryVO> transactionEntries = jdbcTemplate.query("select i.ItemLookupCode, t.Description+ case when t.Comment is not null and len(t.Comment) > 0 then '<br>&nbsp;'+t.Comment else '' end as description, t.QuantityOnOrder, t.Price, (t.QuantityOnOrder+t.QuantityRTD)*t.Price as extPrice, t.QuantityRTD, t.QuantityOnOrder+t.QuantityRTD as Quantity from OrderEntry t inner join Item i on t.ItemID = i.ID where t.OrderID = ?", new BeanPropertyRowMapper<TransactionEntryVO>(TransactionEntryVO.class), o.getTransactionNumber());
 			
 			String filename = Integer.valueOf(o.getTransactionNumber()).toString()+Defaults.INVOICE_FILE_EXTENSION;
-			File toPreviewFile = new File(toPreviewFolder, filename);
+			File toPreviewFile = new File(o.getOrderType().intValue() == WORK_ORDER_TYPE ? workOrderFolder : quoteFolder, filename);
+			
 			Map<String, Object> model = new HashMap<String, Object>();
 			model.put("order", o);
 			model.put("transactionEntries", transactionEntries);
@@ -61,6 +71,20 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 			model.put("storeLogoImg", storeLogoImg);
 			model.put("storeAddress", storeAddress);
 			model.put("storeLogoText", storeLogoText);
+			model.put("storeNotes", storeNotes);
+			
+			if (o.getOrderType().intValue() == 2) {
+				List<TenderVO> tenders = jdbcTemplate.query("select * from ( select t.Description, sum(t.Amount) as Amount, 2 as order_priority from OrderHistory o inner join TenderEntry t on t.OrderHistoryID = o.ID where OrderID = ? group by Description union select 'Deposit' as description, sum(t.Amount) as Amount, 1 as order_priority from OrderHistory o inner join TenderEntry t on t.OrderHistoryID = o.ID where OrderID = ? and t.TransactionNumber = 0 having sum(t.Amount) > 0 ) t order by order_priority;", new BeanPropertyRowMapper<TenderVO>(TenderVO.class), o.getTransactionNumber(), o.getTransactionNumber());
+				model.put("tenders", tenders);
+				
+				double totalTender = 0;
+				for (TenderVO te : tenders) {
+					totalTender += te.getAmount();
+				}
+				double newBalance = o.getGrandTotal() - totalTender;
+				model.put("newBalance", CommonUtil.convertAmountInHtmlFormat(newBalance));
+			}
+			
 			String text = generateOrder(o.getOrderType(), model);
 			saveOrder(toPreviewFile,text, Integer.valueOf(o.getTransactionNumber()).toString());
 		}
@@ -69,13 +93,13 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 	}
 	
 	private String generateOrder(int orderType, Map<String, Object> model){
-		String text = VelocityEngineUtils.mergeTemplateIntoString(this.engine, orderType == 2 ? "order-template.html" : "quote-template.html", "UTF-8", model);
+		String text = VelocityEngineUtils.mergeTemplateIntoString(this.engine, orderType == WORK_ORDER_TYPE ? "order-template.html" : "quote-template.html", "UTF-8", model);
 		return text;
 	}
 	
 	private void saveOrder(File file, String text, String orderNumber) {
 		try {
-			LOG.debug(String.format("Order with id '%s' stored at location '%s' for preview", orderNumber, toPreviewFilePath));
+			LOG.debug(String.format("Order with id '%s' stored at location '%s' for preview", orderNumber, file.getParent()));
 			FileOutputStream out = new FileOutputStream(file);
 			out.write(text.getBytes());
 			out.close();
