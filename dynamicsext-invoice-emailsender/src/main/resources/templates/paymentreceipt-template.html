@@ -1,0 +1,159 @@
+<html>
+	<body>
+		<table style="width: 850px;">
+			<tr>
+				<td width="50%" valign="top">
+					<table>
+						<tr>
+							<td>
+								#if($storeLogoImg.trim().length() > 0)
+									<img alt="" src="${storeLogoImg}">
+								#else
+									${storeLogoText}
+								#end
+							</td>
+						</tr>
+						#if($storeAddress.trim().length() > 0)
+						<tr>
+							<td align="center" style="font-size: 12px;">
+								${storeAddress}
+							</td>
+						</tr>
+						#end
+					</table>
+				</td>
+				<td width="50%" >
+					<table style="width: 100%">
+						<tr>
+							<td colspan="2" align="right"><h1>Account Payment&nbsp;&nbsp;</h1></td>
+						</tr>
+						<tr>
+							<td valign="top" style="width: 69px;">&nbsp;</td>
+							<td align="left">
+								<table style="padding: 0px;">
+									<tr>
+										<td style="width: 149px; font-weight: bold;">
+											Payment #:<br>
+											Account #:<br>
+											Date:<br>
+											Time:<br>
+											Cashier:<br>
+											<!-- Register #: -->
+										</td>
+										<td>
+											${pr.transactionNumber}<br>
+											${pr.accountNumber}<br>
+											${pr.transactionDatePart}<br>
+											${pr.transactionTimePart}<br>
+											${pr.cashier}<br>
+											<!-- 3 -->
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr><td>&nbsp;</td></tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td valign="top" style="width: 69px; font-weight: bold;"> 
+								Bill To:
+							</td>
+							<td>
+								${pr.billToDetailsInHtmlFormat}
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td align="left">
+					&nbsp;
+				</td>
+			</tr>
+			<tr><td>&nbsp;</td></tr>
+			<tr>
+				<td colspan="2">
+					<table style="width: 100%; padding: 0px;" cellspacing="0" cellpadding="0">
+						<tr style="background-color: yellow; font-weight: bold;">
+							<td width="20%" style="border: 1px solid black;">
+								&nbsp;Reference
+							</td>
+							<td width="15%" align="center" style="border: 1px solid black;">
+								Invoice Date
+							</td>
+							<td width="15%" align="center" style="border: 1px solid black;">
+								Due Date
+							</td>
+							<td width="17%" align="right" style="border: 1px solid black;">
+								Invoice Amtount&nbsp;
+							</td>
+							<td width="17%" align="right" style="border: 1px solid black;">
+								Balance Due&nbsp;
+							</td>
+							<td width="16%" align="right" style="border: 1px solid black;">
+								Payment&nbsp;
+							</td>
+						</tr>
+						#foreach ($tent in $paymentEntries)
+						<tr valign="top">
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;TR-${tent.transactionNumber}
+							</td>
+							<td align="center" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;${tent.invoiceDateInHtmlFormat}
+							</td>
+							<td align="center" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;${tent.dueDateInHtmlFormat}
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								${tent.invoiceAmountInHtmlFormat}&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								${tent.balanceDueInHtmlFormat}&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								${tent.paymentInHtmlFormat}&nbsp;
+							</td>
+						</tr>
+						#end
+						<tr style="background-color: yellow;">
+							<td colspan="6" style="border-top: 1px solid black;">&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="3" valign="middle" align="center" style="border: 1px solid black;">
+								${storeNotes}
+							</td>
+							<td colspan="2" align="right" valign="top" style="font-weight: bold;">
+								Total Payments <br><br>
+								#if($tenders)
+									#foreach ($te in $tenders)
+										Paid ${te.description} <br> 
+									#end
+								#end
+								<br>
+								Previous Balance<br>
+								Payments<br>
+								New Balance<br>
+							</td>
+							<td align="right" valign="top" style="font-weight: bold;">
+								${pr.grandTotalInDisplayFormat} <br><br>
+								#if($tenders)
+									#foreach ($te in $tenders)
+										${te.amountInDisplayFormat} <br> 
+									#end
+								#end
+								<br>
+								${previousBal}<br>
+								${pr.grandTotalInDisplayFormat}<br>
+								${newBal}<br>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

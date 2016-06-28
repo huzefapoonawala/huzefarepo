@@ -34,6 +34,7 @@ public class TransactionVO {
 	private String emailAddress;
 	private Boolean isOptForEmail;
 	private Integer orderType;
+	private Integer customerId;
 	
 	public int getTransactionNumber() {
 		return transactionNumber;
@@ -303,5 +304,13 @@ public class TransactionVO {
 
 	public void setOrderType(Integer orderType) {
 		this.orderType = orderType;
+	}
+
+	public Integer getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
 	}
 }

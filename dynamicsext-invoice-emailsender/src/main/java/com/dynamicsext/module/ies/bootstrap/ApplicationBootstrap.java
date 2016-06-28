@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.dynamicsext.module.ies.service.InvoiceSenderService;
 import com.dynamicsext.module.ies.service.OrderGeneratorService;
+import com.dynamicsext.module.ies.service.PaymentReceiptService;
 
 @Configuration
 @EnableAutoConfiguration
@@ -26,9 +27,12 @@ public class ApplicationBootstrap{
 	private static final String SET_PROFILE = "profile";
 	private static final String ORDER_GENERATOR_PROFILE = "ordergenerator";
 	private static final String ORDER_IDS = "order.ids";
+	private static final String PR_GENERATOR_PROFILE = "paymentreceiptgenerator";
+	private static final String PR_IDS = "paymentreceipt.ids";
 	
 	@Autowired private InvoiceSenderService invoiceSenderService;
 	@Autowired private OrderGeneratorService orderGeneratorService;
+	@Autowired private PaymentReceiptService paymentReceiptService;
 	
     public static void main( String[] args ){
     	String profile = System.getProperty(SET_PROFILE);
@@ -36,6 +40,9 @@ public class ApplicationBootstrap{
         ApplicationBootstrap this_ = ctx.getBean(ApplicationBootstrap.class);
         if (StringUtils.equalsIgnoreCase(ORDER_GENERATOR_PROFILE, profile)) {
         	this_.initOrderGenerator();
+		}
+        else if (StringUtils.equalsIgnoreCase(PR_GENERATOR_PROFILE, profile)) {
+			this_.initPRGenerator();
 		}
         else{
         	this_.init();
@@ -73,6 +80,21 @@ public class ApplicationBootstrap{
 		}
     	else{
     		LOG.info("No order/s found to be generated.");
+    	}
+	}
+    
+    private void initPRGenerator() {
+    	if (StringUtils.isNotBlank(System.getProperty(PR_IDS))) {
+    		for (String prId : System.getProperty(PR_IDS).split(",")) {
+    			try {
+            		paymentReceiptService.generatePaymentReceipt(Long.valueOf(prId));
+    			} catch (Exception e) {
+    				LOG.error(String.format("Error occurred while generating payment receipt with id '%s'.", prId),e);
+    			}
+			}
+		}
+    	else{
+    		LOG.info("No payment receipt/s found to be generated.");
     	}
 	}
 }
