@@ -1,0 +1,1 @@
+java -jar ./libs/invoice-emailsender.jar --spring.config.location="file:./configs/application.properties"
