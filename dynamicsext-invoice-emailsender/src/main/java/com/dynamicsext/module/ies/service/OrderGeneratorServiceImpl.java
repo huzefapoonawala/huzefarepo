@@ -19,7 +19,6 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.dynamicsext.module.ies.util.CommonUtil;
 import com.dynamicsext.module.ies.util.Defaults;
-import com.dynamicsext.module.ies.vo.TenderVO;
 import com.dynamicsext.module.ies.vo.TransactionEntryVO;
 import com.dynamicsext.module.ies.vo.TransactionVO;
 
@@ -53,13 +52,13 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 			System.exit(0);
 		}
 		
-		List<TransactionVO> orders = jdbcTemplate.query("select o.ID as transactionNumber, AccountNumber, o.Time as transactionDate, ch.Name as cashier, [Total] as grandTotal, Tax as salesTax, c.FirstName+' '+c.LastName as billToName, c.Company as billToCompany, ISNULL(c.Address,'')+case when c.Address2 is not null and LEN(c.Address2) > 0 then ', ' else '' end+ISNULL(c.Address2,'') as billToAddress, c.City as billToCity, c.State as billToState, c.Zip as billToZip, c.PhoneNumber as billToPhone, s.Name as shipToName, s.Company as shipToCompany, ISNULL(s.Address,'')+case when s.Address2 is not null and LEN(s.Address2) > 0 then ', ' else '' end+ISNULL(s.Address2,'') as shipToAddress, s.City as shipToCity, s.State as shipToState, s.Zip as shipToZip, s.PhoneNumber as shipToPhone, o.ReferenceNumber as reference, o.Comment, c.EmailAddress, o.Type as orderType from [Order] o inner join Customer c on o.CustomerID = c.ID left join Cashier ch on ch.ID = (select top 1 CashierID from OrderHistory where OrderID = o.ID order by DBTimeStamp desc)left join ShipTo s on s.ID = o.ShipToID where o.ID = ?", new BeanPropertyRowMapper<TransactionVO>(TransactionVO.class), orderId);
+		List<TransactionVO> orders = jdbcTemplate.query("select o.ID as transactionNumber, AccountNumber, o.Time as transactionDate, ch.Name as cashier, [Total] as grandTotal, Tax as salesTax, c.FirstName+' '+c.LastName as billToName, c.Company as billToCompany, ISNULL(c.Address,'')+case when c.Address2 is not null and LEN(c.Address2) > 0 then ', ' else '' end+ISNULL(c.Address2,'') as billToAddress, c.City as billToCity, c.State as billToState, c.Zip as billToZip, c.PhoneNumber as billToPhone, s.Name as shipToName, s.Company as shipToCompany, ISNULL(s.Address,'')+case when s.Address2 is not null and LEN(s.Address2) > 0 then ', ' else '' end+ISNULL(s.Address2,'') as shipToAddress, s.City as shipToCity, s.State as shipToState, s.Zip as shipToZip, s.PhoneNumber as shipToPhone, o.ReferenceNumber as reference, o.Comment, c.EmailAddress, o.Type as orderType, o.Deposit, isnull((select sum(t.Amount) as tenderAmount from OrderHistory oh inner join TenderEntry t on t.OrderHistoryID = oh.ID where oh.OrderID = o.ID),0) as tenderAmount from [Order] o inner join Customer c on o.CustomerID = c.ID left join Cashier ch on ch.ID = (select top 1 CashierID from OrderHistory where OrderID = o.ID order by DBTimeStamp desc) left join ShipTo s on s.ID = o.ShipToID where o.ID = ?", new BeanPropertyRowMapper<TransactionVO>(TransactionVO.class), orderId);
 		if (orders.isEmpty()) {
 			LOG.warn(String.format("Unable to fetch order with id %s.", orderId));
 		}
 		
 		for (TransactionVO o : orders) {
-			List<TransactionEntryVO> transactionEntries = jdbcTemplate.query("select i.ItemLookupCode, t.Description+ case when t.Comment is not null and len(t.Comment) > 0 then '<br>&nbsp;'+t.Comment else '' end as description, t.QuantityOnOrder, t.Price, (t.QuantityOnOrder+t.QuantityRTD)*t.Price as extPrice, t.QuantityRTD, t.QuantityOnOrder+t.QuantityRTD as Quantity from OrderEntry t inner join Item i on t.ItemID = i.ID where t.OrderID = ?", new BeanPropertyRowMapper<TransactionEntryVO>(TransactionEntryVO.class), o.getTransactionNumber());
+			List<TransactionEntryVO> transactionEntries = jdbcTemplate.query("select i.ItemLookupCode, t.Description+ case when t.Comment is not null and len(t.Comment) > 0 then '<br>&nbsp;'+t.Comment else '' end as description, t.QuantityOnOrder, t.Price, (t.QuantityOnOrder+t.QuantityRTD)*t.Price as extPrice, t.QuantityRTD, t.QuantityOnOrder+t.QuantityRTD as Quantity from OrderEntry t inner join Item i on t.ItemID = i.ID where t.OrderID = ? order by t.ID", new BeanPropertyRowMapper<TransactionEntryVO>(TransactionEntryVO.class), o.getTransactionNumber());
 			
 			String filename = Integer.valueOf(o.getTransactionNumber()).toString()+Defaults.INVOICE_FILE_EXTENSION;
 			File toPreviewFile = new File(o.getOrderType().intValue() == WORK_ORDER_TYPE ? workOrderFolder : quoteFolder, filename);
@@ -74,14 +73,14 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 			model.put("storeNotes", storeNotes);
 			
 			if (o.getOrderType().intValue() == 2) {
-				List<TenderVO> tenders = jdbcTemplate.query("select * from ( select t.Description, sum(t.Amount) as Amount, 2 as order_priority from OrderHistory o inner join TenderEntry t on t.OrderHistoryID = o.ID where OrderID = ? group by Description union select 'Deposit' as description, sum(t.Amount) as Amount, 1 as order_priority from OrderHistory o inner join TenderEntry t on t.OrderHistoryID = o.ID where OrderID = ? and t.TransactionNumber = 0 having sum(t.Amount) > 0 ) t order by order_priority;", new BeanPropertyRowMapper<TenderVO>(TenderVO.class), o.getTransactionNumber(), o.getTransactionNumber());
+				/*List<TenderVO> tenders = jdbcTemplate.query("select * from ( select t.Description, sum(t.Amount) as Amount, 2 as order_priority from OrderHistory o inner join TenderEntry t on t.OrderHistoryID = o.ID where OrderID = ? group by Description union select 'Deposit' as description, sum(t.Amount) as Amount, 1 as order_priority from OrderHistory o inner join TenderEntry t on t.OrderHistoryID = o.ID where OrderID = ? and t.TransactionNumber = 0 having sum(t.Amount) > 0 ) t order by order_priority;", new BeanPropertyRowMapper<TenderVO>(TenderVO.class), o.getTransactionNumber(), o.getTransactionNumber());
 				model.put("tenders", tenders);
 				
 				double totalTender = 0;
 				for (TenderVO te : tenders) {
 					totalTender += te.getAmount();
-				}
-				double newBalance = o.getGrandTotal() - totalTender;
+				}*/
+				double newBalance = o.getGrandTotal() - o.getTenderAmount();
 				model.put("newBalance", CommonUtil.convertAmountInHtmlFormat(newBalance));
 			}
 			

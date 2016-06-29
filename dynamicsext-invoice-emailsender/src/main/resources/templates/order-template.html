@@ -170,23 +170,15 @@
 								Sub Total <br>
 								Sales Tax <br>
 								Total <br><br>
-								#if($tenders)
-									#foreach ($te in $tenders)
-										${te.description} #if($te.description=="Deposit") Payment #else Tendered #end <br> 
-									#end
-									<br>New Balance <br>
-								#end
+								Remaining Deposit<br>
+								New Balance <br>
 							</td>
 							<td align="right" style="font-weight: bold;">
 								${subTotal} <br>
 								${order.salesTaxInDisplayFormat} <br>
 								${order.grandTotalInDisplayFormat} <br><br>
-								#if($tenders)
-									#foreach ($te in $tenders)
-										${te.amountInDisplayFormat} <br> 
-									#end
-									<br>${newBalance} <br>
-								#end
+								${order.depositInHtmlFormat}<br>
+								${newBalance} <br>
 							</td>
 						</tr>
 					</table>

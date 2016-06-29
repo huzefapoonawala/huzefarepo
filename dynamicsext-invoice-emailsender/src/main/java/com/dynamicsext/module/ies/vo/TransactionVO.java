@@ -35,6 +35,8 @@ public class TransactionVO {
 	private Boolean isOptForEmail;
 	private Integer orderType;
 	private Integer customerId;
+	private Double deposit;
+	private Double tenderAmount;
 	
 	public int getTransactionNumber() {
 		return transactionNumber;
@@ -89,7 +91,7 @@ public class TransactionVO {
 			.append(this.getBillToName()).append(lineSeperator)
 			.append(this.getBillToCompany()).append(lineSeperator)
 			.append(this.getBillToAddress()).append(lineSeperator)
-			.append(this.getBillToCity()).append(", ").append(this.getBillToState()).append(" ").append(this.getBillToZip()).append(lineSeperator);
+			.append(this.getBillToCity()).append(StringUtils.isNotBlank(this.getBillToCity()) ? ", ":"").append(this.getBillToState()).append(" ").append(this.getBillToZip()).append(lineSeperator);
 		if (StringUtils.isNotBlank(this.getBillToPhone())) {
 			sb.append("Tel: ").append(this.getBillToPhone());
 		}
@@ -312,5 +314,25 @@ public class TransactionVO {
 
 	public void setCustomerId(Integer customerId) {
 		this.customerId = customerId;
+	}
+
+	public Double getDeposit() {
+		return deposit;
+	}
+
+	public String getDepositInHtmlFormat() {
+		return CommonUtil.convertAmountInHtmlFormat(deposit);
+	}
+	
+	public void setDeposit(Double deposit) {
+		this.deposit = deposit;
+	}
+
+	public Double getTenderAmount() {
+		return tenderAmount;
+	}
+
+	public void setTenderAmount(Double tenderAmount) {
+		this.tenderAmount = tenderAmount;
 	}
 }
