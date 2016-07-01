@@ -30,11 +30,12 @@ public class PaymentReceiptServiceImpl implements PaymentReceiptService {
 	
 	@Autowired private JdbcTemplate jdbcTemplate;
 	@Autowired private VelocityEngine engine;
+	@Autowired private CommonService commonService;
 	
 	@Value("${paymentreceipt.file.path}") private String prFilePath;
-	@Value("${store.logo.image}") private String storeLogoImg;
+	/*@Value("${store.logo.image}") private String storeLogoImg;
 	@Value("${store.address}") private String storeAddress;
-	@Value("${store.logo.text}") private String storeLogoText;
+	@Value("${store.logo.text}") private String storeLogoText;*/
 	@Value("${store.notes}") private String storeNotes;
 	
 	public void generatePaymentReceipt(Long prId) {
@@ -65,9 +66,8 @@ public class PaymentReceiptServiceImpl implements PaymentReceiptService {
 			model.put("paymentEntries", paymentEntries);
 			model.put("previousBal", CommonUtil.convertAmountInHtmlFormat(previousBal));
 			model.put("newBal", CommonUtil.convertAmountInHtmlFormat(previousBal-pr.getGrandTotal()));
-			model.put("storeLogoImg", storeLogoImg);
-			model.put("storeAddress", storeAddress);
-			model.put("storeLogoText", storeLogoText);
+			
+			commonService.populateStoreDetails(model);
 			model.put("storeNotes", storeNotes);
 			
 			List<TenderVO> tenders = jdbcTemplate.query("select t.Description, sum(t.Amount) as Amount from TenderEntry t where PaymentID = ? group by Description;", new BeanPropertyRowMapper<TenderVO>(TenderVO.class), pr.getTransactionNumber());
