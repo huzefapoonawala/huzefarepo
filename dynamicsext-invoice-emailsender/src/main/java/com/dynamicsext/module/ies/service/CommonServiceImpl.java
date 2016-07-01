@@ -16,7 +16,7 @@ public class CommonServiceImpl implements CommonService {
 	@Autowired private JdbcTemplate jdbcTemplate;
 	
 	public StoreVO getStoreDetails() {
-		StoreVO storeVO = jdbcTemplate.queryForObject("select [StoreName], StoreAddress1, StoreAddress2, StoreCity, StoreCountry, StoreEmail, StoreFax, StoreState, StoreZip, StoreEmail, StorePhone, '' as storeLogo, '' as storeWebsite from Configuration;", new BeanPropertyRowMapper<StoreVO>(StoreVO.class));
+		StoreVO storeVO = jdbcTemplate.queryForObject("select top 1 [StoreName], StoreAddress1, StoreAddress2, StoreCity, StoreCountry, StoreEmail, StoreFax, StoreState, StoreZip, StoreEmail, StorePhone, '' as storeLogo, '' as storeWebsite from Configuration;", new BeanPropertyRowMapper<StoreVO>(StoreVO.class));
 		return storeVO;
 	}
 	
