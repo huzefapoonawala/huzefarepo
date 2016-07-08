@@ -33,6 +33,7 @@ public class PaymentReceiptServiceImpl implements PaymentReceiptService {
 	@Autowired private CommonService commonService;
 	
 	@Value("${paymentreceipt.file.path}") private String prFilePath;
+	//@Value("${accountstatement.file.path}") private String asFilePath;
 	/*@Value("${store.logo.image}") private String storeLogoImg;
 	@Value("${store.address}") private String storeAddress;
 	@Value("${store.logo.text}") private String storeLogoText;*/
