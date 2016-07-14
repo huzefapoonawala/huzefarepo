@@ -2,6 +2,7 @@ package com.dynamicsext.module.ies.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -63,5 +64,15 @@ public class CommonServiceImpl implements CommonService {
 		return text;
 	}
 	
-	
+	@Override
+	public void saveFile(File file, String text) {
+		try {
+			LOG.debug(String.format("File '%s' stored at location '%s' for preview", file.getName(), file.getParent()));
+			FileOutputStream out = new FileOutputStream(file);
+			out.write(text.getBytes());
+			out.close();
+		} catch (Exception e) {
+			LOG.error(String.format("Error occurred while saving file '%s' at location '%s'.", file.getName(), file.getParent()), e);
+		}
+	}
 }

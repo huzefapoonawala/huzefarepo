@@ -1,7 +1,6 @@
 package com.dynamicsext.module.ies.service;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,7 @@ public class PaymentReceiptServiceImpl implements PaymentReceiptService {
 	@Autowired private CommonService commonService;
 	
 	@Value("${paymentreceipt.file.path}") private String prFilePath;
+	@Value("${paymentreceipt.file.prefix:}") private String prFilePrefix;
 	@Value("${store.notes}") private String storeNotes;
 	
 	public void generatePaymentReceipt(Long prId) {
@@ -47,7 +47,7 @@ public class PaymentReceiptServiceImpl implements PaymentReceiptService {
 		}
 		
 		for (TransactionVO pr : paymentReceipts) {
-			String filename = Integer.valueOf(pr.getTransactionNumber()).toString()+Defaults.INVOICE_FILE_EXTENSION;
+			String filename = prFilePrefix+Integer.valueOf(pr.getTransactionNumber()).toString()+Defaults.INVOICE_FILE_EXTENSION;
 			File toPreviewFile = new File(prFolder, filename);
 			String query = "select * from ( select a2.TransactionNumber, a2.Date as invoiceDate, a2.DueDate, a2.OriginalAmount as invoiceAmount, abs(a1.Amount) as payment, a2.Balance as balanceDue from AccountReceivableHistory a1 inner join AccountReceivable a2 on a2.ID = a1.AccountReceivableID where a1.PaymentID = ? union select TransactionNumber, Date as invoiceDate, DueDate, OriginalAmount as invoiceAmount, 0 as payment, Balance as balanceDue from AccountReceivable where CustomerID = ? and Balance > 0 and ID not in (select AccountReceivableID from AccountReceivableHistory where PaymentID = ?) ) t order by invoiceDate;";
 			List<PaymentEntryVO> paymentEntries = jdbcTemplate.query(query, new BeanPropertyRowMapper<PaymentEntryVO>(PaymentEntryVO.class), pr.getTransactionNumber(), pr.getCustomerId(), pr.getTransactionNumber());
@@ -68,20 +68,9 @@ public class PaymentReceiptServiceImpl implements PaymentReceiptService {
 			model.put("tenders", tenders);
 			
 			String text = commonService.generatePaymentReceipt("paymentreceipt-template.html", model);
-			savePaymentReceipt(toPreviewFile,text, Integer.valueOf(pr.getTransactionNumber()).toString());
+			commonService.saveFile(toPreviewFile,text);
 		}
 		
 		LOG.debug(String.format("End: Generating payment receipt for id %s", prId));
-	}
-	
-	private void savePaymentReceipt(File file, String text, String prId) {
-		try {
-			LOG.debug(String.format("Payment receipt with id '%s' stored at location '%s' for preview", prId, file.getParent()));
-			FileOutputStream out = new FileOutputStream(file);
-			out.write(text.getBytes());
-			out.close();
-		} catch (Exception e) {
-			LOG.error("Error occurred while saving order for id "+prId+".", e);
-		}
 	}
 }

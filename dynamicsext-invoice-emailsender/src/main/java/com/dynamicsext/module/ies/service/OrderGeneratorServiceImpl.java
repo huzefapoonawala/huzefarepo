@@ -1,7 +1,6 @@
 package com.dynamicsext.module.ies.service;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +31,10 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 	@Autowired private CommonService commonService;
 	
 	@Value("${workorder.file.path}") private String workOrderFilePath;
+	@Value("${workorder.file.prefix:}") private String workOrderFilePrefix;
 	@Value("${quote.file.path}") private String quoteFilePath;
-	/*@Value("${store.logo.image}") private String storeLogoImg;
-	@Value("${store.address}") private String storeAddress;
-	@Value("${store.logo.text}") private String storeLogoText;*/
+	@Value("${quote.file.prefix:}") private String quoteFilePrefix;
+	
 	@Value("${store.notes}") private String storeNotes;
 	
 	private static final int WORK_ORDER_TYPE = 2;
@@ -61,7 +60,7 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 		for (TransactionVO o : orders) {
 			List<TransactionEntryVO> transactionEntries = jdbcTemplate.query("select i.ItemLookupCode, t.Description+ case when t.Comment is not null and len(t.Comment) > 0 then '<br>&nbsp;'+t.Comment else '' end as description, t.QuantityOnOrder, t.Price, (t.QuantityOnOrder+t.QuantityRTD)*t.Price as extPrice, t.QuantityRTD, t.QuantityOnOrder+t.QuantityRTD as Quantity from OrderEntry t inner join Item i on t.ItemID = i.ID where t.OrderID = ? order by t.ID", new BeanPropertyRowMapper<TransactionEntryVO>(TransactionEntryVO.class), o.getTransactionNumber());
 			
-			String filename = Integer.valueOf(o.getTransactionNumber()).toString()+Defaults.INVOICE_FILE_EXTENSION;
+			String filename = (o.getOrderType().intValue() == WORK_ORDER_TYPE ? workOrderFilePrefix : quoteFilePrefix)+Integer.valueOf(o.getTransactionNumber()).toString()+Defaults.INVOICE_FILE_EXTENSION;
 			File toPreviewFile = new File(o.getOrderType().intValue() == WORK_ORDER_TYPE ? workOrderFolder : quoteFolder, filename);
 			
 			Map<String, Object> model = new HashMap<String, Object>();
@@ -85,7 +84,7 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 			}
 			
 			String text = generateOrder(o.getOrderType(), model);
-			saveOrder(toPreviewFile,text, Integer.valueOf(o.getTransactionNumber()).toString());
+			commonService.saveFile(toPreviewFile,text);
 		}
 		
 		LOG.debug(String.format("End: Generating order for id %s", orderId));
@@ -94,16 +93,5 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 	private String generateOrder(int orderType, Map<String, Object> model){
 		String text = VelocityEngineUtils.mergeTemplateIntoString(this.engine, orderType == WORK_ORDER_TYPE ? "order-template.html" : "quote-template.html", "UTF-8", model);
 		return text;
-	}
-	
-	private void saveOrder(File file, String text, String orderNumber) {
-		try {
-			LOG.debug(String.format("Order with id '%s' stored at location '%s' for preview", orderNumber, file.getParent()));
-			FileOutputStream out = new FileOutputStream(file);
-			out.write(text.getBytes());
-			out.close();
-		} catch (Exception e) {
-			LOG.error("Error occurred while saving order for id "+orderNumber+".", e);
-		}
 	}
 }

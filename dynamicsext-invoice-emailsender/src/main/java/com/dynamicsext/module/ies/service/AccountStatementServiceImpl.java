@@ -1,7 +1,7 @@
 package com.dynamicsext.module.ies.service;
 
+
 import java.io.File;
-import java.io.FileOutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -35,6 +35,7 @@ public class AccountStatementServiceImpl implements AccountStatementService {
 	@Autowired private CommonService commonService;
 	
 	@Value("${accountstatement.file.path}") private String asFilePath;
+	@Value("${accountstatement.file.prefix:}") private String asFilePrefix;
 	
 	private static String INPUT_DATE_FORMAT = "yyyy-MM-dd";
 	
@@ -125,23 +126,12 @@ public class AccountStatementServiceImpl implements AccountStatementService {
 			commonService.populateStoreDetails(model);			
 			String text = commonService.generatePaymentReceipt("accountstatement-template.html", model);
 			
-			String filename = Integer.valueOf(as.getCustomerId()).toString()+Defaults.INVOICE_FILE_EXTENSION;
+			String filename = asFilePrefix+Integer.valueOf(as.getCustomerId()).toString()+Defaults.INVOICE_FILE_EXTENSION;
 			File toPreviewFile = new File(asFolder, filename);
 			
-			saveAccountStatement(toPreviewFile,text, Integer.valueOf(as.getCustomerId()).toString());
+			commonService.saveFile(toPreviewFile,text);
 		}
 		
 		LOG.debug(String.format("End: Generating account statement for customer with id %s", customerId));		
-	}
-	
-	private void saveAccountStatement(File file, String text, String prId) {
-		try {
-			LOG.debug(String.format("Account statement for customer with id '%s' is stored at location '%s' for preview", prId, file.getParent()));
-			FileOutputStream out = new FileOutputStream(file);
-			out.write(text.getBytes());
-			out.close();
-		} catch (Exception e) {
-			LOG.error("Error occurred while saving order for id "+prId+".", e);
-		}
 	}
 }
