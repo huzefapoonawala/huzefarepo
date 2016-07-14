@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.util.Base64Utils;
 
 import com.dynamicsext.module.ies.vo.StoreVO;
@@ -22,6 +24,7 @@ public class CommonServiceImpl implements CommonService {
 	private static final Logger LOG = LoggerFactory.getLogger(CommonServiceImpl.class);
 
 	@Autowired private JdbcTemplate jdbcTemplate;
+	@Autowired private VelocityEngine engine;
 	
 	@Value("${store.logo.image}") private String storeLogoImg;
 	@Value("${store.website.url}") private String storeWebsiteUrl;
@@ -53,4 +56,12 @@ public class CommonServiceImpl implements CommonService {
 		model.put("storeAddress", store.getStoreDetails("<br>"));
 		model.put("storeLogoText", StringUtils.join("<h3>",store.getStoreName(),"</h3>"));
 	}
+	
+	@Override
+	public String generatePaymentReceipt(String templateFileName, Map<String, Object> model){
+		String text = VelocityEngineUtils.mergeTemplateIntoString(this.engine, templateFileName, "UTF-8", model);
+		return text;
+	}
+	
+	
 }

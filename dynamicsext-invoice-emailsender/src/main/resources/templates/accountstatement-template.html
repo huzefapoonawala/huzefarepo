@@ -1,0 +1,209 @@
+<html>
+	<body>
+		<table style="width: 950px; padding: 0px;" cellspacing="0" cellpadding="0">
+			<tr>
+				<td colspan="3" valign="top">
+					<table>
+						<tr>
+							<td align="center">
+								#if($storeLogoImg.trim().length() > 0)
+									<img alt="" src="${storeLogoImg}">
+								#else
+									${storeLogoText}
+								#end
+							</td>
+						</tr>
+						#if($storeAddress.trim().length() > 0)
+						<tr>
+							<td align="center" style="font-size: 12px;">
+								${storeAddress}
+							</td>
+						</tr>
+						#end
+					</table>
+				</td>
+				<td colspan="3" align="right" valign="top"><h1>Account Statement</h1></td>
+			</tr>
+			<tr><td>&nbsp;</td></tr>
+			<tr><td colspan="6" valign="bottom" style="font-weight: bold; font-size: 26px">Account Summary</td></tr>
+			<tr>
+				<td colspan="6" style="border: 1px black solid; background-color: yellow; font-weight: bold;">&nbsp;Summary Information</td>
+			</tr>
+			<tr>
+				<td colspan="6" style="border: 1px black solid;">
+					<table width="100%">
+						<tr>
+							<td style="font-weight: bold; width: 20%;">Account Number:</td>
+							<td style="width: 35%;">${customer.accountNumber}</td>
+							<td style="width: 20%; font-weight: bold;">Closing Date:</td>
+							<td style="width: 25%;" align="right">${toDate}&nbsp;</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;" valign="top"> 
+								Name:
+							</td>
+							<td valign="top">
+								${customer.billToDetailsInHtmlFormat}
+							</td>
+						</tr>
+						<!--  <tr>
+							<td colspan="2"></td>
+							<td style="font-weight: bold;">Previous Balance:</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td colspan="2"></td>
+							<td style="font-weight: bold;">New Charges:</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td colspan="2"></td>
+							<td style="font-weight: bold;">Credits / Payments:</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td colspan="2"></td>
+							<td style="font-weight: bold;">===================</td>
+							<td style="font-weight: bold;" align="right">===================</td>
+						</tr>
+						<tr>
+							<td colspan="2"></td>
+							<td style="font-weight: bold;">New Balance:</td>
+							<td></td>
+						</tr> -->
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td style="font-weight: bold; background-color: yellow; border: 1px black solid;" align="center" width="16%">Current</td>
+				<td style="font-weight: bold; background-color: yellow; border: 1px black solid;" align="center" width="17%">1 - 30 Days</td>
+				<td style="font-weight: bold; background-color: yellow; border: 1px black solid;" align="center" width="17%">31 - 60 Days</td>
+				<td style="font-weight: bold; background-color: yellow; border: 1px black solid;" align="center" width="16%">61 - 90 Days</td>
+				<td style="font-weight: bold; background-color: yellow; border: 1px black solid;" align="center" width="17%">Over 90 Days</td>
+				<td style="font-weight: bold; background-color: yellow; border: 1px black solid;" align="center" width="17%">Balance Due</td>
+			</tr>
+			<tr>
+				<td style="border: 1px black solid;" align="center">${customer.range0InHtmlFormat}</td>
+				<td style="border: 1px black solid;" align="center">${customer.range1To30InHtmlFormat}</td>
+				<td style="border: 1px black solid;" align="center">${customer.range31To60InHtmlFormat}</td>
+				<td style="border: 1px black solid;" align="center">${customer.range61To90InHtmlFormat}</td>
+				<td style="border: 1px black solid;" align="center">${customer.range90InHtmlFormat}</td>
+				<td style="border: 1px black solid;" align="center">${customer.grandTotalInHtmlFormatDefaultTo0}</td>
+			</tr>
+			<tr><td>&nbsp;</td></tr>
+			<tr><td colspan="6" style="font-weight: bold;">A c c o u n t R e c e i v a b l e A c t i v i t y</td></tr>
+			<tr>
+				<td colspan="6">
+					<table style="width: 100%; padding: 0px;" cellspacing="0" cellpadding="0">
+						<tr style="background-color: yellow; font-weight: bold;">
+							<td width="14%" style="border: 1px solid black;">
+								&nbsp;Invoice #
+							</td>
+							<td width="12%" align="right" style="border: 1px solid black;">
+								Date&nbsp;
+							</td>
+							<td width="12%" align="right" style="border: 1px solid black;">
+								Due Date&nbsp;
+							</td>
+							<td width="26%" style="border: 1px solid black;">
+								&nbsp;Details
+							</td>
+							<td width="12%" align="right" style="border: 1px solid black;">
+								Debit&nbsp;
+							</td>
+							<td width="12%" align="right" style="border: 1px solid black;">
+								Credit&nbsp;
+							</td>
+							<td width="12%" align="right" style="border: 1px solid black;">
+								Balance&nbsp;
+							</td>
+						</tr>
+						#foreach ($d in $details)
+						<tr valign="top">
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td align="center" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td align="center" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr valign="top">
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;${d.invoiceNumber}
+							</td>
+							<td align="center" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;${d.invoiceDateInHtmlFormat}
+							</td>
+							<td align="center" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;${d.dueDateInHtmlFormat}
+							</td>
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;${d.details}
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								${d.debitInHtmlFormat}&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								${d.creditInHtmlFormat}&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								${d.balanceInHtmlFormat}&nbsp;
+							</td>
+						</tr>
+						#end
+						<tr valign="top">
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td align="center" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td align="center" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+							<td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr style="background-color: yellow;">
+							<td colspan="4" style="border: 1px solid black; font-weight: bold;" align="right">Total&nbsp;</td>
+							<td align="right" style="border: 1px solid black;">
+								${totalDebit}&nbsp;
+							</td>
+							<td align="right" style="border: 1px solid black;">
+								${totalCredit}&nbsp;
+							</td>
+							<td align="right" style="border: 1px solid black;">
+								${customer.grandTotalInHtmlFormatDefaultTo0}&nbsp;
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

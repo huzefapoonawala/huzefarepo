@@ -37,6 +37,11 @@ public class TransactionVO {
 	private Integer customerId;
 	private Double deposit;
 	private Double tenderAmount;
+	private Double range0;
+	private Double range1To30;
+	private Double range31To60;
+	private Double range61To90;
+	private Double range90;
 	
 	public int getTransactionNumber() {
 		return transactionNumber;
@@ -68,6 +73,9 @@ public class TransactionVO {
 	
 	public String getGrandTotalInDisplayFormat() {
 		return CommonUtil.convertAmountInHtmlFormat(grandTotal);
+	}
+	public String getGrandTotalInHtmlFormatDefaultTo0() {
+		return CommonUtil.convertAmountInHtmlFormat(grandTotal,0.00);
 	}
 
 	public void setGrandTotal(Double grandTotal) {
@@ -334,5 +342,65 @@ public class TransactionVO {
 
 	public void setTenderAmount(Double tenderAmount) {
 		this.tenderAmount = tenderAmount;
+	}
+
+	public Double getRange0() {
+		return range0;
+	}
+	
+	public String getRange0InHtmlFormat() {
+		return CommonUtil.convertAmountInHtmlFormat(range0,0.00);
+	}
+
+	public void setRange0(Double range0) {
+		this.range0 = range0;
+	}
+
+	public Double getRange1To30() {
+		return range1To30;
+	}
+
+	public String getRange1To30InHtmlFormat() {
+		return CommonUtil.convertAmountInHtmlFormat(range1To30,0.00);
+	}
+	
+	public void setRange1To30(Double range1To30) {
+		this.range1To30 = range1To30;
+	}
+
+	public Double getRange31To60() {
+		return range31To60;
+	}
+	
+	public String getRange31To60InHtmlFormat() {
+		return CommonUtil.convertAmountInHtmlFormat(range31To60,0.00);
+	}
+
+	public void setRange31To60(Double range31To60) {
+		this.range31To60 = range31To60;
+	}
+
+	public Double getRange61To90() {
+		return range61To90;
+	}
+	
+	public String getRange61To90InHtmlFormat() {
+		return CommonUtil.convertAmountInHtmlFormat(range61To90,0.00);
+	}
+
+	public void setRange61To90(Double range61To90) {
+		this.range61To90 = range61To90;
+	}
+
+	public Double getRange90() {
+		return range90;
+	}
+	
+	public String getRange90InHtmlFormat() {
+		return CommonUtil.convertAmountInHtmlFormat(range90,0.00);
+	}
+
+	public void setRange90(Double range90) {
+		this.range90 = range90;
 	}
 }

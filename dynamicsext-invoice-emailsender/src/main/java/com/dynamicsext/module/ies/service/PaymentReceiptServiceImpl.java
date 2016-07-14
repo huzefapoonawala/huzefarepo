@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.dynamicsext.module.ies.util.CommonUtil;
 import com.dynamicsext.module.ies.util.Defaults;
@@ -29,14 +27,9 @@ public class PaymentReceiptServiceImpl implements PaymentReceiptService {
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentReceiptServiceImpl.class);
 	
 	@Autowired private JdbcTemplate jdbcTemplate;
-	@Autowired private VelocityEngine engine;
 	@Autowired private CommonService commonService;
 	
 	@Value("${paymentreceipt.file.path}") private String prFilePath;
-	//@Value("${accountstatement.file.path}") private String asFilePath;
-	/*@Value("${store.logo.image}") private String storeLogoImg;
-	@Value("${store.address}") private String storeAddress;
-	@Value("${store.logo.text}") private String storeLogoText;*/
 	@Value("${store.notes}") private String storeNotes;
 	
 	public void generatePaymentReceipt(Long prId) {
@@ -74,16 +67,11 @@ public class PaymentReceiptServiceImpl implements PaymentReceiptService {
 			List<TenderVO> tenders = jdbcTemplate.query("select t.Description, sum(t.Amount) as Amount from TenderEntry t where PaymentID = ? group by Description;", new BeanPropertyRowMapper<TenderVO>(TenderVO.class), pr.getTransactionNumber());
 			model.put("tenders", tenders);
 			
-			String text = generatePaymentReceipt(model);
+			String text = commonService.generatePaymentReceipt("paymentreceipt-template.html", model);
 			savePaymentReceipt(toPreviewFile,text, Integer.valueOf(pr.getTransactionNumber()).toString());
 		}
 		
 		LOG.debug(String.format("End: Generating payment receipt for id %s", prId));
-	}
-	
-	private String generatePaymentReceipt(Map<String, Object> model){
-		String text = VelocityEngineUtils.mergeTemplateIntoString(this.engine, "paymentreceipt-template.html", "UTF-8", model);
-		return text;
 	}
 	
 	private void savePaymentReceipt(File file, String text, String prId) {

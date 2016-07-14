@@ -13,6 +13,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import com.dynamicsext.module.ies.service.AccountStatementService;
 import com.dynamicsext.module.ies.service.InvoiceSenderService;
 import com.dynamicsext.module.ies.service.OrderGeneratorService;
 import com.dynamicsext.module.ies.service.PaymentReceiptService;
@@ -29,10 +30,15 @@ public class ApplicationBootstrap{
 	private static final String ORDER_IDS = "order.ids";
 	private static final String PR_GENERATOR_PROFILE = "paymentreceiptgenerator";
 	private static final String PR_IDS = "paymentreceipt.ids";
+	private static final String AS_GENERATOR_PROFILE = "accountstatementgenerator";
+	private static final String CUSTOMER_ID = "customer.id";
+	private static final String FROM_DATE = "date.from";
+	private static final String TO_DATE = "date.to";
 	
 	@Autowired private InvoiceSenderService invoiceSenderService;
 	@Autowired private OrderGeneratorService orderGeneratorService;
 	@Autowired private PaymentReceiptService paymentReceiptService;
+	@Autowired private AccountStatementService accountStatementService;
 	
     public static void main( String[] args ){
     	String profile = System.getProperty(SET_PROFILE);
@@ -43,6 +49,9 @@ public class ApplicationBootstrap{
 		}
         else if (StringUtils.equalsIgnoreCase(PR_GENERATOR_PROFILE, profile)) {
 			this_.initPRGenerator();
+		}
+        else if (StringUtils.equalsIgnoreCase(AS_GENERATOR_PROFILE, profile)) {
+			this_.initASGenerator();
 		}
         else{
         	this_.init();
@@ -95,6 +104,20 @@ public class ApplicationBootstrap{
 		}
     	else{
     		LOG.info("No payment receipt/s found to be generated.");
+    	}
+	}
+    
+    private void initASGenerator() {
+    	if (StringUtils.isNotBlank(System.getProperty(CUSTOMER_ID))) {
+    		String cId = System.getProperty(CUSTOMER_ID);
+    		try {
+    			accountStatementService.generateAccountStatement(Long.valueOf(cId), System.getProperty(FROM_DATE), System.getProperty(TO_DATE));
+    		} catch (Exception e) {
+    			LOG.error(String.format("Error occurred while generating account statement for customer with id '%s'.", cId),e);
+    		}
+		}
+    	else{
+    		LOG.info("No customer found for generating account statement.");
     	}
 	}
 }

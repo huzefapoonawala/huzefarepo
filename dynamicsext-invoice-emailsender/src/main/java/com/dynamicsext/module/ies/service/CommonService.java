@@ -9,4 +9,6 @@ public interface CommonService {
 	StoreVO getStoreDetails();
 	
 	void populateStoreDetails(Map<String, Object> model);
+
+	String generatePaymentReceipt(String templateFileName, Map<String, Object> model);
 }
