@@ -71,5 +71,15 @@
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+  			<artifactId>itextpdf</artifactId>
+  			<version>5.5.9</version>
+		</dependency>
+		<dependency>
+  			<groupId>com.itextpdf.tool</groupId>
+  			<artifactId>xmlworker</artifactId>
+  			<version>5.5.9</version>
+		</dependency>
   </dependencies>
 </project>

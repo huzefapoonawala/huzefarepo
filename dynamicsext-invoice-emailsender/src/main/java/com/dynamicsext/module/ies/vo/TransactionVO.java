@@ -42,6 +42,7 @@ public class TransactionVO {
 	private Double range31To60;
 	private Double range61To90;
 	private Double range90;
+	private Integer fileFormat;
 	
 	public int getTransactionNumber() {
 		return transactionNumber;
@@ -402,5 +403,13 @@ public class TransactionVO {
 
 	public void setRange90(Double range90) {
 		this.range90 = range90;
+	}
+
+	public Integer getFileFormat() {
+		return fileFormat;
+	}
+
+	public void setFileFormat(Integer fileFormat) {
+		this.fileFormat = fileFormat;
 	}
 }

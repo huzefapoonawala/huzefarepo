@@ -35,7 +35,13 @@ public class CommonServiceImpl implements CommonService {
 		return storeVO;
 	}
 	
+	@Override
 	public void populateStoreDetails(Map<String, Object> model) {
+		populateStoreDetails(model, true);
+	}
+	
+	@Override
+	public void populateStoreDetails(Map<String, Object> model, boolean isHtml){
 		StoreVO store = getStoreDetails();
 		File logoImg = null;
 		if (StringUtils.isNotBlank(storeLogoImg) && (logoImg = new File(storeLogoImg)).exists()) {
@@ -44,7 +50,11 @@ public class CommonServiceImpl implements CommonService {
 				byte[] bs = new byte[in.available()];
 				in.read(bs);
 				in.close();
-				model.put("storeLogoImg", "data:image/png;base64, "+Base64Utils.encodeToString(bs));
+				if (isHtml) {
+					model.put("storeLogoImg", "data:image/png;base64, "+Base64Utils.encodeToString(bs));
+				} else {
+					model.put("storeLogoImg", storeLogoImg);
+				}
 			} catch (Exception e) {
 				LOG.warn(String.format("Error occurred while reading logo image with path '%s'.", storeLogoImg));
 				model.put("storeLogoImg", "");
@@ -54,8 +64,8 @@ public class CommonServiceImpl implements CommonService {
 			model.put("storeLogoImg", storeLogoImg);	
 		}
 		store.setStoreWebsite(storeWebsiteUrl);
-		model.put("storeAddress", store.getStoreDetails("<br>"));
-		model.put("storeLogoText", StringUtils.join("<h3>",store.getStoreName(),"</h3>"));
+		model.put("storeAddress", store.getStoreDetails(isHtml ? "<br>" : "\n"));
+		model.put("storeLogoText", StringUtils.join(isHtml ? "<h3>" : "",store.getStoreName(), isHtml ? "</h3>" : ""));
 	}
 	
 	@Override

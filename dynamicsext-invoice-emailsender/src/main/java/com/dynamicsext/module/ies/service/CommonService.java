@@ -14,4 +14,6 @@ public interface CommonService {
 	String generatePaymentReceipt(String templateFileName, Map<String, Object> model);
 
 	void saveFile(File file, String text);
+
+	void populateStoreDetails(Map<String, Object> model, boolean isHtml);
 }

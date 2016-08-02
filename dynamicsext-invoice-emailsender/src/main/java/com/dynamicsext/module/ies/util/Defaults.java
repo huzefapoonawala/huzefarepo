@@ -8,4 +8,5 @@ public interface Defaults {
 	String CURRENCY_SYMBOL = "$";
 	String INVOICE_FILE_EXTENSION = ".html";
 	String DATE_DISPLAY_FORMAT ="MM/dd/yy";
+	String PDF_FILE_EXTENSION = ".pdf";
 }

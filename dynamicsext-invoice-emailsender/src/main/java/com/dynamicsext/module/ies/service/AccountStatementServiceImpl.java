@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import com.dynamicsext.module.ies.util.CommonUtil;
 import com.dynamicsext.module.ies.util.Defaults;
+import com.dynamicsext.module.ies.util.PDFUtil;
 import com.dynamicsext.module.ies.vo.AccountStatementDetailsVO;
 import com.dynamicsext.module.ies.vo.TransactionVO;
 
@@ -37,7 +38,8 @@ public class AccountStatementServiceImpl implements AccountStatementService {
 	@Value("${accountstatement.file.path}") private String asFilePath;
 	@Value("${accountstatement.file.prefix:}") private String asFilePrefix;
 	
-	private static String INPUT_DATE_FORMAT = "yyyy-MM-dd";
+	private static final String INPUT_DATE_FORMAT = "yyyy-MM-dd";
+	private static final String FILENAME_SEPERATOR = "-";
 	
 	@Override
 	public void generateAccountStatement(Long customerId, String fromDate, String toDate) {
@@ -61,7 +63,7 @@ public class AccountStatementServiceImpl implements AccountStatementService {
 			System.exit(-1);
 		}
 		
-		List<TransactionVO> accountStatements = jdbcTemplate.query("select AccountNumber, c.FirstName+' '+c.LastName as billToName, c.Company as billToCompany, ISNULL(c.Address,'')+case when c.Address2 is not null and LEN(c.Address2) > 0 then ', ' else '' end+ISNULL(c.Address2,'') as billToAddress, c.City as billToCity, c.State as billToState, c.Zip as billToZip, c.PhoneNumber as billToPhone, c.EmailAddress, c.ID as customerId from Customer c where c.ID = ?;", new BeanPropertyRowMapper<TransactionVO>(TransactionVO.class), customerId);
+		List<TransactionVO> accountStatements = jdbcTemplate.query("select AccountNumber, c.FirstName+' '+c.LastName as billToName, c.Company as billToCompany, ISNULL(c.Address,'')+case when c.Address2 is not null and LEN(c.Address2) > 0 then ', ' else '' end+ISNULL(c.Address2,'') as billToAddress, c.City as billToCity, c.State as billToState, c.Zip as billToZip, c.PhoneNumber as billToPhone, c.EmailAddress, c.ID as customerId, c.CustomNumber4 as fileFormat from Customer c where c.ID = ?;", new BeanPropertyRowMapper<TransactionVO>(TransactionVO.class), customerId);
 		if (accountStatements.isEmpty()) {
 			LOG.warn(String.format("Unable to fetch account statement for customer with id %s.", customerId));
 		}
@@ -123,13 +125,23 @@ public class AccountStatementServiceImpl implements AccountStatementService {
 			model.put("details", details);
 			model.put("totalDebit", CommonUtil.convertAmountInHtmlFormat(totalDebit));
 			model.put("totalCredit", CommonUtil.convertAmountInHtmlFormat(totalCredit));
-			commonService.populateStoreDetails(model);			
-			String text = commonService.generatePaymentReceipt("accountstatement-template.html", model);
 			
-			String filename = asFilePrefix+Integer.valueOf(as.getCustomerId()).toString()+Defaults.INVOICE_FILE_EXTENSION;
+			boolean isPDF = as.getFileFormat() != null && as.getFileFormat() == 1;
+			commonService.populateStoreDetails(model, !isPDF);
+			
+			String filename = asFilePrefix+as.getCustomerId().toString()+FILENAME_SEPERATOR+(StringUtils.isNoneBlank(as.getBillToCompany()) ? as.getBillToCompany() : StringUtils.isNotBlank(as.getBillToName()) ? as.getBillToName() : as.getAccountNumber())+(isPDF ? Defaults.PDF_FILE_EXTENSION : Defaults.INVOICE_FILE_EXTENSION);
 			File toPreviewFile = new File(asFolder, filename);
 			
-			commonService.saveFile(toPreviewFile,text);
+			if (isPDF) {
+				try {
+					PDFUtil.generateAccountStatement(toPreviewFile, model);
+				} catch (Exception e) {
+					LOG.error(String.format("Error occurred while generating account statement pdf for customer with id %s.", as.getCustomerId()), e);
+				}
+			} else {
+				String text = commonService.generatePaymentReceipt("accountstatement-template.html", model);
+				commonService.saveFile(toPreviewFile,text);
+			}
 		}
 		
 		LOG.debug(String.format("End: Generating account statement for customer with id %s", customerId));		

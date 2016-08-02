@@ -24,6 +24,7 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.dynamicsext.module.ies.util.CommonUtil;
 import com.dynamicsext.module.ies.util.Defaults;
+import com.dynamicsext.module.ies.util.PDFUtil;
 import com.dynamicsext.module.ies.vo.TenderVO;
 import com.dynamicsext.module.ies.vo.TransactionEntryVO;
 import com.dynamicsext.module.ies.vo.TransactionVO;
@@ -40,10 +41,7 @@ public class InvoiceSenderServiceImpl implements InvoiceSenderService {
 	
 	@Value("${invoice.email.subject}") private String emailSubject;
 	@Value("${invoice.email.bcc}") private String emailBccTo;
-
-	/*@Value("${store.logo.image}") private String storeLogoImg;
-	@Value("${store.address}") private String storeAddress;
-	@Value("${store.logo.text}") private String storeLogoText;*/
+	@Value("${invoice.email.text}") private String emailText;
 	
 	@Value("${invoice.topreview.file.path}") private String toPreviewFilePath;
 	@Value("${invoice.previewed.file.path}") private String previewedFilePath;
@@ -60,14 +58,16 @@ public class InvoiceSenderServiceImpl implements InvoiceSenderService {
 		}
 		LOG.debug(String.format("Fetching transactions for sending emails"));
 		StringBuilder transactions2Update = new StringBuilder();
-		List<TransactionVO> transactions = jdbcTemplate.query("select TransactionNumber, AccountNumber, t.Time as transactionDate, ch.Name as cashier, [Total] as grandTotal, [SalesTax], c.FirstName+' '+c.LastName as billToName, c.Company as billToCompany, ISNULL(c.Address,'')+case when c.Address2 is not null and LEN(c.Address2) > 0 then ', ' else '' end+ISNULL(c.Address2,'') as billToAddress, c.City as billToCity, c.State as billToState, c.Zip as billToZip, c.PhoneNumber as billToPhone, s.Name as shipToName, s.Company as shipToCompany, ISNULL(s.Address,'')+case when s.Address2 is not null and LEN(s.Address2) > 0 then ', ' else '' end+ISNULL(s.Address2,'') as shipToAddress, s.City as shipToCity, s.State as shipToState, s.Zip as shipToZip, s.PhoneNumber as shipToPhone, t.ReferenceNumber as reference, t.Comment, c.EmailAddress, case c.CustomNumber3 when 1 then 1 else 0 end as isOptForEmail  from [Transaction] t inner join Customer c on t.CustomerID = c.ID left join Cashier ch on t.CashierID = ch.ID left join ShipTo s on s.ID = t.ShipToID where t.IsEmailSent = 0;", new BeanPropertyRowMapper<TransactionVO>(TransactionVO.class));
+		List<TransactionVO> transactions = jdbcTemplate.query("select TransactionNumber, AccountNumber, t.Time as transactionDate, ch.Name as cashier, [Total] as grandTotal, [SalesTax], c.FirstName+' '+c.LastName as billToName, c.Company as billToCompany, ISNULL(c.Address,'')+case when c.Address2 is not null and LEN(c.Address2) > 0 then ', ' else '' end+ISNULL(c.Address2,'') as billToAddress, c.City as billToCity, c.State as billToState, c.Zip as billToZip, c.PhoneNumber as billToPhone, s.Name as shipToName, s.Company as shipToCompany, ISNULL(s.Address,'')+case when s.Address2 is not null and LEN(s.Address2) > 0 then ', ' else '' end+ISNULL(s.Address2,'') as shipToAddress, s.City as shipToCity, s.State as shipToState, s.Zip as shipToZip, s.PhoneNumber as shipToPhone, t.ReferenceNumber as reference, t.Comment, c.EmailAddress, case c.CustomNumber3 when 1 then 1 else 0 end as isOptForEmail, c.CustomNumber4 as fileFormat from [Transaction] t inner join Customer c on t.CustomerID = c.ID left join Cashier ch on t.CashierID = ch.ID left join ShipTo s on s.ID = t.ShipToID where t.IsEmailSent = 0;", new BeanPropertyRowMapper<TransactionVO>(TransactionVO.class));
 		if (transactions.isEmpty()) {
 			LOG.debug("No transactions found to send emails");
 		}
 		else{
 			for (TransactionVO t : transactions) {
 				if (StringUtils.isNotBlank(t.getEmailAddress()) && t.getIsOptForEmail()) {
-					String filename = t.getBillToCompany()+"-"+Integer.valueOf(t.getTransactionNumber()).toString()+Defaults.INVOICE_FILE_EXTENSION;
+					
+					boolean isPDF = t.getFileFormat() != null && t.getFileFormat() == 1;
+					String filename = t.getBillToCompany()+"-"+Integer.valueOf(t.getTransactionNumber()).toString()+(isPDF ? Defaults.PDF_FILE_EXTENSION : Defaults.INVOICE_FILE_EXTENSION);
 					File toPreviewFile = new File(toPreviewFolder, filename), previewedFile = new File(previewedFolder, filename);
 					if (toPreviewFile.isFile() || previewedFile.isFile()) {
 						LOG.debug(String.format("Invoice with transaction number %s is already generated", t.getTransactionNumber()));
@@ -88,19 +88,34 @@ public class InvoiceSenderServiceImpl implements InvoiceSenderService {
 						model.put("changeDue", CommonUtil.convertAmountInHtmlFormat(changeDue));
 						model.put("subTotal", CommonUtil.convertAmountInHtmlFormat(t.getGrandTotal()-t.getSalesTax()));
 						
-						commonService.populateStoreDetails(model);
+						commonService.populateStoreDetails(model, !isPDF);
 						
-						String text = generateInvoice(model);
-						saveInvoice(toPreviewFile ,text, Integer.valueOf(t.getTransactionNumber()).toString());
+						if (isPDF) {
+							try {
+								PDFUtil.generateInvoice(toPreviewFile, model);
+							} catch (Exception e) {
+								LOG.error(String.format("Error occurred while generating invoice pdf for customer with id %s.", t.getCustomerId()), e);
+							}
+						} else {
+							String text = generateInvoice(model);
+							saveInvoice(toPreviewFile ,text, Integer.valueOf(t.getTransactionNumber()).toString());
+						}
+						
 					}
 					
 					if (previewedFile.isFile()) {
-						String text = extractInvoiceText(previewedFile, Integer.valueOf(t.getTransactionNumber()).toString());
-						if (StringUtils.isNotBlank(text)) {
-							if (sendMail(t.getEmailAddress(), text, t.getTransactionNumber())) {
-								transactions2Update.append(t.getTransactionNumber()).append(",");
-								previewedFile.delete();
+						boolean isMailSent = false;
+						if (isPDF) {
+							isMailSent = sendMail(t.getEmailAddress(), null, previewedFile, t.getTransactionNumber());
+						} else {
+							String text = extractInvoiceText(previewedFile, Integer.valueOf(t.getTransactionNumber()).toString());
+							if (StringUtils.isNotBlank(text)) {
+								isMailSent = sendMail(t.getEmailAddress(), text, null, t.getTransactionNumber());
 							}
+						}
+						if (isMailSent) {
+							transactions2Update.append(t.getTransactionNumber()).append(",");
+							previewedFile.delete();
 						}
 					}
 				}
@@ -121,7 +136,7 @@ public class InvoiceSenderServiceImpl implements InvoiceSenderService {
 		
 	}
 	
-	private boolean sendMail(String emailAddress, String text, Integer transactionNumber) {
+	private boolean sendMail(String emailAddress, String text, File pdfFile, Integer transactionNumber) {
 		boolean isMailSent = true;
 		MimeMessage mail = javaMailSender.createMimeMessage();
 		try {
@@ -131,7 +146,12 @@ public class InvoiceSenderServiceImpl implements InvoiceSenderService {
 				helper.setBcc(emailBccTo);
 			}
 			helper.setSubject(emailSubject);
-			helper.setText(text, true);
+			if (pdfFile != null) {
+				helper.addAttachment(pdfFile.getName(), pdfFile);
+				helper.setText(emailText, false);
+			} else {
+				helper.setText(text, true);
+			}
 			javaMailSender.send(mail);
 			LOG.debug(String.format("Sent invoice with transaction number %s to %s", transactionNumber, emailAddress));
 		} catch (Exception e) {
