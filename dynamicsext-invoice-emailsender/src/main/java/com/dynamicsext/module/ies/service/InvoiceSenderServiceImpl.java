@@ -145,7 +145,7 @@ public class InvoiceSenderServiceImpl implements InvoiceSenderService {
 			if (StringUtils.isNotBlank(emailBccTo)) {
 				helper.setBcc(emailBccTo);
 			}
-			helper.setSubject(emailSubject);
+			helper.setSubject(emailSubject.replaceAll("\\{transactionNumber\\}", transactionNumber.toString()));
 			if (pdfFile != null) {
 				helper.addAttachment(pdfFile.getName(), pdfFile);
 				helper.setText(emailText, false);
