@@ -394,7 +394,7 @@ public class PDFUtil {
 			cell.setBorder(PdfPCell.RIGHT);
 			tmpTable.addCell(cell);
 			
-			cell = new PdfPCell(new Phrase(t.getQuantity()));
+			cell = new PdfPCell(new Phrase(t.getQuantity().toString()));
 			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			cell.setBorder(PdfPCell.RIGHT);
 			tmpTable.addCell(cell);
