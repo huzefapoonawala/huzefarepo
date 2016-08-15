@@ -126,7 +126,8 @@ public class AccountStatementServiceImpl implements AccountStatementService {
 			model.put("totalDebit", CommonUtil.convertAmountInHtmlFormat(totalDebit));
 			model.put("totalCredit", CommonUtil.convertAmountInHtmlFormat(totalCredit));
 			
-			boolean isPDF = as.getFileFormat() != null && as.getFileFormat() == 1;
+//			boolean isPDF = as.getFileFormat() != null && as.getFileFormat() == 1;
+			boolean isPDF = true;
 			commonService.populateStoreDetails(model, !isPDF);
 			
 			String filename = asFilePrefix+as.getCustomerId().toString()+FILENAME_SEPERATOR+(StringUtils.isNoneBlank(as.getBillToCompany()) ? as.getBillToCompany() : StringUtils.isNotBlank(as.getBillToName()) ? as.getBillToName() : as.getAccountNumber())+(isPDF ? Defaults.PDF_FILE_EXTENSION : Defaults.INVOICE_FILE_EXTENSION);
