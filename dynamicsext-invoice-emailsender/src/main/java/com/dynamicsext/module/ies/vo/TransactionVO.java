@@ -53,7 +53,7 @@ public class TransactionVO {
 	}
 
 	public String getAccountNumber() {
-		return accountNumber;
+		return StringUtils.defaultIfBlank(accountNumber, "");
 	}
 
 	public void setAccountNumber(String accountNumber) {
@@ -97,10 +97,10 @@ public class TransactionVO {
 	
 	public String getBillToDetails(String lineSeperator) {
 		StringBuilder sb = new StringBuilder()
-			.append(this.getBillToName()).append(lineSeperator)
-			.append(this.getBillToCompany()).append(lineSeperator)
-			.append(this.getBillToAddress()).append(lineSeperator)
-			.append(this.getBillToCity()).append(StringUtils.isNotBlank(this.getBillToCity()) ? ", ":"").append(this.getBillToState()).append(" ").append(this.getBillToZip()).append(lineSeperator);
+			.append(StringUtils.defaultIfBlank(this.getBillToName(), "")).append(lineSeperator)
+			.append(StringUtils.defaultIfBlank(this.getBillToCompany(), "")).append(lineSeperator)
+			.append(StringUtils.defaultIfBlank(this.getBillToAddress(), "")).append(lineSeperator)
+			.append(StringUtils.defaultIfBlank(this.getBillToCity(), "")).append(StringUtils.isNotBlank(this.getBillToCity()) ? ", ":"").append(StringUtils.defaultIfBlank(this.getBillToState(), "")).append(" ").append(StringUtils.defaultIfBlank(this.getBillToZip(), "")).append(lineSeperator);
 		if (StringUtils.isNotBlank(this.getBillToPhone())) {
 			sb.append("Tel: ").append(this.getBillToPhone());
 		}
