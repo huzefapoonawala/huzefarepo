@@ -9,4 +9,6 @@ public interface Defaults {
 	String INVOICE_FILE_EXTENSION = ".html";
 	String DATE_DISPLAY_FORMAT ="MM/dd/yy";
 	String PDF_FILE_EXTENSION = ".pdf";
+	
+	int WORK_ORDER_TYPE = 2;
 }

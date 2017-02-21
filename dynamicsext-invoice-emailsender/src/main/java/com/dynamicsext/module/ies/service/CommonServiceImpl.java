@@ -29,6 +29,7 @@ public class CommonServiceImpl implements CommonService {
 	
 	@Value("${store.logo.image}") private String storeLogoImg;
 	@Value("${store.website.url}") private String storeWebsiteUrl;
+	@Value("${store.notes}") private String storeNotes;
 	
 	public StoreVO getStoreDetails() {
 		StoreVO storeVO = jdbcTemplate.queryForObject("select top 1 [StoreName], StoreAddress1, StoreAddress2, StoreCity, StoreCountry, StoreEmail, StoreFax, StoreState, StoreZip, StoreEmail, StorePhone from Configuration;", new BeanPropertyRowMapper<StoreVO>(StoreVO.class));
@@ -66,6 +67,7 @@ public class CommonServiceImpl implements CommonService {
 		store.setStoreWebsite(storeWebsiteUrl);
 		model.put("storeAddress", store.getStoreDetails(isHtml ? "<br>" : "\n"));
 		model.put("storeLogoText", StringUtils.join(isHtml ? "<h3>" : "",store.getStoreName(), isHtml ? "</h3>" : ""));
+		model.put("storeNotes", isHtml ? storeNotes : storeNotes.replaceFirst("<center>", "").replaceFirst("</center>", ""));
 	}
 	
 	@Override

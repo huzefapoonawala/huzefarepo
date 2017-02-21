@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import com.dynamicsext.module.ies.vo.AccountStatementDetailsVO;
+import com.dynamicsext.module.ies.vo.PaymentEntryVO;
 import com.dynamicsext.module.ies.vo.TenderVO;
 import com.dynamicsext.module.ies.vo.TransactionEntryVO;
 import com.dynamicsext.module.ies.vo.TransactionVO;
@@ -301,7 +302,7 @@ public class PDFUtil {
 				headerRightPart.addCell(cell);
 
 				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
-				headerRightPart.addCell(createCellWithText("Transaction #:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText("Invoice #:", PdfPCell.NO_BORDER));
 				headerRightPart.addCell(createCellWithText(Integer.valueOf(transaction.getTransactionNumber()).toString(), PdfPCell.NO_BORDER));
 
 				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
@@ -317,7 +318,7 @@ public class PDFUtil {
 				headerRightPart.addCell(createCellWithText(transaction.getTransactionTimePart(), PdfPCell.NO_BORDER));
 
 				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
-				headerRightPart.addCell(createCellWithText("Cashier:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText("Sales Rep:", PdfPCell.NO_BORDER));
 				headerRightPart.addCell(createCellWithText(transaction.getCashier(), PdfPCell.NO_BORDER));
 			}
 		});
@@ -479,17 +480,412 @@ public class PDFUtil {
 		document.close();
 	}
 	
-	/*public static void main(String[] args) {
-		try {
-			Map<String, Object> model = new HashMap<String, Object>();
-			model.put("storeLogoImg", "./configs/jamaicahardwarelogo_218X44.jpg");
-			model.put("storeLogoText", "Jamaica Electrical & Hardware Inc.");
-			model.put("storeAddress", "131-01 Jamaica Ave.\nRichmond Hill, NY 11418\nTel. & Fax: 718-880-1258\nEmail: Sales@JamaicaHardware.com\nWebsite: www.jamaicahardware.com");
-			generateInvoice(new File("./topreview-invoices/sample-invoice.pdf"), model);
-		} catch (Exception e) {
-			e.printStackTrace();
+	@SuppressWarnings("unchecked")
+	public static void generateQuoteAndWorkOrder(File pdfFile, Map<String, Object> model) throws Exception {
+		Document document = createDocument(pdfFile);
+		document.open();
+		
+		final int documentType = (Integer) model.get("documentType");
+		final TransactionVO transaction = (TransactionVO) model.get("order");
+		
+		PdfPTable header = createHeader(model, documentType == Defaults.WORK_ORDER_TYPE ?  "Work Order" : "Quote", new PDFGenericInterface() {
+			@Override
+			public void decorateRightHeaderPart(PdfPTable headerRightPart) {
+				PdfPCell cell = new PdfPCell(new Phrase(" "));
+				cell.setBorder(PdfPCell.NO_BORDER);
+				cell.setColspan(3);
+				headerRightPart.addCell(cell);
+
+				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText((documentType == Defaults.WORK_ORDER_TYPE ? "Work order" : "Quote")+" #:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText(Integer.valueOf(transaction.getTransactionNumber()).toString(), PdfPCell.NO_BORDER));
+
+				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText("Account #:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText(transaction.getAccountNumber(), PdfPCell.NO_BORDER));
+
+				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText("Date:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText(transaction.getTransactionDatePart(), PdfPCell.NO_BORDER));
+
+				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText("Time:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText(transaction.getTransactionTimePart(), PdfPCell.NO_BORDER));
+
+				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText("Sales Rep:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText(transaction.getCashier(), PdfPCell.NO_BORDER));
+			}
+		});
+		document.add(header);
+		document.add(new Phrase(" "));
+		
+		PdfPTable tmpTable = new PdfPTable(new float[]{12,33,12,43});
+		tmpTable.setWidthPercentage(100);
+		
+		PdfPCell cell = new PdfPCell(new Phrase("Bill To:"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase(transaction.getBillToDetails("\n")));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase("Ship To:"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase(transaction.getShipToDetails("\n")));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase(" "));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setColspan(4);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase("Reference:"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase(transaction.getReference()));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setColspan(3);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase("Comment:"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase(transaction.getComment()));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setColspan(3);
+		tmpTable.addCell(cell);
+
+		document.add(tmpTable);
+		document.add(new Phrase(" "));
+		
+		tmpTable = new PdfPTable(new float[]{20,41,13,13,13});
+		tmpTable.setWidthPercentage(100);
+		tmpTable.setTableEvent(new BorderEvent());
+		tmpTable.setHeaderRows(1);
+		
+		for (String label : new String[]{"Item No.", "Description", "QTY|2", "Price|2", "Ext. Price|2"}) {
+			int idx = label.indexOf("|");
+			cell = new PdfPCell(new Phrase(idx == -1 ? label : label.substring(0, idx)));
+			cell.setBackgroundColor(BaseColor.YELLOW);
+			if (idx > -1) {
+				cell.setHorizontalAlignment(Integer.valueOf(label.substring(idx+1)));
+			}
+			tmpTable.addCell(cell);
 		}
-	}*/
+		
+		List<TransactionEntryVO> transactionEntries = (List<TransactionEntryVO>) model.get("transactionEntries");
+		for (TransactionEntryVO t : transactionEntries) {
+			cell = new PdfPCell(new Phrase(t.getItemLookupCode()));
+			cell.setBorder(PdfPCell.RIGHT | PdfPCell.LEFT);
+			tmpTable.addCell(cell);
+			
+			String description = t.getDescription().replaceAll("<br>", "\n").replaceAll("&nbsp;", "");
+			if (documentType == Defaults.WORK_ORDER_TYPE) {
+				if (t.getQuantityOnOrder() > 0) {
+					description += "\nQuantity RTD:\nQuantity On Order:";
+				}
+			}
+			cell = new PdfPCell(new Phrase(description));
+			cell.setBorder(PdfPCell.RIGHT);
+			tmpTable.addCell(cell);
+			
+			String qty = t.getQuantity().toString();
+			if (documentType == Defaults.WORK_ORDER_TYPE) {
+				if (t.getQuantityOnOrder() > 0) {
+					qty += "\n"+t.getQuantityRTD()+"\u00a0\u00a0\u00a0\u00a0\u00a0\n"+t.getQuantityOnOrder()+"\u00a0\u00a0\u00a0\u00a0\u00a0";
+				}
+			}
+			qty+="\n\u00a0";
+			cell = new PdfPCell(new Phrase(qty));
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			cell.setBorder(PdfPCell.RIGHT);
+			tmpTable.addCell(cell);
+			
+			cell = new PdfPCell(new Phrase(t.getPriceInHtmlFormat()));
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			cell.setBorder(PdfPCell.RIGHT);
+			tmpTable.addCell(cell);
+			
+			cell = new PdfPCell(new Phrase(t.getExtPriceInHtmlFormat()));
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			cell.setBorder(PdfPCell.RIGHT);
+			tmpTable.addCell(cell);
+		}
+		document.add(tmpTable);
+		
+		tmpTable = new PdfPTable(1);
+		tmpTable.setWidthPercentage(100);
+		cell = new PdfPCell(new Phrase(" "));
+		cell.setBackgroundColor(BaseColor.YELLOW);
+		cell.setColspan(5);
+		cell.setBorder(PdfPCell.TOP);
+		tmpTable.addCell(cell);
+		document.add(tmpTable);		
+		
+		tmpTable = new PdfPTable(new float[]{62,38});
+		tmpTable.setWidthPercentage(100);
+		
+		cell = new PdfPCell(new Phrase((String)model.get("storeNotes")));
+		cell.setBorder(PdfPCell.RIGHT | PdfPCell.LEFT | PdfPCell.TOP | PdfPCell.BOTTOM);
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		tmpTable.addCell(cell);
+		
+		PdfPTable tmpTable2 = new PdfPTable(new float[]{58,42});
+		tmpTable2.setWidthPercentage(100);
+		
+		cell = new PdfPCell(new Phrase("Sub Total"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		cell = new PdfPCell(new Phrase((String)model.get("subTotal")));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase("Sales Tax"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		cell = new PdfPCell(new Phrase(transaction.getSalesTaxInDisplayFormat()));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase("Total"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		cell = new PdfPCell(new Phrase(transaction.getGrandTotalInDisplayFormat()));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		
+		if (documentType == Defaults.WORK_ORDER_TYPE) {
+			cell = new PdfPCell(new Phrase(" "));
+			cell.setBorder(PdfPCell.NO_BORDER);
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			cell.setColspan(2);
+			tmpTable2.addCell(cell);
+			
+			cell = new PdfPCell(new Phrase("Remaining Deposit"));
+			cell.setBorder(PdfPCell.NO_BORDER);
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tmpTable2.addCell(cell);
+			cell = new PdfPCell(new Phrase(transaction.getDepositInHtmlFormat()));
+			cell.setBorder(PdfPCell.NO_BORDER);
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tmpTable2.addCell(cell);
+			
+			cell = new PdfPCell(new Phrase("New Balance"));
+			cell.setBorder(PdfPCell.NO_BORDER);
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tmpTable2.addCell(cell);
+			cell = new PdfPCell(new Phrase((String)model.get("newBalance")));
+			cell.setBorder(PdfPCell.NO_BORDER);
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tmpTable2.addCell(cell);
+		}
+		
+		cell = new PdfPCell(tmpTable2);
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		document.add(tmpTable);
+		
+		document.close();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void generateAccountPayment(File pdfFile, Map<String, Object> model) throws Exception {
+		Document document = createDocument(pdfFile);
+		document.open();
+		
+		final TransactionVO transaction = (TransactionVO) model.get("pr");
+		
+		PdfPTable header = createHeader(model, "Account Payment", new PDFGenericInterface() {
+			@Override
+			public void decorateRightHeaderPart(PdfPTable headerRightPart) {
+				PdfPCell cell = new PdfPCell(new Phrase(" "));
+				cell.setBorder(PdfPCell.NO_BORDER);
+				cell.setColspan(3);
+				headerRightPart.addCell(cell);
+
+				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText("Payment #:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText(Integer.valueOf(transaction.getTransactionNumber()).toString(), PdfPCell.NO_BORDER));
+
+				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText("Account #:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText(transaction.getAccountNumber(), PdfPCell.NO_BORDER));
+
+				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText("Date:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText(transaction.getTransactionDatePart(), PdfPCell.NO_BORDER));
+
+				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText("Time:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText(transaction.getTransactionTimePart(), PdfPCell.NO_BORDER));
+
+				headerRightPart.addCell(createCellWithText("", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText("Sales Rep:", PdfPCell.NO_BORDER));
+				headerRightPart.addCell(createCellWithText(transaction.getCashier(), PdfPCell.NO_BORDER));
+			}
+		});
+		document.add(header);
+		document.add(new Phrase(" "));
+		
+		PdfPTable tmpTable = new PdfPTable(new float[]{12,88});
+		tmpTable.setWidthPercentage(100);
+		
+		PdfPCell cell = new PdfPCell(new Phrase("Bill To:"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase(transaction.getBillToDetails("\n")));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase(" "));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setColspan(4);
+		tmpTable.addCell(cell);
+		
+		document.add(tmpTable);
+		
+		tmpTable = new PdfPTable(new float[]{19,15,15,17,17,17});
+		tmpTable.setWidthPercentage(100);
+		tmpTable.setTableEvent(new BorderEvent());
+		tmpTable.setHeaderRows(1);
+		
+		for (String label : new String[]{"Reference", "Invoice Date|1", "Due Date|1", "Invoice Amount|2", "Balance Due|2", "Payment|2"}) {
+			int idx = label.indexOf("|");
+			cell = new PdfPCell(new Phrase(idx == -1 ? label : label.substring(0, idx)));
+			cell.setBackgroundColor(BaseColor.YELLOW);
+			if (idx > -1) {
+				cell.setHorizontalAlignment(Integer.valueOf(label.substring(idx+1)));
+			}
+			tmpTable.addCell(cell);
+		}
+		
+		List<PaymentEntryVO> paymentEntries = (List<PaymentEntryVO>) model.get("paymentEntries");
+		for (PaymentEntryVO p : paymentEntries) {
+			cell = new PdfPCell(new Phrase("TR-"+p.getTransactionNumber()));
+			cell.setBorder(PdfPCell.RIGHT | PdfPCell.LEFT);
+			tmpTable.addCell(cell);
+			
+			cell = new PdfPCell(new Phrase(p.getInvoiceDateInHtmlFormat()));
+			cell.setBorder(PdfPCell.RIGHT);
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			tmpTable.addCell(cell);
+			
+			cell = new PdfPCell(new Phrase(p.getDueDateInHtmlFormat()));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell.setBorder(PdfPCell.RIGHT);
+			tmpTable.addCell(cell);
+			
+			cell = new PdfPCell(new Phrase(p.getInvoiceAmountInHtmlFormat()));
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			cell.setBorder(PdfPCell.RIGHT);
+			tmpTable.addCell(cell);
+			
+			cell = new PdfPCell(new Phrase(p.getBalanceDueInHtmlFormat()));
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			cell.setBorder(PdfPCell.RIGHT);
+			tmpTable.addCell(cell);
+			
+			cell = new PdfPCell(new Phrase(p.getPaymentInHtmlFormat()));
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			cell.setBorder(PdfPCell.RIGHT);
+			tmpTable.addCell(cell);
+		}
+		
+		document.add(tmpTable);
+		
+		tmpTable = new PdfPTable(1);
+		tmpTable.setWidthPercentage(100);
+		cell = new PdfPCell(new Phrase(" "));
+		cell.setBackgroundColor(BaseColor.YELLOW);
+		cell.setColspan(5);
+		cell.setBorder(PdfPCell.TOP);
+		tmpTable.addCell(cell);
+		document.add(tmpTable);		
+		
+		tmpTable = new PdfPTable(new float[]{62,38});
+		tmpTable.setWidthPercentage(100);
+		
+		cell = new PdfPCell(new Phrase((String)model.get("storeNotes")));
+		cell.setBorder(PdfPCell.RIGHT | PdfPCell.LEFT | PdfPCell.TOP | PdfPCell.BOTTOM);
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		tmpTable.addCell(cell);
+		
+		PdfPTable tmpTable2 = new PdfPTable(new float[]{58,42});
+		tmpTable2.setWidthPercentage(100);
+		
+		cell = new PdfPCell(new Phrase("Total Payments\n\n"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		cell = new PdfPCell(new Phrase(transaction.getGrandTotalInDisplayFormat()+"\n\n"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		
+		List<TenderVO> tenders = (List<TenderVO>) model.get("tenders");
+		for (TenderVO t : tenders) {
+			cell = new PdfPCell(new Phrase("Paid "+t.getDescription()));
+			cell.setBorder(PdfPCell.NO_BORDER);
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tmpTable2.addCell(cell);
+			cell = new PdfPCell(new Phrase(t.getAmountInDisplayFormat()));
+			cell.setBorder(PdfPCell.NO_BORDER);
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tmpTable2.addCell(cell);
+		}
+		
+		cell = new PdfPCell(new Phrase("\nPrevious Balance"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		cell = new PdfPCell(new Phrase("\n"+model.get("previousBal")));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase("Payments"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		cell = new PdfPCell(new Phrase(transaction.getGrandTotalInDisplayFormat()));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase("New Balance"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		cell = new PdfPCell(new Phrase((String)model.get("newBal")));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tmpTable2.addCell(cell);
+		
+		cell = new PdfPCell(tmpTable2);
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		document.add(tmpTable);
+		
+		document.close();
+	}
 }
 
 class BorderEvent implements PdfPTableEvent {

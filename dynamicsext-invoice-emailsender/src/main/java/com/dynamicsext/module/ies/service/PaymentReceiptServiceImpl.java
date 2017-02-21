@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.dynamicsext.module.ies.util.CommonUtil;
 import com.dynamicsext.module.ies.util.Defaults;
+import com.dynamicsext.module.ies.util.PDFUtil;
 import com.dynamicsext.module.ies.vo.PaymentEntryVO;
 import com.dynamicsext.module.ies.vo.TenderVO;
 import com.dynamicsext.module.ies.vo.TransactionVO;
@@ -30,7 +31,6 @@ public class PaymentReceiptServiceImpl implements PaymentReceiptService {
 	
 	@Value("${paymentreceipt.file.path}") private String prFilePath;
 	@Value("${paymentreceipt.file.prefix:}") private String prFilePrefix;
-	@Value("${store.notes}") private String storeNotes;
 	
 	public void generatePaymentReceipt(Long prId) {
 		LOG.debug(String.format("Start: Generating payment receipt for id %s", prId));
@@ -47,8 +47,6 @@ public class PaymentReceiptServiceImpl implements PaymentReceiptService {
 		}
 		
 		for (TransactionVO pr : paymentReceipts) {
-			String filename = prFilePrefix+Integer.valueOf(pr.getTransactionNumber()).toString()+Defaults.INVOICE_FILE_EXTENSION;
-			File toPreviewFile = new File(prFolder, filename);
 			String query = "select * from ( select a2.TransactionNumber, a2.Date as invoiceDate, a2.DueDate, a2.OriginalAmount as invoiceAmount, abs(a1.Amount) as payment, a2.Balance as balanceDue from AccountReceivableHistory a1 inner join AccountReceivable a2 on a2.ID = a1.AccountReceivableID where a1.PaymentID = ? union select TransactionNumber, Date as invoiceDate, DueDate, OriginalAmount as invoiceAmount, 0 as payment, Balance as balanceDue from AccountReceivable where CustomerID = ? and Balance > 0 and ID not in (select AccountReceivableID from AccountReceivableHistory where PaymentID = ?) ) t order by invoiceDate;";
 			List<PaymentEntryVO> paymentEntries = jdbcTemplate.query(query, new BeanPropertyRowMapper<PaymentEntryVO>(PaymentEntryVO.class), pr.getTransactionNumber(), pr.getCustomerId(), pr.getTransactionNumber());
 			double previousBal = 0;
@@ -61,14 +59,24 @@ public class PaymentReceiptServiceImpl implements PaymentReceiptService {
 			model.put("previousBal", CommonUtil.convertAmountInHtmlFormat(previousBal));
 			model.put("newBal", CommonUtil.convertAmountInHtmlFormat(previousBal-pr.getGrandTotal()));
 			
-			commonService.populateStoreDetails(model);
-			model.put("storeNotes", storeNotes);
-			
 			List<TenderVO> tenders = jdbcTemplate.query("select t.Description, sum(t.Amount) as Amount from TenderEntry t where PaymentID = ? group by Description;", new BeanPropertyRowMapper<TenderVO>(TenderVO.class), pr.getTransactionNumber());
 			model.put("tenders", tenders);
 			
-			String text = commonService.generatePaymentReceipt("paymentreceipt-template.html", model);
-			commonService.saveFile(toPreviewFile,text);
+			boolean isHtml = false;
+			commonService.populateStoreDetails(model, isHtml);
+			
+			String filename = prFilePrefix+Integer.valueOf(pr.getTransactionNumber()).toString()+(isHtml ? Defaults.INVOICE_FILE_EXTENSION : Defaults.PDF_FILE_EXTENSION);
+			File toPreviewFile = new File(prFolder, filename);
+			if (isHtml) {
+				String text = commonService.generatePaymentReceipt("paymentreceipt-template.html", model);
+				commonService.saveFile(toPreviewFile,text);
+			} else {
+				try {
+					PDFUtil.generateAccountPayment(toPreviewFile, model);
+				} catch (Exception e) {
+					LOG.error("Error occurred while generating PDF of account payment for id "+prId, e);
+				}
+			}
 		}
 		
 		LOG.debug(String.format("End: Generating payment receipt for id %s", prId));

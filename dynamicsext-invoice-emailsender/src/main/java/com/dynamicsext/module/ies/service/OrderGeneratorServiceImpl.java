@@ -18,6 +18,7 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.dynamicsext.module.ies.util.CommonUtil;
 import com.dynamicsext.module.ies.util.Defaults;
+import com.dynamicsext.module.ies.util.PDFUtil;
 import com.dynamicsext.module.ies.vo.TransactionEntryVO;
 import com.dynamicsext.module.ies.vo.TransactionVO;
 
@@ -34,10 +35,6 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 	@Value("${workorder.file.prefix:}") private String workOrderFilePrefix;
 	@Value("${quote.file.path}") private String quoteFilePath;
 	@Value("${quote.file.prefix:}") private String quoteFilePrefix;
-	
-	@Value("${store.notes}") private String storeNotes;
-	
-	private static final int WORK_ORDER_TYPE = 2;
 	
 	public void generateOrder(Long orderId) {
 		LOG.debug(String.format("Start: Generating order for id %s", orderId));
@@ -60,16 +57,10 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 		for (TransactionVO o : orders) {
 			List<TransactionEntryVO> transactionEntries = jdbcTemplate.query("select i.ItemLookupCode, t.Description+ case when t.Comment is not null and len(t.Comment) > 0 then '<br>&nbsp;'+t.Comment else '' end as description, t.QuantityOnOrder, t.Price, (t.QuantityOnOrder+t.QuantityRTD)*t.Price as extPrice, t.QuantityRTD, t.QuantityOnOrder+t.QuantityRTD as Quantity from OrderEntry t inner join Item i on t.ItemID = i.ID where t.OrderID = ? order by t.ID", new BeanPropertyRowMapper<TransactionEntryVO>(TransactionEntryVO.class), o.getTransactionNumber());
 			
-			String filename = (o.getOrderType().intValue() == WORK_ORDER_TYPE ? workOrderFilePrefix : quoteFilePrefix)+Integer.valueOf(o.getTransactionNumber()).toString()+Defaults.INVOICE_FILE_EXTENSION;
-			File toPreviewFile = new File(o.getOrderType().intValue() == WORK_ORDER_TYPE ? workOrderFolder : quoteFolder, filename);
-			
 			Map<String, Object> model = new HashMap<String, Object>();
 			model.put("order", o);
 			model.put("transactionEntries", transactionEntries);
 			model.put("subTotal", CommonUtil.convertAmountInHtmlFormat(o.getGrandTotal()-o.getSalesTax()));
-			
-			commonService.populateStoreDetails(model);
-			model.put("storeNotes", storeNotes);
 			
 			if (o.getOrderType().intValue() == 2) {
 				/*List<TenderVO> tenders = jdbcTemplate.query("select * from ( select t.Description, sum(t.Amount) as Amount, 2 as order_priority from OrderHistory o inner join TenderEntry t on t.OrderHistoryID = o.ID where OrderID = ? group by Description union select 'Deposit' as description, sum(t.Amount) as Amount, 1 as order_priority from OrderHistory o inner join TenderEntry t on t.OrderHistoryID = o.ID where OrderID = ? and t.TransactionNumber = 0 having sum(t.Amount) > 0 ) t order by order_priority;", new BeanPropertyRowMapper<TenderVO>(TenderVO.class), o.getTransactionNumber(), o.getTransactionNumber());
@@ -83,15 +74,28 @@ public class OrderGeneratorServiceImpl implements OrderGeneratorService {
 				model.put("newBalance", CommonUtil.convertAmountInHtmlFormat(newBalance));
 			}
 			
-			String text = generateOrder(o.getOrderType(), model);
-			commonService.saveFile(toPreviewFile,text);
+			boolean isHtml = false;
+			commonService.populateStoreDetails(model, isHtml);
+			String filename = (o.getOrderType().intValue() == Defaults.WORK_ORDER_TYPE ? workOrderFilePrefix : quoteFilePrefix)+Integer.valueOf(o.getTransactionNumber()).toString()+(isHtml ? Defaults.INVOICE_FILE_EXTENSION : Defaults.PDF_FILE_EXTENSION);
+			File toPreviewFile = new File(o.getOrderType().intValue() == Defaults.WORK_ORDER_TYPE ? workOrderFolder : quoteFolder, filename);
+			if (isHtml) {
+				String text = generateOrder(o.getOrderType(), model);
+				commonService.saveFile(toPreviewFile,text);
+			} else {
+				try {
+					model.put("documentType", o.getOrderType());
+					PDFUtil.generateQuoteAndWorkOrder(toPreviewFile, model);
+				} catch (Exception e) {
+					LOG.error("Error occurred while generating PDF for "+(o.getOrderType() == Defaults.WORK_ORDER_TYPE ? "work order" : "quote")+" with id "+orderId, e);
+				}
+			}
 		}
 		
 		LOG.debug(String.format("End: Generating order for id %s", orderId));
 	}
 	
 	private String generateOrder(int orderType, Map<String, Object> model){
-		String text = VelocityEngineUtils.mergeTemplateIntoString(this.engine, orderType == WORK_ORDER_TYPE ? "order-template.html" : "quote-template.html", "UTF-8", model);
+		String text = VelocityEngineUtils.mergeTemplateIntoString(this.engine, orderType == Defaults.WORK_ORDER_TYPE ? "order-template.html" : "quote-template.html", "UTF-8", model);
 		return text;
 	}
 }
