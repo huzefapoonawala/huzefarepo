@@ -597,6 +597,10 @@ public class PDFUtil {
 			tmpTable.addCell(cell);
 			
 			String qty = t.getQuantity().toString();
+			int lineCount = t.getDescription().split("<br>").length-1;
+			for (int i = 0; i < lineCount; i++) {
+				qty += "\n";
+			}
 			if (documentType == Defaults.WORK_ORDER_TYPE) {
 				if (t.getQuantityOnOrder() > 0) {
 					qty += "\n"+t.getQuantityRTD()+"\u00a0\u00a0\u00a0\u00a0\u00a0\n"+t.getQuantityOnOrder()+"\u00a0\u00a0\u00a0\u00a0\u00a0";
