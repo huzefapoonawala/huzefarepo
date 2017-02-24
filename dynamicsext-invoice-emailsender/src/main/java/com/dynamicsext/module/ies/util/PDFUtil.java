@@ -375,7 +375,7 @@ public class PDFUtil {
 		tmpTable.setTableEvent(new BorderEvent());
 		tmpTable.setHeaderRows(1);
 		
-		for (String label : new String[]{"Item No.", "Description", "QTY|2", "Price|2", "Ext. Price|2"}) {
+		for (String label : new String[]{"Item No.", "Description", "QTY|1", "Price|2", "Ext. Price|2"}) {
 			int idx = label.indexOf("|");
 			cell = new PdfPCell(new Phrase(idx == -1 ? label : label.substring(0, idx)));
 			cell.setBackgroundColor(BaseColor.YELLOW);
@@ -396,7 +396,7 @@ public class PDFUtil {
 			tmpTable.addCell(cell);
 			
 			cell = new PdfPCell(new Phrase(t.getQuantity().toString()));
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setBorder(PdfPCell.RIGHT);
 			tmpTable.addCell(cell);
 			
@@ -570,7 +570,7 @@ public class PDFUtil {
 		tmpTable.setTableEvent(new BorderEvent());
 		tmpTable.setHeaderRows(1);
 		
-		for (String label : new String[]{"Item No.", "Description", "QTY|2", "Price|2", "Ext. Price|2"}) {
+		for (String label : new String[]{"Item No.", "Description", "QTY|1", "Price|2", "Ext. Price|2"}) {
 			int idx = label.indexOf("|");
 			cell = new PdfPCell(new Phrase(idx == -1 ? label : label.substring(0, idx)));
 			cell.setBackgroundColor(BaseColor.YELLOW);
@@ -603,12 +603,12 @@ public class PDFUtil {
 			}
 			if (documentType == Defaults.WORK_ORDER_TYPE) {
 				if (t.getQuantityOnOrder() > 0) {
-					qty += "\n"+t.getQuantityRTD()+"\u00a0\u00a0\u00a0\u00a0\u00a0\n"+t.getQuantityOnOrder()+"\u00a0\u00a0\u00a0\u00a0\u00a0";
+					qty += "\n"+t.getQuantityRTD()+"\u00a0\u00a0\u00a0\n"+t.getQuantityOnOrder()+"\u00a0\u00a0\u00a0";
 				}
 			}
 			qty+="\n\u00a0";
 			cell = new PdfPCell(new Phrase(qty));
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setBorder(PdfPCell.RIGHT);
 			tmpTable.addCell(cell);
 			
