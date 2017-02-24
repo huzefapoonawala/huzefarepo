@@ -22,7 +22,6 @@ import com.dynamicsext.module.ies.service.PaymentReceiptService;
 @EnableAutoConfiguration
 @ComponentScan(basePackages={"com.dynamicsext"})
 public class ApplicationBootstrap{
-	
 	private static final Logger LOG = LoggerFactory.getLogger(ApplicationBootstrap.class);
 	private static final String FIRSTRUN_TIME_DELTA_PROPERTY_KEY = "firstrun.time.delta";
 	private static final String SET_PROFILE = "profile";
