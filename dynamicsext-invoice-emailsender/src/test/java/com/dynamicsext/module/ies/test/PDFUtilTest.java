@@ -17,7 +17,7 @@ public class PDFUtilTest {
 
 	public static void main(String[] args) throws Exception {
 		String description = "Masing tape Beige 1.5\"<br><br>add correct p/n";
-		int lineCount = description.split("<br>").length-1;
+		int lineCount = description.split("<br>").length-1; 
 		String qty = "1";
 		for (int i = 0; i < lineCount; i++) {
 			qty += "ln";
