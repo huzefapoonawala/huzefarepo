@@ -262,7 +262,7 @@ public class PDFUtil {
 		cell.setBorder(PdfPCell.NO_BORDER);
 		header.addCell(cell);
 		
-		subTable = new PdfPTable(new float[]{30,35,35});
+		subTable = new PdfPTable(new float[]{30,25,45});
 		cell = new PdfPCell(new Phrase(fileHeader, h1));
 		cell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
 		cell.setBorder(PdfPCell.NO_BORDER);

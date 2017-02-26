@@ -14,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import com.dynamicsext.module.ies.service.AccountStatementService;
+import com.dynamicsext.module.ies.service.InvoiceGeneratorService;
 import com.dynamicsext.module.ies.service.InvoiceSenderService;
 import com.dynamicsext.module.ies.service.OrderGeneratorService;
 import com.dynamicsext.module.ies.service.PaymentReceiptService;
@@ -33,11 +34,14 @@ public class ApplicationBootstrap{
 	private static final String CUSTOMER_ID = "customer.id";
 	private static final String FROM_DATE = "date.from";
 	private static final String TO_DATE = "date.to";
+	private static final String INVOICE_GENERATOR_PROFILE = "invoicegenerator";
+	private static final String TRANSACTION_NUMBERS = "transaction.numbers";
 	
 	@Autowired private InvoiceSenderService invoiceSenderService;
 	@Autowired private OrderGeneratorService orderGeneratorService;
 	@Autowired private PaymentReceiptService paymentReceiptService;
 	@Autowired private AccountStatementService accountStatementService;
+	@Autowired private InvoiceGeneratorService invoiceGeneratorService;
 	
     public static void main( String[] args ){
     	String profile = System.getProperty(SET_PROFILE);
@@ -51,6 +55,9 @@ public class ApplicationBootstrap{
 		}
         else if (StringUtils.equalsIgnoreCase(AS_GENERATOR_PROFILE, profile)) {
 			this_.initASGenerator();
+		}
+        else if (StringUtils.equalsIgnoreCase(INVOICE_GENERATOR_PROFILE, profile)) {
+			this_.initInvoiceGenerator();
 		}
         else{
         	this_.init();
@@ -117,6 +124,21 @@ public class ApplicationBootstrap{
 		}
     	else{
     		LOG.info("No customer found for generating account statement.");
+    	}
+	}
+    
+    private void initInvoiceGenerator() {
+    	if (StringUtils.isNotBlank(System.getProperty(TRANSACTION_NUMBERS))) {
+    		for (String t : System.getProperty(TRANSACTION_NUMBERS).split(",")) {
+    			try {
+            		invoiceGeneratorService.generateInvoice(Long.valueOf(t));
+    			} catch (Exception e) {
+    				LOG.error(String.format("Error occurred while generating invoice with transaction number '%s'.", t),e);
+    			}
+			}
+		}
+    	else{
+    		LOG.info("No transaction number/s found to be generated.");
     	}
 	}
 }
