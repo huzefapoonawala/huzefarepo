@@ -65,7 +65,7 @@ public class InvoiceGeneratorServiceImpl implements InvoiceGeneratorService {
 			
 			commonService.populateStoreDetails(model, false);
 			
-			File invoiceFile = new File(invoiceFilePath, t.getBillToCompany()+"-"+Integer.valueOf(t.getTransactionNumber()).toString()+Defaults.PDF_FILE_EXTENSION);
+			File invoiceFile = new File(invoiceFilePath, invoiceFilePrefix+Integer.valueOf(t.getTransactionNumber()).toString()+"-"+t.getBillToCompany()+Defaults.PDF_FILE_EXTENSION);
 			try {
 				PDFUtil.generateInvoice(invoiceFile, model);
 			} catch (Exception e) {
