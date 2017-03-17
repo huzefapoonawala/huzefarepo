@@ -759,7 +759,20 @@ public class PDFUtil {
 		
 		cell = new PdfPCell(new Phrase(" "));
 		cell.setBorder(PdfPCell.NO_BORDER);
-		cell.setColspan(4);
+		cell.setColspan(2);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase("Comment:"));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase(transaction.getComment()));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		tmpTable.addCell(cell);
+		
+		cell = new PdfPCell(new Phrase(" "));
+		cell.setBorder(PdfPCell.NO_BORDER);
+		cell.setColspan(2);
 		tmpTable.addCell(cell);
 		
 		document.add(tmpTable);
