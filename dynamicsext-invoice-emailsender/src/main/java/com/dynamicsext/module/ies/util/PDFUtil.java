@@ -457,7 +457,7 @@ public class PDFUtil {
 		tmpTable.addCell(cell);
 		
 		for (TenderVO t : (List<TenderVO>)model.get("tenders")) {
-			cell = new PdfPCell(new Phrase(t.getDescription()+" Tendered"));
+			cell = new PdfPCell(new Phrase(t.getDescription()/*+" Tendered"*/));
 			cell.setBorder(PdfPCell.NO_BORDER);
 			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			tmpTable.addCell(cell);
@@ -465,16 +465,18 @@ public class PDFUtil {
 			cell.setBorder(PdfPCell.NO_BORDER);
 			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			tmpTable.addCell(cell);
-		}		
-		cell = new PdfPCell(new Phrase("Change Due"));
-		cell.setBorder(PdfPCell.NO_BORDER);
-		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		tmpTable.addCell(cell);
-		cell = new PdfPCell(new Phrase((String)model.get("changeDue")));
-		cell.setBorder(PdfPCell.NO_BORDER);
-		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		tmpTable.addCell(cell);
+		}
 		
+		if (model.containsKey("changeDue")) {
+			cell = new PdfPCell(new Phrase("Change Due"));
+			cell.setBorder(PdfPCell.NO_BORDER);
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tmpTable.addCell(cell);
+			cell = new PdfPCell(new Phrase((String) model.get("changeDue")));
+			cell.setBorder(PdfPCell.NO_BORDER);
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tmpTable.addCell(cell);
+		}
 		document.add(tmpTable);
 		
 		document.close();

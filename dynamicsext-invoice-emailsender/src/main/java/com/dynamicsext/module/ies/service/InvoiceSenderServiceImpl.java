@@ -85,7 +85,9 @@ public class InvoiceSenderServiceImpl implements InvoiceSenderService {
 						model.put("transaction", t);
 						model.put("tenders", tenders);
 						model.put("transactionEntries", transactionEntries);
-						model.put("changeDue", CommonUtil.convertAmountInHtmlFormat(changeDue));
+						if (changeDue > 0) {
+							model.put("changeDue", CommonUtil.convertAmountInHtmlFormat(changeDue));
+						}
 						model.put("subTotal", CommonUtil.convertAmountInHtmlFormat(t.getGrandTotal()-t.getSalesTax()));
 						
 						commonService.populateStoreDetails(model, !isPDF);

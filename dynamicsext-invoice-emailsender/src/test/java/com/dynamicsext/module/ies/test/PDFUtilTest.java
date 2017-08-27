@@ -23,12 +23,13 @@ public class PDFUtilTest {
 			qty += "ln";
 		}
 		System.out.println(qty);
+		testInvoicePdf();
 		testQuotePdf();
 		testWorkOrderPdf();
 		testAccountPaymentPdf();
 	}
 	
-	public static void testInvoicePdf() throws Exception {
+	public static Map<String, Object> generateModel() throws Exception {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("storeLogoImg", "./configs/jamaicahardwarelogo_218X44.jpg");
 		model.put("storeLogoText", "Jamaica Electrical & Hardware Inc.");
@@ -64,11 +65,18 @@ public class PDFUtilTest {
 		model.put("transaction", transactionVO);
 		
 		List<TenderVO> tenders = new ArrayList<TenderVO>();
+		TenderVO tender = new TenderVO();
+		tender.setAmount(1.22);
+		tender.setDescription("Account");
+		tenders.add(tender);
 		model.put("tenders", tenders);
 		
 		model.put("changeDue", "$0.00");
-		
-		PDFUtil.generateInvoice(new File("./samples/sample-invoice.pdf"), model);
+		return model;
+	}
+	
+	public static void testInvoicePdf() throws Exception {
+		PDFUtil.generateInvoice(new File("./samples/sample-invoice.pdf"), generateModel());
 	}
 	
 	public static void testQuotePdf() throws Exception {

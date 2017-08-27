@@ -33,11 +33,11 @@
 								<table style="padding: 0px;">
 									<tr>
 										<td style="width: 149px; ">
-											Transaction #:<br>
+											Invoice #:<br>
 											Account #:<br>
 											Date:<br>
 											Time:<br>
-											Cashier:<br>
+											Sales Rep:<br>
 											<!-- Register #: -->
 										</td>
 										<td>
@@ -153,9 +153,11 @@
 								Sales Tax <br>
 								Total <br><br>
 								#foreach ($te in $tenders)
-									${te.description} Tendered <br> 
+									${te.description} <!-- Tendered --><br> 
 								#end
+								#if ($changeDue)
 								Change Due <br>
+								#end
 							</td>
 							<td align="right">
 								${subTotal} <br>
@@ -164,7 +166,9 @@
 								#foreach ($te in $tenders)
 									${te.amountInDisplayFormat} <br> 
 								#end
+								#if ($changeDue)
 								${changeDue} <br>
+								#end
 							</td>
 						</tr>
 					</table>
