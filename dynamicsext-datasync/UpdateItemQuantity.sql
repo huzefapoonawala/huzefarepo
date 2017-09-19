@@ -26,6 +26,7 @@ if (@lastrunon is null) begin
 end
 
 declare @updateqty table (code nvarchar(255), qty int);
+declare @itemqty2sync table (code nvarchar(255), qty int);
 
 
 USE Temp;
@@ -49,7 +50,10 @@ select ItemLookupCode, Quantity from Item i inner join @updateqty u on i.ItemLoo
 
 update Item set Quantity = Quantity - qty from Item i inner join @updateqty u on i.ItemLookupCode = u.code;
 
+insert into @itemqty2sync
 select ItemLookupCode, Quantity from Item i inner join @updateqty u on i.ItemLookupCode = u.code;
+
+select * from @itemqty2sync;
 
 set @currentdate = DATEADD(ss, 1, @currentdate);
 
@@ -58,5 +62,9 @@ using (select @processname as PROCESS_NAME) as s
 on t.PROCESS_NAME = s.PROCESS_NAME
 when matched then update set [LAST_RUN_ON] = @currentdate
 when not matched then insert (PROCESS_NAME, [LAST_RUN_ON]) values (s.PROCESS_NAME, @currentdate);
+
+USE Temp;
+
+update Item set Quantity = qty from Item i inner join @itemqty2sync u on i.ItemLookupCode = u.code;
 
 /* END */
