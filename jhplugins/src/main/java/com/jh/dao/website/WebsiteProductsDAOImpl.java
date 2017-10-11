@@ -29,6 +29,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -164,7 +165,7 @@ public class WebsiteProductsDAOImpl implements WebsiteProductsDAO {
 	}
 	
 	private List<String[]> parseFtpFile(String filename) throws IOException{
-		CSVReader reader = new CSVReader(new FileReader(filename),'~',CSVWriter.NO_QUOTE_CHARACTER);
+		CSVReader reader = new CSVReader(new FileReader(filename),'~',CSVWriter.NO_QUOTE_CHARACTER, CSVParser.NULL_CHARACTER);
 		String[] csvLine = null;
 		List<String[]> data = new ArrayList<String[]>();
 		while ((csvLine = reader.readNext()) != null) {
