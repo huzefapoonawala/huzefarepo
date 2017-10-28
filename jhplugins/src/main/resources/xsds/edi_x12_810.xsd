@@ -1,86 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-  <xs:element name="ediroot810">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="interchange"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="interchange">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="sender"/>
-        <xs:element ref="receiver"/>
-        <xs:element ref="group" maxOccurs="unbounded"/>
-      </xs:sequence>
-      <xs:attribute name="Control" use="required" type="xs:string"/>
-      <xs:attribute name="Date" use="required" type="xs:string"/>
-      <xs:attribute name="Standard" use="required" type="xs:string"/>
-      <xs:attribute name="StandardsId" use="required" type="xs:string"/>
-      <xs:attribute name="Time" use="required" type="xs:string"/>
-      <xs:attribute name="Version" use="required" type="xs:string"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="sender" type="addressCT"/>
-  <xs:element name="receiver" type="addressCT"/>
-  <xs:element name="group">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="transaction" maxOccurs="unbounded"/>
-      </xs:sequence>
-      <xs:attribute name="ApplReceiver" use="required" type="xs:string"/>
-      <xs:attribute name="ApplSender" use="required" type="xs:string"/>
-      <xs:attribute name="Control" use="required" type="xs:string"/>
-      <xs:attribute name="Date" use="required" type="xs:string"/>
-      <xs:attribute name="GroupType" use="required" type="xs:string"/>
-      <xs:attribute name="StandardCode" use="required" type="xs:string"/>
-      <xs:attribute name="StandardVersion" use="required" type="xs:string"/>
-      <xs:attribute name="Time" use="required" type="xs:string"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="transaction">
-    <xs:complexType>
-      <xs:choice maxOccurs="unbounded">
-        <xs:element ref="loop" maxOccurs="1"/>
-        <xs:element ref="segment"/>
-      </xs:choice>
-      <xs:attribute name="Control" use="required" type="xs:string"/>
-      <xs:attribute name="DocType" use="required" type="xs:string"/>
-      <xs:attribute name="Name" use="required" type="xs:string"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:complexType name="addressCT">
-    <xs:sequence>
-      <xs:element ref="address"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="address">
-    <xs:complexType>
-      <xs:attribute name="Id" use="required" type="xs:string"/>
-      <xs:attribute name="Qual" use="required" type="xs:string"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="segment">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="element"/>
-      </xs:sequence>
-      <xs:attribute name="Id" use="required" type="xs:string"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="element">
-    <xs:complexType mixed="true">
-      <xs:attribute name="Id" use="required" type="xs:string"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="loop">
-    <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="loop"/>
-        <xs:element ref="segment"/>
-      </xs:choice>
-      <xs:attribute name="Id" use="required" type="xs:string"/>
-    </xs:complexType>
-  </xs:element>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:element name="ediroot810">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" ref="interchange" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="interchange">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="sender" />
+				<xs:element ref="receiver" />
+				<xs:element ref="group" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="Control" use="required" type="xs:string" />
+			<xs:attribute name="Date" use="required" type="xs:string" />
+			<xs:attribute name="Standard" use="required" type="xs:string" />
+			<xs:attribute name="StandardsId" use="required" type="xs:string" />
+			<xs:attribute name="Time" use="required" type="xs:string" />
+			<xs:attribute name="Version" use="required" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sender" type="addressCT" />
+	<xs:element name="receiver" type="addressCT" />
+	<xs:element name="group">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="transaction" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="ApplReceiver" use="required" type="xs:string" />
+			<xs:attribute name="ApplSender" use="required" type="xs:string" />
+			<xs:attribute name="Control" use="required" type="xs:string" />
+			<xs:attribute name="Date" use="required" type="xs:string" />
+			<xs:attribute name="GroupType" use="required" type="xs:string" />
+			<xs:attribute name="StandardCode" use="required" type="xs:string" />
+			<xs:attribute name="StandardVersion" use="required"
+				type="xs:string" />
+			<xs:attribute name="Time" use="required" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="transaction">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="loop" maxOccurs="1" />
+				<xs:element ref="segment" />
+			</xs:choice>
+			<xs:attribute name="Control" use="required" type="xs:string" />
+			<xs:attribute name="DocType" use="required" type="xs:string" />
+			<xs:attribute name="Name" use="required" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="addressCT">
+		<xs:sequence>
+			<xs:element ref="address" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="address">
+		<xs:complexType>
+			<xs:attribute name="Id" use="required" type="xs:string" />
+			<xs:attribute name="Qual" use="required" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="segment">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" ref="element" />
+			</xs:sequence>
+			<xs:attribute name="Id" use="required" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="element">
+		<xs:complexType mixed="true">
+			<xs:attribute name="Id" use="required" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="loop">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="loop" />
+				<xs:element ref="segment" />
+			</xs:choice>
+			<xs:attribute name="Id" use="required" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
 </xs:schema>

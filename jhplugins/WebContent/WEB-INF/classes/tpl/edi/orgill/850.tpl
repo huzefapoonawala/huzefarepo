@@ -1,0 +1,5 @@
+<#assign date=orderDate?string("yyyyMMdd")>
+<#assign time=orderDate?string("HHmm")>
+<#assign orderIdWithZeros=orderId?left_pad(9,"0") >
+<#assign poNum=(poNumber)!"NA" >
+ISA*00*          *00*          *ZZ*${userId?right_pad(15)}*ZZ*ORGILL         *${date?substring(2)}*${time}*U*00401*${orderIdWithZeros}*1*P*:~GS*PO*${userId}*ORGILL*${date}*${time}*${orderId}*X*004010~ST*850*${orderId}~BEG*00*DS*<#if poNum != "NA" >${poNum}<#else>${orderId}</#if>* *${date}* *01*000~REF*PD*PD~FOB*DE****FOB*AP~ITD*ZZ~DTM*010*${date}~N1*ST*${'${firstName} ${lastName}'}*92*004~N3*${shippingAddress1!""}*${shippingAddress2!""}~N4*${shippingCity}*${shippingZoneCode}*${shippingPostcode}*US~<#list itemsOnOrder as item>PO1**${item.onOrder}*EA*0**VP*${item.sku}*BP*${item.sku}~</#list> IT8**B0~SE*${itemsOnOrder?size+11}*${orderId}~GE*1*${orderId}~IEA*1*${orderIdWithZeros}~

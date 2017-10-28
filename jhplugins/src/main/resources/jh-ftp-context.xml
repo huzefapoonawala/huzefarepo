@@ -1,55 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
-	
-	<bean id="purchaseInvoiceFTPReader" class="com.jh.util.FTPReader" 
-		p:server="${jhplugins.hostname.pi.orgill}" 
-		p:ftpUsers-ref="ftpUsers">
+
+	<bean id="purchaseInvoiceFTPReader" class="com.jh.util.FTPReader"
+		p:server="${jhplugins.hostname.pi.orgill}" p:ftpUsers-ref="ftpUsers">
 	</bean>
-	
+
 	<bean id="ftpWriter" class="com.jh.util.FTPWriter"></bean>
 
-	<bean id="webfilesFTPReader" class="com.jh.util.FTPReader" 
-		p:server="${jhplugins.hostname.webfiles.orgill}" 
-		p:ftpUsers-ref="webfilesFTPUsers"
+	<bean id="webfilesFTPReader" class="com.jh.util.FTPReader"
+		p:server="${jhplugins.hostname.webfiles.orgill}" p:ftpUsers-ref="webfilesFTPUsers"
 		p:downloadFilePath="${jhplugins.path.local.webfiles.orgill}">
 	</bean>
-	
+
 	<bean id="orgillEdiFtpUser" class="com.jh.vo.FTPUser"
-		p:hostname="${jhplugins.hostname.edi.orgill}"
-		p:username="${jhplugins.username.edi.orgill}"
-		p:password="${jhplugins.password.edi.orgill}"
-		p:ftpFolderPath="${jhplugins.path.remote.edi.orgill}"
+		p:hostname="${jhplugins.hostname.edi.orgill}" p:username="${jhplugins.username.edi.orgill}"
+		p:password="${jhplugins.password.edi.orgill}" p:ftpFolderPath="${jhplugins.path.remote.edi.orgill}"
 		p:localFolderPath="${jhplugins.path.local.edi.orgill}"
-		p:fileExtension="${jhplugins.fileextension.edi.orgill}"
-	></bean>
-	
-	<bean id="orgillEdiAckFtpUser" parent="orgillEdiFtpUser" 
+		p:fileExtension="${jhplugins.fileextension.edi.orgill}"></bean>
+
+	<bean id="orgillEdiAckFtpUser" parent="orgillEdiFtpUser"
 		p:ftpFolderPath="${jhplugins.path.remote.edi.ack.orgill}"
 		p:localFolderPath="${jhplugins.path.local.edi.ack.orgill}"
 		p:fileExtension="${jhplugins.fileextension.edi.ack.orgill}">
 	</bean>
-	
-	<bean id="orgillEdiInvoiceFtpUser" parent="orgillEdiFtpUser" 
+
+	<bean id="orgillEdiInvoiceFtpUser" parent="orgillEdiFtpUser"
 		p:ftpFolderPath="${jhplugins.path.remote.edi.invoice.orgill}"
 		p:localFolderPath="${jhplugins.path.local.edi.invoice.orgill}"
 		p:fileExtension="${jhplugins.fileextension.edi.invoice.orgill}">
 	</bean>
-	
+
 	<beans profile="website_sync">
 		<bean id="websiteImageFTPUser" class="com.jh.vo.FTPUser"
-			p:hostname="${jhplugins.hostname.images.orgill}"
-			p:username="${jhplugins.username.images.orgill}"
-			p:password="${jhplugins.password.images.orgill}"
-			p:ftpFolderPath="${jhplugins.path.remote.images.orgill}"
-			p:localFolderPath="${jhplugins.path.local.images.orgill}"
-		></bean>
+			p:hostname="${jhplugins.hostname.images.orgill}" p:username="${jhplugins.username.images.orgill}"
+			p:password="${jhplugins.password.images.orgill}" p:ftpFolderPath="${jhplugins.path.remote.images.orgill}"
+			p:localFolderPath="${jhplugins.path.local.images.orgill}"></bean>
 	</beans>
-	
+
 	<beans profile="jamaica,empire,development">
 		<util:list id="ftpUsers">
 			<map>
@@ -73,9 +64,8 @@
 				<entry key="password" value="Paints!10"></entry>
 			</map>
 		</util:list>
-		<bean id="godaddyFTPReader" class="com.jh.util.FTPReader" 
-			p:server="176.5eb.myftpupload.com" 
-			p:ftpUsers-ref="godaddyFTPUsers"
+		<bean id="godaddyFTPReader" class="com.jh.util.FTPReader"
+			p:server="176.5eb.myftpupload.com" p:ftpUsers-ref="godaddyFTPUsers"
 			p:downloadFilePath="${jhplugins.path.local.webfiles.orgill}">
 		</bean>
 	</beans>

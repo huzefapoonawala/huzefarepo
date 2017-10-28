@@ -47,6 +47,8 @@ public class FtpTest extends Setup {
 	
 	@Resource @Qualifier("orgillEdiAckFtpUser")  private FTPUser ediAckFtpUser;
 	
+	private static final String SAMPLE_FILES_FOLDER_PATH = "/Users/hpoonaw/Personal/Work/Shabbir_Ezzi/Samples/";
+	
 //	@Test
 	public void test() throws IOException {
 		List<Map<String, String>> files = ftpReader.getAllPIFiles();
@@ -169,7 +171,7 @@ public class FtpTest extends Setup {
 		
 		FTPUser ftpUser = new FTPUser();
 		ftpUser.setFtpFolderPath("orgillftp/webfiles/");
-		ftpUser.setLocalFolderPath("E:/Personal/shabbir ezzi website related/plugins related/webfiles/");
+		ftpUser.setLocalFolderPath(SAMPLE_FILES_FOLDER_PATH);
 		ftpUser.setFileNames(new ArrayList<String>(Arrays.asList(new String[]{"WEB_DEPT_SKU.TXT"})));
 		webfilesFtpReader.downloadFTPFiles(client, ftpUser);
 		

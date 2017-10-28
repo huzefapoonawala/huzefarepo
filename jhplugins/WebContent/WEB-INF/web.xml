@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
- xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
- <display-name>Simply Different</display-name>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<display-name>Simply Different</display-name>
 
 	<context-param>
 		<param-name>spring.profiles.active</param-name>
 		<param-value>${profile.active}</param-value>
 	</context-param>
-	
+
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:jh-main-context.xml</param-value>
 	</context-param>
-	
-  <filter>
-     <filter-name>struts2</filter-name>
-     <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
-  </filter>
 
-  <filter-mapping>
-     <filter-name>struts2</filter-name>
-	 <url-pattern>/*</url-pattern>
-	 <dispatcher>FORWARD</dispatcher>
-	 <dispatcher>REQUEST</dispatcher> 
-  </filter-mapping>
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
 
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	
-  <session-config>
-      <session-timeout>-1</session-timeout>
-  </session-config>
-  
-  <!-- The Welcome File List -->
-  <welcome-file-list>
-    <welcome-file>/home.action</welcome-file>
-  </welcome-file-list>
 
-<jsp-config>
-	<taglib>
-		<taglib-uri>/struts-tags</taglib-uri> 
-		<taglib-location>/WEB-INF/struts-tags.tld</taglib-location> 
-	</taglib>
-</jsp-config>
+	<session-config>
+		<session-timeout>-1</session-timeout>
+	</session-config>
 
-  <login-config>
-  <auth-method>BASIC</auth-method>
- </login-config>
+	<!-- The Welcome File List -->
+	<welcome-file-list>
+		<welcome-file>/home.action</welcome-file>
+	</welcome-file-list>
+
+	<jsp-config>
+		<taglib>
+			<taglib-uri>/struts-tags</taglib-uri>
+			<taglib-location>/WEB-INF/struts-tags.tld</taglib-location>
+		</taglib>
+	</jsp-config>
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
 
 </web-app>

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +49,11 @@ public class PurchaseInvoiceDAOImpl extends JdbcDaoSupport implements PurchaseIn
 		this.itemDAO = itemDAO;
 	}
 	
+	private com.jh.dao.orgilldb.item.ItemDAO orgilldbItemDAO;
+	public void setOrgilldbItemDAO(com.jh.dao.orgilldb.item.ItemDAO orgilldbItemDAO) {
+		this.orgilldbItemDAO = orgilldbItemDAO;
+	}
+
 	private FTPReader purchaseInvoiceFTPReader;
 	public void setPurchaseInvoiceFTPReader(FTPReader purchaseInvoiceFTPReader) {
 		this.purchaseInvoiceFTPReader = purchaseInvoiceFTPReader;
@@ -185,7 +191,21 @@ public class PurchaseInvoiceDAOImpl extends JdbcDaoSupport implements PurchaseIn
 			}
 		}
 		if (!skuNA.isEmpty()) {
-			cJSON.put("skusNotAvailable", new ArrayList<String>(Arrays.asList(skuNA.split(","))));
+			List<String> skusNA = new ArrayList<String>(Arrays.asList(skuNA.split(",")));
+			List<Item> items = orgilldbItemDAO.getItemsBySkus(skusNA);
+			if(items != null && !items.isEmpty()) {
+				List<String> skusInOrgDB = commonUtil.extractSkus(items);
+				for (Iterator<String> iterator = skusNA.iterator(); iterator.hasNext();) {
+					String sku = iterator.next();
+					if (skusInOrgDB.indexOf(sku) > -1) {
+						iterator.remove();
+					}
+				}
+				cJSON.put("skusAvailableInOrgillDB", skusInOrgDB);
+			}
+			if (!skusNA.isEmpty()) {
+				cJSON.put("skusNotAvailable", skusNA);
+			}
 		}
 		if (!aliasNA.isEmpty()) {
 			cJSON.put("aliasesNotAvailable", aliasNA);

@@ -61,7 +61,7 @@ public class LabelTest extends Setup{
 	
 	@Test
 	public void testLabel() throws Exception{
-		FileOutputStream out = new FileOutputStream("C:/Users/hpoonaw/Desktop/dy-label.pdf");
+		FileOutputStream out = new FileOutputStream("./samples/dy-label.pdf");
 		itemLabelGenerator.generateLabel(item, out);
 		/*Barcode39 barcode = new Barcode39();
 		barcode.setCode(StringUtils.defaultIfBlank(item.getAliases(), item.getSku()));
@@ -305,6 +305,6 @@ public class LabelTest extends Setup{
 		g2d.drawImage(barcodeImg, 3, y, null);
 		
 		g2d.dispose();
-		ImageIO.write(img, "bmp", new File("C:/Users/hpoonaw/Desktop", "bimg.bmp"));
+		ImageIO.write(img, "bmp", new File("./samples", "bimg.bmp"));
 	}
 }

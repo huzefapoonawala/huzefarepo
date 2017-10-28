@@ -1,5 +1,5 @@
 (function() {
-	var currData = {}, currInvNum, oldSQty;
+	var currData = {}, currInvNum, oldSQty, browseInvoiceAction, isInvRefresh=false, currInvIdx;
 	function getSuppliers() {
 		dojo.xhrPost({
 			url:'../json/Supplier_fetchAllSuppliers.action',
@@ -25,7 +25,7 @@
 					{ name: "Total Invoice Cost", field: "totalCost", width:"13%" },
 					{name:'', field:'', width:'4%', align:'center',
 			        	formatter: function(value,rIdx) { 
-			                return '<img src="../images/view.gif" width="16px" height="16px" title="Click here to view invoice details" style="cursor:pointer;" onclick="dojo.publish(\'jh/pi/view/invoicedetails\',['+rIdx+'])" />'; 
+			                return '<img src="../images/view.gif" width="16px" height="16px" title="Click here to view invoice details" style="cursor:pointer;" onclick="dojo.publish(\'jh/pi/view/invoicedetails/selectedindex\',['+rIdx+']); dojo.publish(\'jh/pi/view/invoicedetails\',['+rIdx+'])" />'; 
 			            } 
 			        }
 				]
@@ -74,7 +74,7 @@
 				dojo.style('aliasWarningEl','display','none');
 			}
 		});
-		dojo.subscribe('jh/pi/view/invoicedetails', function(rIdx) {
+		dojo.subscribe('jh/pi/view/invoicedetails', function(rIdx) {			
 			currInvNum = dijit.byId('dataGrid').get('store').getIdentity(dijit.byId('dataGrid').getItem(rIdx));
 			dijit.byId('invoiceDetailDialog').set('title','Details For Invoice Number '+currData[currInvNum].invoiceNumber);
 			dijit.byId('invoiceDetailDialog').show();
@@ -83,23 +83,40 @@
 			}
 			var items = dojo.clone(currData[currInvNum].invoiceDetails);
 			dijit.byId('detailsDataGrid').setStore(new dojo.data.ItemFileWriteStore({data:{identifier:'lineNumber',items:items}}));
-			if (currData[currInvNum].skusNotAvailable) {
+			if (currData[currInvNum].skusNotAvailable || currData[currInvNum].skusAvailableInOrgillDB) {
 				dojo.style('warningEl','display','');
 			}
 			if (currData[currInvNum].aliasesNotAvailable) {
 				dojo.style('aliasWarningEl','display','');
 			}
 		});
+		dojo.subscribe('jh/pi/view/invoicedetails/selectedindex', function(rIdx) {
+			currInvIdx = rIdx;
+		});
 		dojo.subscribe('jh/pi/skusna', function() {
 			dijit.byId('skusnaDialog').show();
 			if (!dijit.byId('skusnaDataGrid')) {
 				createSkusnaGrid();
 			}
+			if (!dijit.byId('skusAvailInOrgDataGrid')) {
+				createSkusAvailInOrgDataGrid();
+			};
+			
 			var items = [];
-			dojo.forEach(currData[currInvNum].skusNotAvailable, function(sku) {
-				items.push({sku:sku});
-			});
+			if(currData[currInvNum].skusNotAvailable){
+				dojo.forEach(currData[currInvNum].skusNotAvailable, function(sku) {
+					items.push({sku:sku});
+				});
+			}
 			dijit.byId('skusnaDataGrid').setStore(new dojo.data.ItemFileWriteStore({data:{identifier:'sku',items:items}}));
+
+			var availItems = [];
+			if (currData[currInvNum].skusAvailableInOrgillDB) {
+				dojo.forEach(currData[currInvNum].skusAvailableInOrgillDB, function(sku) {
+					availItems.push({sku:sku});
+				});
+			}
+			dijit.byId('skusAvailInOrgDataGrid').setStore(new dojo.data.ItemFileWriteStore({data:{identifier:'sku',items:availItems}}));
 		});
 		dojo.subscribe('jh/pi/aliasna', function() {
 			dijit.byId('aliasnaDialog').show();
@@ -160,9 +177,28 @@
 		var grid = new dojox.grid.EnhancedGrid({
 			structure:struct,
 			selectionMode:'none',
-			style:{height:'300px', width:'99%'},
+			style:{height:'200px', width:'99%'},
 			store:gridStore
 		},'skusnaDataGrid');
+		grid.startup();
+	}
+
+	function createSkusAvailInOrgDataGrid() {
+		var struct = [{
+            	type: "dojox.grid._CheckBoxSelector"
+        	},{
+					defaultCell: { width: "100%" },
+					cells:[
+					        {name: "SKU #", field: "sku"}
+					 ]
+		}];
+		var gridStore = new dojo.data.ItemFileWriteStore({data:{identifier:'sku',items:[]}});
+		var grid = new dojox.grid.EnhancedGrid({
+			structure:struct,
+			selectionMode:'multiple',
+			style:{height:'200px', width:'99%'},
+			store:gridStore
+		},'skusAvailInOrgDataGrid');
 		grid.startup();
 	}
 	
@@ -410,6 +446,9 @@
 			currData[inv.invoiceNumber] = inv;
 		});
 		dijit.byId('dataGrid').setStore(new dojo.data.ItemFileWriteStore({data:{identifier:'invoiceNumber',items:invoices}}));
+		if (isInvRefresh) {
+			dojo.publish('jh/pi/view/invoicedetails',[currInvIdx]);
+		}
 	}
 	
 	require(["dojo",
@@ -442,18 +481,9 @@
 					isValid = false;
 				}
 				if (isValid && confirm('Are you sure, you want to upload the selected file.')) {
-					dijit.byId('dataGrid').set('noDataMessage','Loading invoices...');
-					dijit.byId('dataGrid').setStore(new dojo.data.ItemFileWriteStore({data:{identifier:'invoiceNumber',items:[]}}));
-					dijit.byId('dataGrid').set('noDataMessage','No invoices found');
-					dojo.io.iframe.send({
-						url:'../json/InvoiceUploader_validateInvoiceFile.action',
-						form:'uploadForm',
-						handleAs:'json',
-						load: loadInvoice,
-						error: function(err) {
-							console.log(err);
-						}
-					});
+					browseInvoiceAction = 'LOCAL';
+					isInvRefresh = false;
+					dojo.publish('jh/pi/showinvoicefromlocal', []);
 				}
 				return false;
 			},
@@ -461,6 +491,20 @@
 				dojo.attr('invoiceFile','value','');
 				this.inherited("onReset", arguments);
 			}
+		});
+		dojo.subscribe('jh/pi/showinvoicefromlocal', function(){
+			dijit.byId('dataGrid').set('noDataMessage','Loading invoices...');
+			dijit.byId('dataGrid').setStore(new dojo.data.ItemFileWriteStore({data:{identifier:'invoiceNumber',items:[]}}));
+			dijit.byId('dataGrid').set('noDataMessage','No invoices found');
+			dojo.io.iframe.send({
+				url:'../json/InvoiceUploader_validateInvoiceFile.action',
+				form:'uploadForm',
+				handleAs:'json',
+				load: loadInvoice,
+				error: function(err) {
+					console.log(err);
+				}
+			});
 		});
 		dijit.byId('saveForm').placeAt('bodyDiv');
 		dijit.byId('saveForm').attr({
@@ -592,8 +636,7 @@
 		});
 		dijit.byId('showFtpButton').attr({
 			onClick: function() {
-				var grid = dijit.byId('ftpDataGrid'), store = grid.get('store'), item = grid.selection.getSelected()[0];
-				if (!item) {
+				if (!dijit.byId('ftpDataGrid').selection.getSelected()[0]) {
 					alert('Kindly select a file');
 					return;
 				}
@@ -601,19 +644,55 @@
 					return;
 				}
 				dijit.byId('ftpDialog').hide();
-				dijit.byId('dataGrid').set('noDataMessage','Loading invoices...');
-				dijit.byId('dataGrid').setStore(new dojo.data.ItemFileWriteStore({data:{identifier:'invoiceNumber',items:[]}}));
-				dijit.byId('dataGrid').set('noDataMessage','No invoices found');
-				dojo.xhrPost({
-					url:'../json/InvoiceUploader_showFtpFileDetails.action',
-					handleAs:'json',
-					content: {
-						ftpFileName:store.getValue(item,'fileName'),
-						ftpUserIdx:store.getValue(item,'userIdx')
-					},
-					sync:false,
-					load: loadInvoice
-				});
+				browseInvoiceAction = 'FTP';
+				isInvRefresh = false;
+				dojo.publish('jh/pi/showinvoicefromftp', []);
+			}
+		});
+		dojo.subscribe('jh/pi/showinvoicefromftp', function() {
+			var grid = dijit.byId('ftpDataGrid'), store = grid.get('store'), item = grid.selection.getSelected()[0];
+			dijit.byId('dataGrid').set('noDataMessage','Loading invoices...');
+			dijit.byId('dataGrid').setStore(new dojo.data.ItemFileWriteStore({data:{identifier:'invoiceNumber',items:[]}}));
+			dijit.byId('dataGrid').set('noDataMessage','No invoices found');
+			dojo.xhrPost({
+				url:'../json/InvoiceUploader_showFtpFileDetails.action',
+				handleAs:'json',
+				content: {
+					ftpFileName:store.getValue(item,'fileName'),
+					ftpUserIdx:store.getValue(item,'userIdx')
+				},
+				sync:false,
+				load: loadInvoice
+			});
+		});
+		dijit.byId('addSkusButton').attr({
+			onClick: function() {
+				var grid = dijit.byId('skusAvailInOrgDataGrid'), store = grid.get('store');
+				var selSkus = grid.get('selection').getSelected(), isValid = true;
+				if (selSkus.length == 0) {
+					alert('Kindly select SKUs to add');
+					isValid = false;
+				}
+				if (isValid && confirm('Are you sure, you want to add the selected SKUs from orgill database.')) {
+					var skus2Add = [];
+					dojo.forEach(selSkus, function(sku) {
+						skus2Add.push(store.getValue(sku, 'sku'));
+					});
+					dojo.xhrPost({
+						url:'../json/Item_copyItemsFromOrgillDB.action',
+						content:{skus:skus2Add},
+						handleAs:'json',
+						sync:true,
+						load: function(response) {
+							alert('SKUs added successfully, refreshing page...');
+							grid.get('selection').clear();
+							dijit.byId('skusnaDialog').hide();
+							dijit.byId('invoiceDetailDialog').hide();
+							isInvRefresh = true;
+							dojo.publish(browseInvoiceAction == 'FTP' ? 'jh/pi/showinvoicefromftp' : 'jh/pi/showinvoicefromlocal', []);
+						}
+					});
+				}
 			}
 		});
 		getSuppliers();

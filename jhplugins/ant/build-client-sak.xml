@@ -1,11 +1,11 @@
 <project name="empty" basedir="../" default="deploy">
 
 	<property name="profile.active" value="client1,nowebsite"></property>
-	<property name="project.distname" value="dynamicsext"/>
-	<property name="application.title" value="Ezzi Solutions, Inc."/>
+	<property name="project.distname" value="dynamicsext" />
+	<property name="application.title" value="Ezzi Solutions, Inc." />
 	<property name="toolbar" value="ToolbarMenu_Client1.json"></property>
 	<!-- <property name="deploy.dir" value="E:\jboss-6.1.0.Final\server\jbossweb-standalone\deploy"/> -->
-	
-	<import file="build.xml"/>
-	
+
+	<import file="build.xml" />
+
 </project>

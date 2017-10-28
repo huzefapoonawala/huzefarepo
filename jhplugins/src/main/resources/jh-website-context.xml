@@ -1,27 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:util="http://www.springframework.org/schema/util"
-	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
-			
-	<bean id="websiteProductsDAO" class="com.jh.dao.website.WebsiteProductsDAOImpl" 
-		p:commonUtil-ref="commonUtil" 
-		p:jdbcTemplate-ref="websiteTemplate" 
-		p:dynamicsTemplate-ref="dynamicsTemplate"
-		p:webfilesFTPReader-ref="webfilesFTPReader"
-		p:itemDAO-ref="itemDAO"
-		p:ftpWriter-ref="ftpWriter"
-		p:templateUtil-ref="freemarkerTemplateUtil"
-		p:ediParser-ref="ediParser"
-	>
+
+	<bean id="websiteProductsDAO" class="com.jh.dao.website.WebsiteProductsDAOImpl"
+		p:commonUtil-ref="commonUtil" p:jdbcTemplate-ref="websiteTemplate"
+		p:dynamicsTemplate-ref="dynamicsTemplate" p:webfilesFTPReader-ref="webfilesFTPReader"
+		p:itemDAO-ref="itemDAO" p:ftpWriter-ref="ftpWriter"
+		p:templateUtil-ref="freemarkerTemplateUtil" p:ediParser-ref="ediParser">
 		<property name="orgillEdiFtpUser" ref="orgillEdiFtpUser"></property>
 		<property name="orgillEdiAckFtpUser" ref="orgillEdiAckFtpUser"></property>
 	</bean>
-		
+
 	<beans profile="website_sync">
 		<bean id="webProductsSync" class="com.jh.dao.website.WebsiteProductsSync">
 			<property name="webfilesFTPReader" ref="webfilesFTPReader"></property>
@@ -36,7 +29,7 @@
 			<property name="emailLogs" value="true"></property>
 			<property name="notifyOnError" value="false"></property>
 		</bean>
-		
+
 		<bean id="webOrderSync" class="com.jh.dao.website.WebsiteOrderSync">
 			<property name="webfilesFTPReader" ref="webfilesFTPReader"></property>
 			<property name="jdbcTemplate" ref="websiteTemplate"></property>

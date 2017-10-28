@@ -81,6 +81,11 @@ public class Item extends ActionSupport implements ModelDriven<RequestVO>, Servl
 		this.itemLabelGenerator = itemLabelGenerator;
 	}
 	
+	private com.jh.dao.orgilldb.item.ItemDAO orgilldbItemDAO;
+	public void setOrgilldbItemDAO(com.jh.dao.orgilldb.item.ItemDAO orgilldbItemDAO) {
+		this.orgilldbItemDAO = orgilldbItemDAO;
+	}
+	
 	public String fetchItemDetails() throws Exception {
 		try {
 			items = itemDAO.getItemDetails(request);
@@ -204,5 +209,15 @@ public class Item extends ActionSupport implements ModelDriven<RequestVO>, Servl
 //			throw e;
 		}
 //		return SUCCESS;
+	}
+	
+	public String copyItemsFromOrgillDB() throws Exception {
+		try {
+			orgilldbItemDAO.copyItemsFromOrgillDB(request);
+		} catch (Exception e) {
+			logger.error("Error occured while copying items from orgill db.", e);
+			throw e;
+		}
+		return SUCCESS;
 	}
 }

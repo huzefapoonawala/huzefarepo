@@ -1,54 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
-	
-	<bean id="applicationProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+
+	<bean id="applicationProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="ignoreResourceNotFound" value="true"></property>
 		<property name="singleton" value="true"></property>
 		<property name="localOverride" value="false"></property>
 		<property name="locations">
 			<list>
 				<value>classpath:jh-plugins.properties</value>
-				<value>file:/#{systemEnvironment['jhplugins.path.properties'] ?: 'NA.properties'}</value>
+				<value>file:/#{systemEnvironment['jhplugins.path.properties'] ?:
+					'NA.properties'}</value>
+				<value>classpath:sql-queries.properties</value>
 			</list>
 		</property>
-		<property name="propertiesArray" >
+		<property name="propertiesArray">
 			<list>
-				<ref bean="dbconfigs.dynamics"/>
-				<ref bean="dbconfigs.website"/>
+				<ref bean="dbconfigs.dynamics" />
+				<ref bean="dbconfigs.website" />
 			</list>
 		</property>
 	</bean>
-	
+
 	<bean id="propertiesUtil" class="com.jh.util.PropertiesUtil">
 		<property name="applicationProperties" ref="applicationProperties"></property>
 	</bean>
-	
-	<context:property-placeholder properties-ref="applicationProperties" system-properties-mode="FALLBACK" ignore-unresolvable="false" ignore-resource-not-found="false" order="2"/>
-	
+
+	<context:property-placeholder
+		properties-ref="applicationProperties" system-properties-mode="FALLBACK"
+		ignore-unresolvable="false" ignore-resource-not-found="false" order="2" />
+
 	<util:properties id="dbconfigs.website"></util:properties>
 	<beans profile="development">
-		<util:properties id="dbconfigs.dynamics" location="classpath:datasource-dev.properties"></util:properties>
+		<util:properties id="dbconfigs.dynamics"
+			location="classpath:datasource-dev.properties"></util:properties>
 	</beans>
 	<beans profile="jamaica">
-		<util:properties id="dbconfigs.dynamics" location="classpath:datasource-jamaica.properties"></util:properties>
+		<util:properties id="dbconfigs.dynamics"
+			location="classpath:datasource-jamaica.properties"></util:properties>
 	</beans>
 	<beans profile="empire">
-		<util:properties id="dbconfigs.dynamics" location="classpath:datasource-empire.properties"></util:properties>
+		<util:properties id="dbconfigs.dynamics"
+			location="classpath:datasource-empire.properties"></util:properties>
 	</beans>
 	<beans profile="website, website_sync">
-		<util:properties id="dbconfigs.website" location="classpath:datasource-website.properties"></util:properties>
+		<util:properties id="dbconfigs.website"
+			location="classpath:datasource-website.properties"></util:properties>
 	</beans>
 	<beans profile="website_sync">
-		<util:properties id="dbconfigs.dynamics" location="classpath:datasource-websitesync.properties"></util:properties>
+		<util:properties id="dbconfigs.dynamics"
+			location="classpath:datasource-websitesync.properties"></util:properties>
 	</beans>
 	<beans profile="client1">
-		<util:properties id="dbconfigs.dynamics" location="classpath:datasource-client1.properties"></util:properties>
+		<util:properties id="dbconfigs.dynamics"
+			location="classpath:datasource-client1.properties"></util:properties>
 	</beans>
-	
+
 </beans>

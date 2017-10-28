@@ -1,7 +1,7 @@
 <project name="empty" basedir="../" default="deploy">
 
 	<property name="profile.active" value="empire,website"></property>
-	
-	<import file="build.xml"/>
-	
+
+	<import file="build.xml" />
+
 </project>

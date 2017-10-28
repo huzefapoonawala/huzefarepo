@@ -2,6 +2,7 @@ package com.jh.vo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -30,6 +31,7 @@ public class RequestVO {
 	private boolean isUpdateBinLocation = false; 
 	private Integer orderId;
 	private String poNumber;
+	private List<String> skus;
 	
 	public Integer getSupplierId() {
 		return supplierId;
@@ -179,5 +181,11 @@ public class RequestVO {
 	}
 	public void setPoNumber(String poNumber) {
 		this.poNumber = poNumber;
-	}	
+	}
+	public List<String> getSkus() {
+		return skus;
+	}
+	public void setSkus(List<String> skus) {
+		this.skus = skus;
+	}
 }

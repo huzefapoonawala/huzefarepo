@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
-		
-	<import resource="jh-datasource-context.xml"/>
-	<import resource="jh-website-context.xml"/>
-	<import resource="jh-template-context.xml"/>
-	<import resource="jh-mail-context.xml"/>
-	<import resource="jh-common-context.xml"/>
-	<import resource="jh-ftp-context.xml"/>
-	<import resource="jh-properties-context.xml"/>
 	
+	<context:component-scan base-package="com.jh"></context:component-scan>
+
+	<import resource="jh-datasource-context.xml" />
+	<import resource="jh-website-context.xml" />
+	<import resource="jh-template-context.xml" />
+	<import resource="jh-mail-context.xml" />
+	<import resource="jh-common-context.xml" />
+	<import resource="jh-ftp-context.xml" />
+	<import resource="jh-properties-context.xml" />
+
 	<bean id="supplierDAO" class="com.jh.dao.supplier.SupplierDAOImpl">
 		<property name="dynamicsTemplate" ref="dynamicsTemplate"></property>
 	</bean>
-	
+
 	<bean id="purchaseOrderDAO" class="com.jh.dao.po.PurchaseOrderDAOImpl">
 		<property name="jdbcTemplate" ref="dynamicsTemplate"></property>
 		<property name="commonUtil" ref="commonUtil"></property>
 		<property name="purchaseInvoiceDAO" ref="purchaseInvoiceDAO"></property>
 	</bean>
-	
+
 	<bean id="itemDAO" class="com.jh.dao.item.ItemDAOImpl">
 		<property name="jdbcTemplate" ref="dynamicsTemplate"></property>
 		<property name="commonUtil" ref="commonUtil"></property>
 	</bean>
-	
+
 	<bean id="commonUtil" class="com.jh.util.CommonUtil">
 		<!-- <property name="imageFilePath" value="${file.path.image}"></property> -->
 		<property name="imageFilePath" value="../download/skuImage.action?sku="></property>
@@ -45,9 +45,14 @@
 		<property name="jdbcTemplate" ref="dynamicsTemplate"></property>
 		<property name="itemDAO" ref="itemDAO"></property>
 		<property name="purchaseInvoiceFTPReader" ref="purchaseInvoiceFTPReader"></property>
+		<property name="orgilldbItemDAO" ref="orgilldbItemDAO"></property>
 	</bean>
-	
+
 	<bean id="itemLabelGenerator" class="com.jh.util.ItemLabelGenerator">
 		<property name="propertiesUtil" ref="propertiesUtil"></property>
+	</bean>
+	
+	<bean id="orgilldbItemDAO" class="com.jh.dao.orgilldb.item.ItemDAOImpl">
+		<property name="dynamicsTemplate" ref="dynamicsTemplate"></property>
 	</bean>
 </beans>

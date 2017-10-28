@@ -18,7 +18,7 @@ CREATE TABLE [dbo].[WebCategory](
 
 GO
 
-ALTER TABLE [dbo].[WebCategory] ADD  CONSTRAINT [DF_WebCategory_CREATION_DATE]  DEFAULT (getdate()) FOR [CREATION_DATE]
+ALTER TABLE [dbo].[WebCategory] ADD  CONSTRAINT [DF_OS_WebCategory_CREATION_DATE]  DEFAULT (getdate()) FOR [CREATION_DATE]
 GO
 
 /****** Object:  Table [dbo].[WebItem]    Script Date: 10/8/2017 8:40:28 AM ******/
@@ -84,7 +84,7 @@ CREATE TABLE [dbo].[WebItem](
 
 GO
 
-ALTER TABLE [dbo].[WebItem] ADD  CONSTRAINT [DF_WebItem_IS_UPDATED]  DEFAULT ((0)) FOR [IS_UPDATED]
+ALTER TABLE [dbo].[WebItem] ADD  CONSTRAINT [DF_OS_WebItem_IS_UPDATED]  DEFAULT ((0)) FOR [IS_UPDATED]
 GO
 
 
@@ -101,6 +101,7 @@ CREATE TABLE [dbo].[Department](
 	[Name] [nvarchar](30) NOT NULL,
 	[code] [nvarchar](17) NOT NULL,
 	[DBTimeStamp] [timestamp] NULL,
+	[PID] [int] NULL,
  CONSTRAINT [PK_Department] PRIMARY KEY NONCLUSTERED 
 (
 	[ID] ASC
@@ -109,13 +110,13 @@ CREATE TABLE [dbo].[Department](
 
 GO
 
-ALTER TABLE [dbo].[Department] ADD  CONSTRAINT [DF_Department_HQID]  DEFAULT (0) FOR [HQID]
+ALTER TABLE [dbo].[Department] ADD  CONSTRAINT [DF_OS_Department_HQID]  DEFAULT (0) FOR [HQID]
 GO
 
-ALTER TABLE [dbo].[Department] ADD  CONSTRAINT [DF_Department_Name]  DEFAULT ('') FOR [Name]
+ALTER TABLE [dbo].[Department] ADD  CONSTRAINT [DF_OS_Department_Name]  DEFAULT ('') FOR [Name]
 GO
 
-ALTER TABLE [dbo].[Department] ADD  CONSTRAINT [DF_Department_Number]  DEFAULT ('') FOR [code]
+ALTER TABLE [dbo].[Department] ADD  CONSTRAINT [DF_OS_Department_Number]  DEFAULT ('') FOR [code]
 GO
 
 /****** Object:  Table [dbo].[Category]    Script Date: 10/8/2017 8:43:15 AM ******/
@@ -132,6 +133,7 @@ CREATE TABLE [dbo].[Category](
 	[Name] [nvarchar](30) NOT NULL,
 	[Code] [nvarchar](17) NOT NULL,
 	[DBTimeStamp] [timestamp] NULL,
+	[PID] [int] NULL,
  CONSTRAINT [PK_Category] PRIMARY KEY NONCLUSTERED 
 (
 	[ID] ASC
@@ -140,16 +142,16 @@ CREATE TABLE [dbo].[Category](
 
 GO
 
-ALTER TABLE [dbo].[Category] ADD  CONSTRAINT [DF_Category_HQID]  DEFAULT (0) FOR [HQID]
+ALTER TABLE [dbo].[Category] ADD  CONSTRAINT [DF_OS_Category_HQID]  DEFAULT (0) FOR [HQID]
 GO
 
-ALTER TABLE [dbo].[Category] ADD  CONSTRAINT [DF_Category_DepartmentID]  DEFAULT (0) FOR [DepartmentID]
+ALTER TABLE [dbo].[Category] ADD  CONSTRAINT [DF_OS_Category_DepartmentID]  DEFAULT (0) FOR [DepartmentID]
 GO
 
-ALTER TABLE [dbo].[Category] ADD  CONSTRAINT [DF_Category_Name]  DEFAULT ('') FOR [Name]
+ALTER TABLE [dbo].[Category] ADD  CONSTRAINT [DF_OS_Category_Name]  DEFAULT ('') FOR [Name]
 GO
 
-ALTER TABLE [dbo].[Category] ADD  CONSTRAINT [DF_Category_Code]  DEFAULT ('') FOR [Code]
+ALTER TABLE [dbo].[Category] ADD  CONSTRAINT [DF_OS_Category_Code]  DEFAULT ('') FOR [Code]
 GO
 
 /****** Object:  Table [dbo].[Item]    Script Date: 10/8/2017 8:44:05 AM ******/
@@ -252,199 +254,199 @@ CREATE TABLE [dbo].[Item](
 
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_BinLocation]  DEFAULT ('') FOR [BinLocation]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_BinLocation]  DEFAULT ('') FOR [BinLocation]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_BuydownPrice]  DEFAULT (0) FOR [BuydownPrice]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_BuydownPrice]  DEFAULT (0) FOR [BuydownPrice]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_BuydownQuantity]  DEFAULT (0) FOR [BuydownQuantity]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_BuydownQuantity]  DEFAULT (0) FOR [BuydownQuantity]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_CommissionAmount]  DEFAULT (0) FOR [CommissionAmount]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_CommissionAmount]  DEFAULT (0) FOR [CommissionAmount]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_CommissionMaximum]  DEFAULT (0) FOR [CommissionMaximum]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_CommissionMaximum]  DEFAULT (0) FOR [CommissionMaximum]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_CommissionMode]  DEFAULT (0) FOR [CommissionMode]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_CommissionMode]  DEFAULT (0) FOR [CommissionMode]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_CommissionPercentProfit]  DEFAULT (0) FOR [CommissionPercentProfit]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_CommissionPercentProfit]  DEFAULT (0) FOR [CommissionPercentProfit]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_CommissionPercentSale]  DEFAULT (0) FOR [CommissionPercentSale]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_CommissionPercentSale]  DEFAULT (0) FOR [CommissionPercentSale]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_Description]  DEFAULT ('') FOR [Description]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_Description]  DEFAULT ('') FOR [Description]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_FoodStampable]  DEFAULT (0) FOR [FoodStampable]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_FoodStampable]  DEFAULT (0) FOR [FoodStampable]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_HQID]  DEFAULT (0) FOR [HQID]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_HQID]  DEFAULT (0) FOR [HQID]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_ItemNotDiscountable]  DEFAULT (0) FOR [ItemNotDiscountable]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_ItemNotDiscountable]  DEFAULT (0) FOR [ItemNotDiscountable]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_LastUpdated]  DEFAULT (getdate()) FOR [LastUpdated]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_LastUpdated]  DEFAULT (getdate()) FOR [LastUpdated]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_QuantityCommitted]  DEFAULT (0) FOR [QuantityCommitted]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_QuantityCommitted]  DEFAULT (0) FOR [QuantityCommitted]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_SerialNumberCount]  DEFAULT (0) FOR [SerialNumberCount]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_SerialNumberCount]  DEFAULT (0) FOR [SerialNumberCount]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_TareWeightPercent]  DEFAULT (0) FOR [TareWeightPercent]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_TareWeightPercent]  DEFAULT (0) FOR [TareWeightPercent]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_ItemLookupCode]  DEFAULT ('') FOR [ItemLookupCode]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_ItemLookupCode]  DEFAULT ('') FOR [ItemLookupCode]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_DepartmentID]  DEFAULT (0) FOR [DepartmentID]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_DepartmentID]  DEFAULT (0) FOR [DepartmentID]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_CategoryID]  DEFAULT (0) FOR [CategoryID]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_CategoryID]  DEFAULT (0) FOR [CategoryID]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_MessageID]  DEFAULT (0) FOR [MessageID]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_MessageID]  DEFAULT (0) FOR [MessageID]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_Price]  DEFAULT (0) FOR [Price]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_Price]  DEFAULT (0) FOR [Price]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_PriceA]  DEFAULT (0) FOR [PriceA]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_PriceA]  DEFAULT (0) FOR [PriceA]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_PriceB]  DEFAULT (0) FOR [PriceB]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_PriceB]  DEFAULT (0) FOR [PriceB]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_PriceC]  DEFAULT (0) FOR [PriceC]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_PriceC]  DEFAULT (0) FOR [PriceC]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_SalePrice]  DEFAULT (0) FOR [SalePrice]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_SalePrice]  DEFAULT (0) FOR [SalePrice]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_QuantityDiscountID]  DEFAULT (0) FOR [QuantityDiscountID]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_QuantityDiscountID]  DEFAULT (0) FOR [QuantityDiscountID]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_TaxID]  DEFAULT (0) FOR [TaxID]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_TaxID]  DEFAULT (0) FOR [TaxID]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_ItemType]  DEFAULT (0) FOR [ItemType]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_ItemType]  DEFAULT (0) FOR [ItemType]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_Cost]  DEFAULT (0) FOR [Cost]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_Cost]  DEFAULT (0) FOR [Cost]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_Quantity]  DEFAULT (0) FOR [Quantity]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_Quantity]  DEFAULT (0) FOR [Quantity]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_ReorderPoint]  DEFAULT (0) FOR [ReorderPoint]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_ReorderPoint]  DEFAULT (0) FOR [ReorderPoint]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_RestockLevel]  DEFAULT (0) FOR [RestockLevel]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_RestockLevel]  DEFAULT (0) FOR [RestockLevel]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_TareWeight]  DEFAULT (0) FOR [TareWeight]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_TareWeight]  DEFAULT (0) FOR [TareWeight]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_SupplierID]  DEFAULT (0) FOR [SupplierID]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_SupplierID]  DEFAULT (0) FOR [SupplierID]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_TagAlongItem]  DEFAULT (0) FOR [TagAlongItem]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_TagAlongItem]  DEFAULT (0) FOR [TagAlongItem]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_TagAlongQuantity]  DEFAULT (0) FOR [TagAlongQuantity]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_TagAlongQuantity]  DEFAULT (0) FOR [TagAlongQuantity]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_ParentItem]  DEFAULT (0) FOR [ParentItem]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_ParentItem]  DEFAULT (0) FOR [ParentItem]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_ParentQuantity]  DEFAULT (0) FOR [ParentQuantity]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_ParentQuantity]  DEFAULT (0) FOR [ParentQuantity]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_BarcodeFormat]  DEFAULT (0) FOR [BarcodeFormat]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_BarcodeFormat]  DEFAULT (0) FOR [BarcodeFormat]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_PriceLowerBound]  DEFAULT (0) FOR [PriceLowerBound]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_PriceLowerBound]  DEFAULT (0) FOR [PriceLowerBound]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_PriceUpperBound]  DEFAULT (0) FOR [PriceUpperBound]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_PriceUpperBound]  DEFAULT (0) FOR [PriceUpperBound]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_PictureName]  DEFAULT ('') FOR [PictureName]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_PictureName]  DEFAULT ('') FOR [PictureName]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_SubDescription1]  DEFAULT ('') FOR [SubDescription1]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_SubDescription1]  DEFAULT ('') FOR [SubDescription1]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_SubDescription2]  DEFAULT ('') FOR [SubDescription2]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_SubDescription2]  DEFAULT ('') FOR [SubDescription2]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_SubDescription3]  DEFAULT ('') FOR [SubDescription3]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_SubDescription3]  DEFAULT ('') FOR [SubDescription3]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_UnitOfMeasure]  DEFAULT ('') FOR [UnitOfMeasure]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_UnitOfMeasure]  DEFAULT ('') FOR [UnitOfMeasure]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_SubCategoryID]  DEFAULT (0) FOR [SubCategoryID]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_SubCategoryID]  DEFAULT (0) FOR [SubCategoryID]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_QuantityEntryNotAllowed]  DEFAULT (0) FOR [QuantityEntryNotAllowed]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_QuantityEntryNotAllowed]  DEFAULT (0) FOR [QuantityEntryNotAllowed]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_PriceMustBeEntered]  DEFAULT (0) FOR [PriceMustBeEntered]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_PriceMustBeEntered]  DEFAULT (0) FOR [PriceMustBeEntered]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_BlockSalesReason]  DEFAULT ('') FOR [BlockSalesReason]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_BlockSalesReason]  DEFAULT ('') FOR [BlockSalesReason]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_Weight]  DEFAULT (0) FOR [Weight]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_Weight]  DEFAULT (0) FOR [Weight]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_Taxable]  DEFAULT (1) FOR [Taxable]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_Taxable]  DEFAULT (1) FOR [Taxable]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_LastCost]  DEFAULT (0) FOR [LastCost]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_LastCost]  DEFAULT (0) FOR [LastCost]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_ReplacementCost]  DEFAULT (0) FOR [ReplacementCost]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_ReplacementCost]  DEFAULT (0) FOR [ReplacementCost]
 GO
 
 ALTER TABLE [dbo].[Item] ADD  DEFAULT (0) FOR [WebItem]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_BlockSalesType]  DEFAULT (0) FOR [BlockSalesType]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_BlockSalesType]  DEFAULT (0) FOR [BlockSalesType]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_BlockSalesScheduleID]  DEFAULT (0) FOR [BlockSalesScheduleID]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_BlockSalesScheduleID]  DEFAULT (0) FOR [BlockSalesScheduleID]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_SaleType]  DEFAULT (0) FOR [SaleType]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_SaleType]  DEFAULT (0) FOR [SaleType]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_SaleScheduleID]  DEFAULT (0) FOR [SaleScheduleID]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_SaleScheduleID]  DEFAULT (0) FOR [SaleScheduleID]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_Consignment]  DEFAULT (0) FOR [Consignment]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_Consignment]  DEFAULT (0) FOR [Consignment]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [Df_Item_Inactive]  DEFAULT (0) FOR [Inactive]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_Inactive]  DEFAULT (0) FOR [Inactive]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [Df_Item_DoNotOrder]  DEFAULT (0) FOR [DoNotOrder]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_DoNotOrder]  DEFAULT (0) FOR [DoNotOrder]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [Df_Item_MSRP]  DEFAULT (0) FOR [MSRP]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_MSRP]  DEFAULT (0) FOR [MSRP]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [Df_Item_DateCreated]  DEFAULT (getdate()) FOR [DateCreated]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_DateCreated]  DEFAULT (getdate()) FOR [DateCreated]
 GO
 
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [Df_Item_UsuallyShip]  DEFAULT ('') FOR [UsuallyShip]
+ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_OS_Item_UsuallyShip]  DEFAULT ('') FOR [UsuallyShip]
 GO
 
 ALTER TABLE [dbo].[Item] ADD  DEFAULT ((0)) FOR [IsGlobalvoucher]
@@ -482,10 +484,10 @@ CREATE TABLE [dbo].[Alias](
 
 GO
 
-ALTER TABLE [dbo].[Alias] ADD  CONSTRAINT [DF_Alias_ItemID]  DEFAULT (0) FOR [ItemID]
+ALTER TABLE [dbo].[Alias] ADD  CONSTRAINT [DF_OS_Alias_ItemID]  DEFAULT (0) FOR [ItemID]
 GO
 
-ALTER TABLE [dbo].[Alias] ADD  CONSTRAINT [DF_Alias_Alias]  DEFAULT ('') FOR [Alias]
+ALTER TABLE [dbo].[Alias] ADD  CONSTRAINT [DF_OS_Alias_Alias]  DEFAULT ('') FOR [Alias]
 GO
 
 /****** Object:  Table [dbo].[Supplier]    Script Date: 10/10/2017 6:44:11 AM ******/
@@ -500,7 +502,7 @@ CREATE TABLE [dbo].[Supplier](
 	[HQID] [int] NOT NULL,
 	[LastUpdated] [datetime] NOT NULL,
 	[State] [nvarchar](20) NOT NULL,
-	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ID] [int] NOT NULL,
 	[SupplierName] [nvarchar](30) NOT NULL,
 	[ContactName] [nvarchar](30) NOT NULL,
 	[Address1] [nvarchar](30) NOT NULL,
@@ -541,91 +543,91 @@ CREATE TABLE [dbo].[Supplier](
 
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_Country]  DEFAULT ('') FOR [Country]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_Country]  DEFAULT ('') FOR [Country]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_HQID]  DEFAULT (0) FOR [HQID]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_HQID]  DEFAULT (0) FOR [HQID]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_LastUpdated]  DEFAULT (getdate()) FOR [LastUpdated]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_LastUpdated]  DEFAULT (getdate()) FOR [LastUpdated]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_State]  DEFAULT ('') FOR [State]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_State]  DEFAULT ('') FOR [State]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_SupplierName]  DEFAULT ('') FOR [SupplierName]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_SupplierName]  DEFAULT ('') FOR [SupplierName]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_ContactName]  DEFAULT ('') FOR [ContactName]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_ContactName]  DEFAULT ('') FOR [ContactName]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_Address1]  DEFAULT ('') FOR [Address1]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_Address1]  DEFAULT ('') FOR [Address1]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_Address2]  DEFAULT ('') FOR [Address2]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_Address2]  DEFAULT ('') FOR [Address2]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_City]  DEFAULT ('') FOR [City]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_City]  DEFAULT ('') FOR [City]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_Zip]  DEFAULT ('') FOR [Zip]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_Zip]  DEFAULT ('') FOR [Zip]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_EmailAddress]  DEFAULT ('') FOR [EmailAddress]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_EmailAddress]  DEFAULT ('') FOR [EmailAddress]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_WebPageAddress]  DEFAULT ('') FOR [WebPageAddress]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_WebPageAddress]  DEFAULT ('') FOR [WebPageAddress]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_Code]  DEFAULT ('') FOR [Code]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_Code]  DEFAULT ('') FOR [Code]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_AccountNumber]  DEFAULT ('') FOR [AccountNumber]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_AccountNumber]  DEFAULT ('') FOR [AccountNumber]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_TaxNumber]  DEFAULT ('') FOR [TaxNumber]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_TaxNumber]  DEFAULT ('') FOR [TaxNumber]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_CurrencyID]  DEFAULT (0) FOR [CurrencyID]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_CurrencyID]  DEFAULT (0) FOR [CurrencyID]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_PhoneNumber]  DEFAULT ('') FOR [PhoneNumber]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_PhoneNumber]  DEFAULT ('') FOR [PhoneNumber]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_FaxNumber]  DEFAULT ('') FOR [FaxNumber]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_FaxNumber]  DEFAULT ('') FOR [FaxNumber]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_CustomText1]  DEFAULT ('') FOR [CustomText1]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_CustomText1]  DEFAULT ('') FOR [CustomText1]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_CustomText2]  DEFAULT ('') FOR [CustomText2]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_CustomText2]  DEFAULT ('') FOR [CustomText2]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_CustomText3]  DEFAULT ('') FOR [CustomText3]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_CustomText3]  DEFAULT ('') FOR [CustomText3]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_CustomText4]  DEFAULT ('') FOR [CustomText4]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_CustomText4]  DEFAULT ('') FOR [CustomText4]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_CustomText5]  DEFAULT ('') FOR [CustomText5]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_CustomText5]  DEFAULT ('') FOR [CustomText5]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_CustomNumber1]  DEFAULT (0) FOR [CustomNumber1]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_CustomNumber1]  DEFAULT (0) FOR [CustomNumber1]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_CustomNumber2]  DEFAULT (0) FOR [CustomNumber2]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_CustomNumber2]  DEFAULT (0) FOR [CustomNumber2]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_CustomNumber3]  DEFAULT (0) FOR [CustomNumber3]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_CustomNumber3]  DEFAULT (0) FOR [CustomNumber3]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_CustomNumber4]  DEFAULT (0) FOR [CustomNumber4]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_CustomNumber4]  DEFAULT (0) FOR [CustomNumber4]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [Df_Supplier_CustomNumber5]  DEFAULT (0) FOR [CustomNumber5]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_CustomNumber5]  DEFAULT (0) FOR [CustomNumber5]
 GO
 
-ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_Supplier_Terms]  DEFAULT ('') FOR [Terms]
+ALTER TABLE [dbo].[Supplier] ADD  CONSTRAINT [DF_OS_Supplier_Terms]  DEFAULT ('') FOR [Terms]
 GO
 
 ALTER TABLE [dbo].[Supplier] ADD  DEFAULT ('') FOR [Notes]
@@ -657,25 +659,25 @@ CREATE TABLE [dbo].[SupplierList](
 
 GO
 
-ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_SupplierList_MinimumOrder]  DEFAULT (0) FOR [MinimumOrder]
+ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_OS_SupplierList_MinimumOrder]  DEFAULT (0) FOR [MinimumOrder]
 GO
 
-ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_SupplierList_ItemID]  DEFAULT (0) FOR [ItemID]
+ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_OS_SupplierList_ItemID]  DEFAULT (0) FOR [ItemID]
 GO
 
-ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_SupplierList_SupplierID]  DEFAULT (0) FOR [SupplierID]
+ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_OS_SupplierList_SupplierID]  DEFAULT (0) FOR [SupplierID]
 GO
 
-ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_SupplierList_Cost]  DEFAULT (0) FOR [Cost]
+ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_OS_SupplierList_Cost]  DEFAULT (0) FOR [Cost]
 GO
 
-ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_SupplierList_ReorderNumber]  DEFAULT ('') FOR [ReorderNumber]
+ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_OS_SupplierList_ReorderNumber]  DEFAULT ('') FOR [ReorderNumber]
 GO
 
-ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_SupplierList_MasterPackQuantity]  DEFAULT (1) FOR [MasterPackQuantity]
+ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_OS_SupplierList_MasterPackQuantity]  DEFAULT (1) FOR [MasterPackQuantity]
 GO
 
-ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_SupplierList_TaxRate]  DEFAULT (0) FOR [TaxRate]
+ALTER TABLE [dbo].[SupplierList] ADD  CONSTRAINT [DF_OS_SupplierList_TaxRate]  DEFAULT (0) FOR [TaxRate]
 GO
 
 
@@ -688,7 +690,7 @@ GO
 
 CREATE TABLE [dbo].[ItemTax](
 	[HQID] [int] NOT NULL,
-	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ID] [int] NOT NULL,
 	[Description] [nvarchar](20) NOT NULL,
 	[Options] [int] NOT NULL,
 	[TaxID01] [int] NOT NULL,
@@ -721,109 +723,75 @@ CREATE TABLE [dbo].[ItemTax](
 
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_HQID]  DEFAULT (0) FOR [HQID]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_HQID]  DEFAULT (0) FOR [HQID]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_Description]  DEFAULT ('') FOR [Description]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_Description]  DEFAULT ('') FOR [Description]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_ApplyOnProfit]  DEFAULT (0) FOR [Options]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_ApplyOnProfit]  DEFAULT (0) FOR [Options]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_TaxID01]  DEFAULT (0) FOR [TaxID01]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_TaxID01]  DEFAULT (0) FOR [TaxID01]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_ShowOnReceipt01]  DEFAULT (0) FOR [ShowOnReceipt01]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_ShowOnReceipt01]  DEFAULT (0) FOR [ShowOnReceipt01]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_TaxID02]  DEFAULT (0) FOR [TaxID02]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_TaxID02]  DEFAULT (0) FOR [TaxID02]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_ShowOnReceipt02]  DEFAULT (0) FOR [ShowOnReceipt02]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_ShowOnReceipt02]  DEFAULT (0) FOR [ShowOnReceipt02]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_TaxID03]  DEFAULT (0) FOR [TaxID03]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_TaxID03]  DEFAULT (0) FOR [TaxID03]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_ShowOnReceipt03]  DEFAULT (0) FOR [ShowOnReceipt03]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_ShowOnReceipt03]  DEFAULT (0) FOR [ShowOnReceipt03]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_TaxID04]  DEFAULT (0) FOR [TaxID04]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_TaxID04]  DEFAULT (0) FOR [TaxID04]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_ShowOnReceipt04]  DEFAULT (0) FOR [ShowOnReceipt04]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_ShowOnReceipt04]  DEFAULT (0) FOR [ShowOnReceipt04]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_TaxID05]  DEFAULT (0) FOR [TaxID05]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_TaxID05]  DEFAULT (0) FOR [TaxID05]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_ShowOnReceipt05]  DEFAULT (0) FOR [ShowOnReceipt05]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_ShowOnReceipt05]  DEFAULT (0) FOR [ShowOnReceipt05]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_TaxID06]  DEFAULT (0) FOR [TaxID06]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_TaxID06]  DEFAULT (0) FOR [TaxID06]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_ShowOnReceipt06]  DEFAULT (0) FOR [ShowOnReceipt06]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_ShowOnReceipt06]  DEFAULT (0) FOR [ShowOnReceipt06]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_TaxID07]  DEFAULT (0) FOR [TaxID07]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_TaxID07]  DEFAULT (0) FOR [TaxID07]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_ShowOnReceipt07]  DEFAULT (0) FOR [ShowOnReceipt07]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_ShowOnReceipt07]  DEFAULT (0) FOR [ShowOnReceipt07]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_TaxID08]  DEFAULT (0) FOR [TaxID08]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_TaxID08]  DEFAULT (0) FOR [TaxID08]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_ShowOnReceipt08]  DEFAULT (0) FOR [ShowOnReceipt08]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_ShowOnReceipt08]  DEFAULT (0) FOR [ShowOnReceipt08]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_TaxID09]  DEFAULT (0) FOR [TaxID09]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_TaxID09]  DEFAULT (0) FOR [TaxID09]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_ShowOnReceipt09]  DEFAULT (0) FOR [ShowOnReceipt09]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_ShowOnReceipt09]  DEFAULT (0) FOR [ShowOnReceipt09]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_TaxID10]  DEFAULT (0) FOR [TaxID10]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_TaxID10]  DEFAULT (0) FOR [TaxID10]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_ShowOnReceipt10]  DEFAULT (0) FOR [ShowOnReceipt10]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_ShowOnReceipt10]  DEFAULT (0) FOR [ShowOnReceipt10]
 GO
 
-ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_ItemTax_Code]  DEFAULT ('') FOR [Code]
+ALTER TABLE [dbo].[ItemTax] ADD  CONSTRAINT [DF_OS_ItemTax_Code]  DEFAULT ('') FOR [Code]
 GO
 
-INSERT INTO [dbo].[ItemTax]
-           ([HQID]
-           ,[Description]
-           ,[Options]
-           ,[TaxID01]
-           ,[ShowOnReceipt01]
-           ,[TaxID02]
-           ,[ShowOnReceipt02]
-           ,[TaxID03]
-           ,[ShowOnReceipt03]
-           ,[TaxID04]
-           ,[ShowOnReceipt04]
-           ,[TaxID05]
-           ,[ShowOnReceipt05]
-           ,[TaxID06]
-           ,[ShowOnReceipt06]
-           ,[TaxID07]
-           ,[ShowOnReceipt07]
-           ,[TaxID08]
-           ,[ShowOnReceipt08]
-           ,[TaxID09]
-           ,[ShowOnReceipt09]
-           ,[TaxID10]
-           ,[ShowOnReceipt10]
-           ,[Code])
-     VALUES
-           (0
-           ,'No Sales Tax'
-           ,0
-           ,5
-           ,1
-           ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-           ,'0')
-GO

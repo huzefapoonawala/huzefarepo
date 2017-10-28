@@ -21,7 +21,7 @@ public class PIDAOTest extends Setup {
 	@Test
 	public void testValidateInvoice() throws Exception {
 //		purchaseInvoiceDAO.validateInvoice(1, new File("E:\\Personal\\shabbir ezzi website related\\plugins related\\Invoice Uploader\\ftp file\\082812-081877.OIN"));
-		System.out.println(purchaseInvoiceDAO.validateInvoice(new File("E:\\Personal\\shabbir ezzi website related\\plugins related\\Invoice Uploader\\ftp file\\latest.oin")));
+		System.out.println(purchaseInvoiceDAO.validateInvoice(new File("/Users/hpoonaw/Personal/Laptop Backups/ICT-Dell-2016_11_22/HP_Data_D_2016-11-22/Personal/Work/shabbir ezzi website related/plugins related/Invoice Uploader/ftp file/testlatest.oin")));
 	}
 	
 //	@Test

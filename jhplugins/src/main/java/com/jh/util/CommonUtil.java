@@ -6,8 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import com.jh.vo.Item;
 
 public class CommonUtil {
 
@@ -123,5 +127,13 @@ public class CommonUtil {
 			sb.append(" ");
 		}
 		return sb.toString();
+	}
+	
+	public List<String> extractSkus(List<Item> items) {
+		List<String> skusInOrgDB = new ArrayList<>();
+		for (Item item : items) {
+			skusInOrgDB.add(item.getSku());
+		}
+		return skusInOrgDB;
 	}
 }

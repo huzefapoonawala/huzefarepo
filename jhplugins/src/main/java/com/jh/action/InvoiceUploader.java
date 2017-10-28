@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
+import com.jh.dao.orgilldb.item.ItemDAO;
 import com.jh.dao.pi.PurchaseInvoiceDAO;
 import com.jh.vo.RequestVO;
 import com.opensymphony.xwork2.ActionSupport;
@@ -67,10 +68,31 @@ public class InvoiceUploader extends ActionSupport implements ServletResponseAwa
 	public List<Map<String, String>> getPiFiles() {
 		return piFiles;
 	}
+	
+	private List<String> skus;
+	public List<String> getSkus() {
+		return skus;
+	}
+	public void setSkus(List<String> skus) {
+		this.skus = skus;
+	}
+	
+	private List<com.jh.vo.Item> availableItems;
+	public List<com.jh.vo.Item> getAvailableItems() {
+		return availableItems;
+	}
+	public void setAvailableItems(List<com.jh.vo.Item> availableItems) {
+		this.availableItems = availableItems;
+	}
 
 	private PurchaseInvoiceDAO purchaseInvoiceDAO;	
 	public void setPurchaseInvoiceDAO(PurchaseInvoiceDAO purchaseInvoiceDAO) {
 		this.purchaseInvoiceDAO = purchaseInvoiceDAO;
+	}
+	
+	private ItemDAO orgilldbItemDAO;
+	public void setOrgilldbItemDAO(ItemDAO orgilldbItemDAO) {
+		this.orgilldbItemDAO = orgilldbItemDAO;
 	}
 	
 	public String validateInvoiceFile() {
@@ -125,5 +147,10 @@ public class InvoiceUploader extends ActionSupport implements ServletResponseAwa
 		out.write(data);
 		out.close();
 		return null;
+	}
+	
+	public String fetchItemsAvailableInOrgilldb() throws Exception{
+		availableItems = orgilldbItemDAO.getItemsBySkus(skus);
+		return SUCCESS;
 	}
 }

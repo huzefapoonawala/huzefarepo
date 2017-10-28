@@ -33,6 +33,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
@@ -71,12 +72,15 @@ import freemarker.template.TemplateModelIterator;
 import freemarker.template.Version;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath*:jh-template-context.xml","classpath*:jh-test-context.xml","classpath*:jh-common-context.xml"})
+@ContextConfiguration(locations={"classpath:jh-template-context.xml","classpath:jh-test-context.xml","classpath:jh-common-context.xml"})
+@ActiveProfiles(profiles={"development","website_sync"})
 public class EDITest {
 
 	@Resource FreemarkerTemplateUtil freemarkerTemplateUtil;
 	@Resource FreeMarkerConfigurer templateConfigurer;
 	@Resource EdiParser ediParser;
+	
+	private static final String SAMPLE_EDI_FILE_PATH = "/Users/hpoonaw/Personal/Laptop Backups/ICT-Dell-2016_11_22/HP_Data_D_2016-11-22/Personal/Work/shabbir ezzi website related/plugins related/";
 	
 //	@Test
 	public void testEDIWithFreemarker() throws Exception{
@@ -217,7 +221,7 @@ public class EDITest {
 	
 	@Test
 	public void testAcks() {
-		List<EdiAcknowledgement> acks = ediParser.extractEdiAcknowledgements("E:/Personal/shabbir ezzi website related/plugins related/edi-orgill-ack/",new ArrayList<String>(Arrays.asList(new String[]{"7188801258.997"/*, "7188801258_2.997"*/})));
+		List<EdiAcknowledgement> acks = ediParser.extractEdiAcknowledgements(SAMPLE_EDI_FILE_PATH+"/edi-orgill-ack/",new ArrayList<String>(Arrays.asList(new String[]{"7188801258.997"/*, "7188801258_2.997"*/})));
 		for (EdiAcknowledgement ack : acks) {
 			System.out.println(ack.toString());
 		}
@@ -266,7 +270,7 @@ public class EDITest {
 			}
 		}*/
 		
-		String data = ediParser.parseEDIData("E:/Personal/shabbir ezzi website related/plugins related/edi-orgill-invoice/", Arrays.asList(new String[]{"7188801258_20_DEC_2013.810"}));
+		String data = ediParser.parseEDIData(SAMPLE_EDI_FILE_PATH+"/edi-orgill-invoice/", Arrays.asList(new String[]{"7188801258.810"}));
 		System.out.println(data);
 	}
 	
@@ -291,7 +295,7 @@ public class EDITest {
 	
 	@Test
 	public void testInvoices() {
-		List<EdiInvoice> list = ediParser.extractEdiInvoices("E:/Personal/shabbir ezzi website related/plugins related/edi-orgill-invoice/", Arrays.asList(new String[]{"7188801258_20_DEC_2013.810"}));
+		List<EdiInvoice> list = ediParser.extractEdiInvoices(SAMPLE_EDI_FILE_PATH+"/edi-orgill-invoice/", Arrays.asList(new String[]{"7188801258.810"}));
 		for (EdiInvoice ediInvoice : list) {
 			System.out.println(ediInvoice.toString());
 		}

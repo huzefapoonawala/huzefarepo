@@ -175,7 +175,14 @@
 	</table>
 	</div>
 </div>
-<div data-dojo-type="dijit.Dialog" style="width:200px;" data-dojo-props="title:'Skus Not Existing'" id="skusnaDialog">
+<div data-dojo-type="dijit.Dialog" style="width:250px;" data-dojo-props="title:'Skus Not Existing'" id="skusnaDialog">
+	<p><b>SKUs Available In Orgill Database</b></p>
+	<div id="skusAvailInOrgDataGrid"></div>
+	<center>
+		<div data-dojo-type="dijit.form.Button" id="addSkusButton" data-dojo-props="label:'Add Selected SKUs'"></div>
+	</center>
+	<br>
+	<p><b>SKUs <font color="red">NOT</font> Available In Orgill Database</b></p>
 	<div id="skusnaDataGrid"></div>
 </div>
 <div data-dojo-type="dijit.Dialog" style="width:350px;" data-dojo-props="title:'Aliases Not Existing'" id="aliasnaDialog">
