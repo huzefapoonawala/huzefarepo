@@ -3,5 +3,6 @@
     {label:"Item Updater", url:"../forward/plugin_ItemUpdater.action"},
 	{label:"Invoice Uploader", url:"../forward/plugin_InvoiceUploader.action"},
 	{label:"Orgill Item Sync", url:"../forward/plugin_OrgillItemSync.action"},
-	{label:"Website Order Manager", url:"../forward/plugin_WebsiteOrderManager.action"}
+	{label:"Website Order Manager", url:"../forward/plugin_WebsiteOrderManager.action"},
+	{label:"Add Item From OrgillDB", url:"../forward/plugin_AddItemFromOrgillDB.action"}
 ]

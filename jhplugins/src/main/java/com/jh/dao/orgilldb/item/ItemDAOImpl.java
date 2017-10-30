@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.jh.util.CommonUtil;
 import com.jh.vo.Item;
 import com.jh.vo.RequestVO;
 
@@ -19,9 +20,15 @@ public class ItemDAOImpl implements ItemDAO {
 	public void setDynamicsTemplate(JdbcTemplate dynamicsTemplate) {
 		this.dynamicsTemplate = dynamicsTemplate;
 	}
+	
+	private CommonUtil commonUtil;
+	public void setCommonUtil(CommonUtil commonUtil) {
+		this.commonUtil = commonUtil;
+	}
 
 	@Value("${query.orgilldb.get.items.byskus}") private String queryGetItemsBySkus;
 	@Value("${query.dynamicsdb.copy.item.bysku}") private String queryCopyItemBySku;
+	@Value("${query.orgilldb.get.itemdetails.bysku}") private String queryGetItemDetailsBySku;
 	
 	@Override
 	public List<Item> getItemsBySkus(List<String> skus2Search) {
@@ -46,5 +53,12 @@ public class ItemDAOImpl implements ItemDAO {
 			dynamicsTemplate.queryForInt(queryCopyItemBySku, sku);
 			LOG.debug(String.format("Successfully copied item with SKU '%s' from orgill db to dynamics db.", sku));
 		}
+	}
+	
+	@Override
+	public Item getItemDetailsBySku(RequestVO request) {
+		Item item = dynamicsTemplate.queryForObject(queryGetItemDetailsBySku, new BeanPropertyRowMapper<Item>(Item.class), request.getSku());
+		item.setImage(commonUtil.getImageUrl(item.getSku(), "jpg"));
+		return item;
 	}
 }

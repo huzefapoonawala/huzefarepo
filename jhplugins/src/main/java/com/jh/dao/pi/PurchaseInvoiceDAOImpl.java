@@ -181,6 +181,7 @@ public class PurchaseInvoiceDAOImpl extends JdbcDaoSupport implements PurchaseIn
 				tmp.put("aliases", list.get(idx).getAliases());
 				if (!tmp.get("upc").toString().trim().isEmpty() && (list.get(idx).getAliases() == null || !list.get(idx).getAliases().contains(tmp.get("upc").toString()))) {
 					atmp = new JSONObject();
+					atmp.put("itemId", list.get(idx).getId());
 					atmp.put("sku", tmp.get("sku"));
 					atmp.put("upc", tmp.get("upc"));
 					aliasNA.add(atmp);

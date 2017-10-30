@@ -27,9 +27,17 @@ public class OrgilldbItemDAOTest extends Setup {
 	
 	@Test
 	public void testCopyItemBySku() {
-		List<String> skus = Arrays.asList(new String[]{"0010124","0010447","0010611"});
+		List<String> skus = Arrays.asList(new String[]{/*"0010124",*/"0010447","0010611"});
 		RequestVO request = new RequestVO();
 		request.setSkus(skus);
 		orgilldbItemDAO.copyItemsFromOrgillDB(request);
+	}
+	
+	@Test
+	public void testGetItemdetails() {
+		RequestVO request = new RequestVO();
+		request.setSku("0010124");
+		Item item = orgilldbItemDAO.getItemDetailsBySku(request);
+		System.out.println(item.getSku()+" "+item.getIsItemExist()+" "+item.getImage());
 	}
 }

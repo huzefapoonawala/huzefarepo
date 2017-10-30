@@ -11,4 +11,6 @@ public interface ItemDAO {
 
 	void copyItemsFromOrgillDB(RequestVO request);
 
+	Item getItemDetailsBySku(RequestVO request);
+
 }

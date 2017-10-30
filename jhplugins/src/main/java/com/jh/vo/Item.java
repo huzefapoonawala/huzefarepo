@@ -37,6 +37,7 @@ public class Item {
 	private String categoryCode;
 	private String toOrderQuantity;
 	private String binLocation;
+	private Boolean isItemExist;
 	
 	public Item() {
 		super();
@@ -244,5 +245,11 @@ public class Item {
 	}
 	public void setBinLocation(String binLocation) {
 		this.binLocation = binLocation;
+	}
+	public Boolean getIsItemExist() {
+		return isItemExist;
+	}
+	public void setIsItemExist(Boolean isItemExist) {
+		this.isItemExist = isItemExist;
 	}
 }

@@ -204,6 +204,8 @@
 	
 	function createAliasesnaGrid() {
 		var struct = [{
+            			type: "dojox.grid._CheckBoxSelector"
+        			},{
 					cells:[
 					        {name: "SKU #", field: "sku"},
 					        {name: "Alias", field: "upc", width:"70%"}
@@ -212,7 +214,7 @@
 		var gridStore = new dojo.data.ItemFileWriteStore({data:{identifier:'sku',items:[]}});
 		var grid = new dojox.grid.EnhancedGrid({
 			structure:struct,
-			selectionMode:'none',
+			selectionMode:'multiple',
 			style:{height:'300px', width:'99%'},
 			store:gridStore
 		},'aliasesnaDataGrid');
@@ -692,6 +694,39 @@
 							dojo.publish(browseInvoiceAction == 'FTP' ? 'jh/pi/showinvoicefromftp' : 'jh/pi/showinvoicefromlocal', []);
 						}
 					});
+				}
+			}
+		});
+		dijit.byId('addAliasesButton').attr({
+			onClick: function() {
+				var grid = dijit.byId('aliasesnaDataGrid'), store = grid.get('store');
+				var selSkus = grid.get('selection').getSelected(), isValid = true;
+				if (selSkus.length == 0) {
+					alert('Kindly select aliases to add');
+					isValid = false;
+				}
+				if (isValid && confirm('Are you sure, you want to add the selected aliases.')) {
+					var addCnt = 0;
+					dojo.forEach(selSkus, function(sku, idx) {
+						dojo.xhrPost({
+							url:'../json/Item_addAlias.action',
+							content:{
+								itemId: store.getValue(sku, 'itemId'),
+								alias: store.getValue(sku, 'upc')
+							},
+							handleAs:'json',
+							sync:true,
+							load: function(response) {
+								addCnt += 1;
+							}
+						});
+					});
+					alert('Aliases added successfully, refreshing page...');
+					grid.get('selection').clear();
+					dijit.byId('aliasnaDialog').hide();
+					dijit.byId('invoiceDetailDialog').hide();
+					isInvRefresh = true;
+					dojo.publish(browseInvoiceAction == 'FTP' ? 'jh/pi/showinvoicefromftp' : 'jh/pi/showinvoicefromlocal', []);
 				}
 			}
 		});

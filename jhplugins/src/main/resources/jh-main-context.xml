@@ -54,5 +54,6 @@
 	
 	<bean id="orgilldbItemDAO" class="com.jh.dao.orgilldb.item.ItemDAOImpl">
 		<property name="dynamicsTemplate" ref="dynamicsTemplate"></property>
+		<property name="commonUtil" ref="commonUtil"></property>
 	</bean>
 </beans>

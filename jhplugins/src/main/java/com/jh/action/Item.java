@@ -220,4 +220,14 @@ public class Item extends ActionSupport implements ModelDriven<RequestVO>, Servl
 		}
 		return SUCCESS;
 	}
+	
+	public String fetchItemDetailsBySkuFromOrgillDB() throws Exception {
+		try {
+			item = orgilldbItemDAO.getItemDetailsBySku(request);
+		} catch (Exception e) {
+			logger.error("Error occured while fetching item details from orgill db.", e);
+			throw e;
+		}
+		return SUCCESS;
+	}
 }

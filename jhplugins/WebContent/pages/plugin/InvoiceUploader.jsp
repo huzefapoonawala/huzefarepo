@@ -185,8 +185,11 @@
 	<p><b>SKUs <font color="red">NOT</font> Available In Orgill Database</b></p>
 	<div id="skusnaDataGrid"></div>
 </div>
-<div data-dojo-type="dijit.Dialog" style="width:350px;" data-dojo-props="title:'Aliases Not Existing'" id="aliasnaDialog">
+<div data-dojo-type="dijit.Dialog" style="width:400px;" data-dojo-props="title:'Aliases Not Existing'" id="aliasnaDialog">
 	<div id="aliasesnaDataGrid"></div>
+	<center>
+		<div data-dojo-type="dijit.form.Button" id="addAliasesButton" data-dojo-props="label:'Add Selected Aliases'"></div>
+	</center>
 </div>
 <div data-dojo-type="dijit.Dialog" style="width:350px;" data-dojo-props="title:'Select Reason Code'" id="rcDialog">
 	<table align="center">
