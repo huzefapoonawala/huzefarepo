@@ -127,7 +127,7 @@ select * from (
 		i.LastReceived,
 		i.inactive, 
 		i.cost as costPrice, 
-		i.price as retailPrice,
+		i.price as retailPrice,		
 		i.id,
 		i.ItemLookupCode as sku,
 		i.Description,
@@ -142,7 +142,7 @@ select * from (
 		s.SupplierName,
 		(i.restocklevel-((i.Quantity+isnull(t1.onOrder,0))-(i.QuantityCommitted+isnull(t1.transferOut,0)))) as orderQuantity,
 		left(a.aliases, len(a.aliases)-1) as aliases,
-		BinLocation
+		r.*
 	from 
 		Item i 
 		join Supplier s
@@ -168,6 +168,9 @@ select * from (
 		OUTER APPLY (
 			SELECT aliases = (SELECT Alias+',' FROM Alias a where a.ItemID = i.ID FOR XML PATH(''))
 		) a
+		outer apply (
+			select Suggested_retail/100 as suggestedRetail, PRO_BENCHMARK_RETAIL/100 as PROBENCHMARKRETAIL, BENCHMARK_RETAIL/100 as BENCHMARKRETAIL from orgillsync.dbo.WebItem where SKU = i.ItemLookupCode
+		) r
 	where 
 		((
 			t2.quantitySold > 0 and

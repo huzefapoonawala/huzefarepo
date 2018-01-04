@@ -32,6 +32,7 @@ public class RequestVO {
 	private Integer orderId;
 	private String poNumber;
 	private List<String> skus;
+	private String retailPriceColumn;
 	
 	public Integer getSupplierId() {
 		return supplierId;
@@ -187,5 +188,11 @@ public class RequestVO {
 	}
 	public void setSkus(List<String> skus) {
 		this.skus = skus;
+	}
+	public String getRetailPriceColumn() {
+		return retailPriceColumn;
+	}
+	public void setRetailPriceColumn(String retailPriceColumn) {
+		this.retailPriceColumn = retailPriceColumn;
 	}
 }

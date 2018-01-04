@@ -57,7 +57,7 @@ public class ItemDAOImpl implements ItemDAO {
 	
 	@Override
 	public Item getItemDetailsBySku(RequestVO request) {
-		List<Item> items = dynamicsTemplate.query(queryGetItemDetailsBySku, new BeanPropertyRowMapper<Item>(Item.class), request.getSku());
+		List<Item> items = dynamicsTemplate.query(queryGetItemDetailsBySku, new BeanPropertyRowMapper<Item>(Item.class), request.getSku(), request.getSku());
 		Item item = null;
 		if (!items.isEmpty()) {
 			item = items.get(0);

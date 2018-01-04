@@ -16,7 +16,7 @@
 	<table>
 		<tr>
 			<td>
-				Enter SKU To Add&nbsp;&nbsp;
+				Enter SKU / UPC Code (Alias) To Add&nbsp;&nbsp;
 				<div data-dojo-type="dijit.form.ValidationTextBox" id="ssku" data-dojo-props="label:'SKU', name:'sku', required:false"></div>
 			</td>
 			<td width="10px">&nbsp;</td>

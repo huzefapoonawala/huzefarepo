@@ -4,4 +4,4 @@
 
 -- update Temp.dbo.Item set Quantity = qty from Temp.dbo.Item i inner join @itemqty2sync u on i.ID = u.id;
 
-update Temp.dbo.Item set Quantity = i2.Quantity from Temp.dbo.Item i1 inner join Beta.dbo.Item i2 on i2.ItemLookupCode = i1.ItemLookupCode;
+update Temp.dbo.Item set Quantity = i2.Quantity, Price = i2.Price, Cost = i2.Cost, Description = i2.Description from Temp.dbo.Item i1 inner join Beta.dbo.Item i2 on i2.ItemLookupCode = i1.ItemLookupCode;
