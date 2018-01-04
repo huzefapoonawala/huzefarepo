@@ -1,5 +1,6 @@
 (function() {
 	var oldSQty;
+	var selectedRetailColumn;
 	function createDataGrid() {
 		var struct = [{
             type: "dojox.grid._CheckBoxSelector"
@@ -14,7 +15,12 @@
 				 		} 
 				 	},
 				 	{name: "SKU #", field: "sku", rowSpan: 2, width:"80px"},
-					{ name: "Retail Price", field: "retailPrice", width:"75px" /*, editable:true, type: dojox.grid.cells._Widget, widgetClass:dijit.form.NumberTextBox*/ },
+					{ name: "Selected Retail Price", field: "", width:"75px" /*, editable:true, type: dojox.grid.cells._Widget, widgetClass:dijit.form.NumberTextBox*/
+						, formatter: function(value,rIdx) { 
+							var grid = dijit.byId('dataGrid'), store = grid.get('store'), item = grid.getItem(rIdx);
+			                return store.getValue(item,selectedRetailColumn); 
+			            } 
+					},
 					{ name: "Cost Price", field: "costPrice", width:"75px" },
 					{ name: "Quantity On Hand", field: "stockQuantity", width:"100px" },
 					{ name: "Re-stock Level", field: "restockLevel" },
@@ -246,6 +252,7 @@
 		dijit.byId('poForm').attr({
 			onSubmit: function() {
 				if (this.validate()) {
+					selectedRetailColumn = dijit.byId('retailPriceColumn').get('value');
 					dojo.xhrPost({
 						url:'../json/PurchaseOrder_fetchDetailsForPurchaseOrder.action',
 						form:'poForm',
@@ -281,9 +288,10 @@
 						var sArr = [], store = dijit.byId('dataGrid').get('store');
 						dojo.forEach(sItems, function(item) {
 							var sJson = {};
-							dojo.forEach(['sku','retailPrice','costPrice','orderQuantity','description','totalOrderCost','committedQuantity'], function(key) {
+							dojo.forEach(['sku','costPrice','orderQuantity','description','totalOrderCost','committedQuantity'], function(key) {
 								sJson[key] = store.getValue(item,key);
 							});
+							sJson['retailPrice'] = store.getValue(item,selectedRetailColumn);
 							sArr.push(sJson);
 						});
 						dojo.attr('poData','value',dojo.toJson(sArr));
