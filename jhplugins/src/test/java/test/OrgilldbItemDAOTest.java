@@ -39,9 +39,9 @@ public class OrgilldbItemDAOTest extends Setup {
 		request.setSku("00101241");
 		Item item = orgilldbItemDAO.getItemDetailsBySku(request);
 		Assert.assertNull(item);
-		request.setSku("0010124");
+		request.setSku("028877475684");
 		item = orgilldbItemDAO.getItemDetailsBySku(request);
 		Assert.assertNotNull(item);
-//		System.out.println(item.getSku()+" "+item.getIsItemExist()+" "+item.getImage());
+		System.out.println(item.getSku()+" "+item.getIsItemExist()+" "+item.getImage());
 	}
 }
