@@ -15,6 +15,7 @@
 				 		} 
 				 	},
 				 	{name: "SKU #", field: "sku", rowSpan: 2, width:"80px"},
+				 	{ name: "Your Retail Price", field: "retailPrice", width:"75px" },
 					{ name: "Selected Retail Price", field: "", width:"75px" /*, editable:true, type: dojox.grid.cells._Widget, widgetClass:dijit.form.NumberTextBox*/
 						, formatter: function(value,rIdx) { 
 							var grid = dijit.byId('dataGrid'), store = grid.get('store'), item = grid.getItem(rIdx);
@@ -288,10 +289,9 @@
 						var sArr = [], store = dijit.byId('dataGrid').get('store');
 						dojo.forEach(sItems, function(item) {
 							var sJson = {};
-							dojo.forEach(['sku','costPrice','orderQuantity','description','totalOrderCost','committedQuantity'], function(key) {
+							dojo.forEach(['sku','costPrice','retailPrice','orderQuantity','description','totalOrderCost','committedQuantity'], function(key) {
 								sJson[key] = store.getValue(item,key);
 							});
-							sJson['retailPrice'] = store.getValue(item,selectedRetailColumn);
 							sArr.push(sJson);
 						});
 						dojo.attr('poData','value',dojo.toJson(sArr));
