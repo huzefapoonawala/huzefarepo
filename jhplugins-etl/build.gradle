@@ -1,6 +1,7 @@
 buildscript {
 	ext {
 		springBootVersion = '2.1.1.RELEASE'
+		lombokVersion = '1.18.4'
 	}
 	repositories {
 		mavenCentral()
@@ -16,14 +17,18 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'com.jh'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '1.11'
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-batch'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.batch:spring-batch-test'
+	implementation('org.springframework.boot:spring-boot-starter')
+	compile group: 'commons-net', name: 'commons-net', version: '3.6'
+	
+	annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+	compileOnly("org.projectlombok:lombok:$lombokVersion")
+	
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
