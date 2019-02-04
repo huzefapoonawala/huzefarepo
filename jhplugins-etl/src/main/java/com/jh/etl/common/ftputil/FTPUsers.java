@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Component
-@ConfigurationProperties(prefix="ftp")
+@ConfigurationProperties(prefix="ftpuser")
 @Getter
 @Setter
 public class FTPUsers {

@@ -2,18 +2,29 @@ buildscript {
 	ext {
 		springBootVersion = '2.1.1.RELEASE'
 		lombokVersion = '1.18.4'
+		mapstructVersion = '1.2.0.Final'
 	}
 	repositories {
 		mavenCentral()
+		/*maven{
+			url "https://plugins.gradle.org/m2/"
+		}*/
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		//classpath("net.ltgt.gradle:gradle-apt-plugin:0.19")
 	}
 }
 
+/*plugins{
+	id 'net.ltgt.apt' version '0.20'
+}*/
+
 apply plugin: 'java'
+apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+//apply plugin: 'net.ltgt.apt'
 
 group = 'com.jh'
 version = '0.0.1-SNAPSHOT'
@@ -24,11 +35,26 @@ repositories {
 }
 
 dependencies {
-	implementation('org.springframework.boot:spring-boot-starter')
-	compile group: 'commons-net', name: 'commons-net', version: '3.6'
+	compile('org.springframework.boot:spring-boot-starter')
+	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
 	
-	annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+	compile group: 'commons-net', name: 'commons-net', version: '3.6'
+	compile group:'com.univocity', name:'univocity-parsers', version:'2.7.6'
+	compile 'mysql:mysql-connector-java'
+	
 	compileOnly("org.projectlombok:lombok:$lombokVersion")
+	annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+	
+	compile "org.mapstruct:mapstruct-jdk8:${mapstructVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 	
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	testCompile "org.mapstruct:mapstruct-jdk8:${mapstructVersion}"
+}
+
+test {
+    testLogging {
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
 }

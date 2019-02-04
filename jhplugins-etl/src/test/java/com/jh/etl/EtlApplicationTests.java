@@ -12,6 +12,5 @@ public class EtlApplicationTests {
 	@Test
 	public void contextLoads() {
 	}
-
 }
 

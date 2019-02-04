@@ -14,4 +14,6 @@ public class FTPUser {
 	private int port;
 	private String username;
 	private String password;
+	private String ftpFolderpath;
+	private String localFolderpath;
 }
