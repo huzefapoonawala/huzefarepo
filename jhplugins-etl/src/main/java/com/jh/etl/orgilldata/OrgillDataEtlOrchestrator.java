@@ -12,6 +12,7 @@ import com.jh.etl.common.dto.ProductDto;
 import com.jh.etl.common.interfaces.DataExtracter;
 import com.jh.etl.common.interfaces.EtlOrchestrator;
 import com.jh.etl.datastore.service.CategoryService;
+import com.jh.etl.datastore.service.ProductService;
 
 @Component
 public class OrgillDataEtlOrchestrator implements EtlOrchestrator {
@@ -21,13 +22,14 @@ public class OrgillDataEtlOrchestrator implements EtlOrchestrator {
 	@Autowired private DataExtracter<List<CategoryDto>> orgillCategoryDataExtracter; 
 	@Autowired private DataExtracter<List<ProductDto>> orgillProductDataExtracter;
 	@Autowired private CategoryService categoryService;
+	@Autowired private ProductService productService;
 	
 	@Override
 	public void initiateEtl() {
 		LOG.debug("Start: Initiating orgill data etl");
 		
 		categoryService.persistCategories(orgillCategoryDataExtracter.extractData());
-		orgillProductDataExtracter.extractData();
+		productService.persistProducts(orgillProductDataExtracter.extractData());
 		
 		LOG.debug("End: Initiating orgill data etl");
 	}

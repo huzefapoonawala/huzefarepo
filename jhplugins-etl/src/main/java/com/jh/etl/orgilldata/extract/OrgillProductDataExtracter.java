@@ -1,8 +1,10 @@
 package com.jh.etl.orgilldata.extract;
 
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,6 +29,8 @@ public class OrgillProductDataExtracter implements DataExtracter<List<ProductDto
 	
 	private static final String WEB_DEPT_SKU_FILE = "WEB_DEPT_SKU.TXT";
 	private static final String WEB_SKU_COMMON_FILE = "WEB_SKU_COMMON.TXT";
+	private static final String WEB_SKU_DESCRIPTION_FILE = "orgill_skudesc.TXT";
+	private static final String WEB_SKU_ADDITIONAL_DESCRIPTION_FILE = "skudescadd.TXT";
 	
 	@Autowired private FTPReader orgillProductDataFTPReader;
 	
@@ -35,8 +39,10 @@ public class OrgillProductDataExtracter implements DataExtracter<List<ProductDto
 		List<ProductDto> list = null;
 		LOG.debug("Dowloading and extracting orgill product data");
 		try {
-			Map<String, ProductDto> map = extractProductCategoryMappingData(orgillProductDataFTPReader.downloadFile(WEB_DEPT_SKU_FILE));
-			extractProductDetailsData(orgillProductDataFTPReader.downloadFile(WEB_SKU_COMMON_FILE), map);
+			Map<String, ProductDto> map = extractProductCategoryMappingData(orgillProductDataFTPReader.downloadFile(WEB_DEPT_SKU_FILE), mapperForProductCategoryMapping());
+			extractProductDetailsData(orgillProductDataFTPReader.downloadFile(WEB_SKU_COMMON_FILE), map, mapper2MapProductDetails());
+			extractProductDetailsData(orgillProductDataFTPReader.downloadFile(WEB_SKU_DESCRIPTION_FILE), map, mapper2MapProductDescription());
+			extractProductDetailsData(orgillProductDataFTPReader.downloadFile(WEB_SKU_ADDITIONAL_DESCRIPTION_FILE), map, mapper2MapAdditionalProductDescription());
 			list = Optional.ofNullable(map).map(m -> new ArrayList<ProductDto>(m.values())).orElse(new ArrayList<ProductDto>());
 		} catch (Exception e) {
 			LOG.error("Error occurred while extracting orgill product data.", e);
@@ -45,71 +51,60 @@ public class OrgillProductDataExtracter implements DataExtracter<List<ProductDto
 		return list;
 	}
 	
-	private Map<String, ProductDto> extractProductCategoryMappingData(String localDataFilePath) throws Exception {
+	private Csv2ObjectMapper<ProductDto> mapperForProductCategoryMapping() {
+		return (csvLine, p) -> ProductDto.builder()
+				.sku(csvLine[6])
+				.supplier(Supplier.ORGILL)
+				.category(CategoryDto.builder().code(csvLine[0].concat(csvLine[1]).concat(csvLine[2])).supplier(Supplier.ORGILL).build())
+				.build();
+	}
+	
+	private Csv2ObjectMapper<ProductDto> mapper2MapProductDetails() {
+		return (csvLine, p) -> {
+			p.setTitle(csvLine[9].trim());
+			p.setDescription(csvLine[2].trim());
+			p.setWidth(Float.valueOf(csvLine[3]));
+			p.setHeight(Float.valueOf(csvLine[4]));
+			p.setLength(Float.valueOf(csvLine[5]));
+			p.setWeight(Float.valueOf(csvLine[6]));
+			p.setUpc(csvLine[16].trim());
+			p.setRetailPrice(Double.valueOf(csvLine[11])/100);
+			p.setRetailUnit(csvLine[12].trim());
+			p.setImageLink(csvLine[14].trim());
+			return p;
+		};
+	}
+	
+	private Csv2ObjectMapper<ProductDto> mapper2MapProductDescription() {
+		return (csvLine, p) -> {
+			p.setDescription(
+//					Optional.ofNullable(p.getDescription()).orElse("").concat(String.join("", Arrays.copyOfRange(csvLine, 1, csvLine.length)))
+					String.join("", Arrays.copyOfRange(csvLine, 1, csvLine.length))
+			);
+			return p;
+		};
+	}
+	
+	private Csv2ObjectMapper<ProductDto> mapper2MapAdditionalProductDescription() {
+		return (csvLine, p) -> {
+			p.setDescription(
+					Optional.ofNullable(p.getDescription()).orElse("").concat(String.join("", Arrays.copyOfRange(csvLine, 2, csvLine.length)))
+			);
+			return p;
+		};
+	}
+	
+	private Map<String, ProductDto> extractProductCategoryMappingData(String localDataFilePath, Csv2ObjectMapper<ProductDto> mapper) throws Exception {
 		try (Stream<String> stream = Files.lines(Paths.get(localDataFilePath))) {
 			return stream.map(line -> line.split("~"))
 			.filter(strs -> strs.length >= 7)
-			.collect(Collectors.toMap(strs -> strs[6], strs -> ProductDto.builder()
-								.sku(strs[6])
-								.supplier(Supplier.ORGILL)
-								.category(CategoryDto.builder().code(strs[0].concat(strs[1]).concat(strs[2])).build())
-								.build()));
+			.collect(Collectors.toMap(strs -> strs[6], strs -> mapper.mapData(strs, null)));
 		}
 	}
 	
-	private void extractProductDetailsData(String localDataFilePath, Map<String, ProductDto> products) throws Exception {
-		try (Stream<String> stream = Files.lines(Paths.get(localDataFilePath))) {
-			stream.map(line -> line.split("~"))
-					.forEach(strs -> {
-						Optional.ofNullable(products.get(strs[0])).ifPresent(p -> {
-							p.setTitle(strs[9].trim());
-							p.setDescription(strs[2].trim());
-							p.setWidth(Float.valueOf(strs[3]));
-							p.setHeight(Float.valueOf(strs[4]));
-							p.setLength(Float.valueOf(strs[5]));
-							p.setWeight(Float.valueOf(strs[6]));
-							p.setUpc(strs[16].trim());
-							p.setRetailPrice(Double.valueOf(strs[11])/100);
-							p.setRetailUnit(strs[12].trim());
-							p.setImageLink(strs[14].trim());
-						});
-					});
+	private void extractProductDetailsData(String localDataFilePath, Map<String, ProductDto> products, Csv2ObjectMapper<ProductDto> mapper) throws Exception {
+		try (Stream<String> stream = Files.lines(Paths.get(localDataFilePath), Charset.forName("ISO-8859-1"))) {
+			stream.map(line -> line.split("~")).forEach(strs -> Optional.ofNullable(products.get(strs[0])).ifPresent(p -> mapper.mapData(strs, p)));
 		}
 	}
-	
-	/*private List<ProductDto> extractProductCategoryMappingDataAsList(String localDataFilePath) throws Exception{
-		try (Stream<String> stream = Files.lines(Paths.get(localDataFilePath))) {
-			List<ProductDto> list = stream.map(line -> line.split("~"))
-			.filter(strs -> strs.length >= 7)
-			.map(
-					strs -> ProductDto.builder()
-								.sku(strs[6])
-								.category(CategoryDto.builder().code(strs[0].concat(strs[1]).concat(strs[2])).build())
-								.build()
-			)
-			.collect(Collectors.toList());
-			return list;
-		}
-	}
-	
-	private void extractProductDetailsDataAsList(String localDataFilePath, List<ProductDto> products) throws Exception{
-		try (Stream<String> stream = Files.lines(Paths.get(localDataFilePath))) {
-			stream.map(line -> line.split("~"))
-					.forEach(strs -> {
-						Optional<ProductDto> product = products.stream().filter(pro -> pro.getSku().equalsIgnoreCase(strs[0])).findFirst();
-						product.ifPresent(p -> {
-							p.setTitle(strs[9].trim());
-							p.setDescription(strs[2].trim());
-							p.setWidth(Float.valueOf(strs[3]));
-							p.setHeight(Float.valueOf(strs[4]));
-							p.setLength(Float.valueOf(strs[5]));
-							p.setWeight(Float.valueOf(strs[6]));
-							p.setUpc(strs[16].trim());
-							p.setRetailPrice(Double.valueOf(strs[11])/100);
-							p.setRetailUnit(strs[12].trim());
-							p.setImageLink(strs[14].trim());
-						});
-					});
-		}
-	}*/
 }

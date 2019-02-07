@@ -30,10 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
 	@Transactional
 	public void persistCategories(List<CategoryDto> categories) {
 		LOG.debug("Start: Persisting categories...");
-		Map<String, Category> existingCategories = categoryRepository
-				.findBySuppliersAndCodes(
-						categories.stream().map(CategoryDto::concatCodeAndSupplier).collect(Collectors.toList())
-				)
+		Map<String, Category> existingCategories = getCategoriesByCodesAndSuppliers(categories.stream().map(CategoryDto::concatCodeAndSupplier).collect(Collectors.toList()))
 				.stream()
 				.collect(Collectors.toMap(Category::concatCodeAndSupplier, c->c));
 		Map<String,Category> categories2Save = categories
@@ -49,5 +46,10 @@ public class CategoryServiceImpl implements CategoryService {
 		categoryRepository.saveAll(categories2Save.values());
 		LOG.debug(String.format("%d categories persisted.", categories2Save.size()));
 		LOG.debug("End: Persisting categories.");
+	}
+	
+	@Override
+	public List<Category> getCategoriesByCodesAndSuppliers(List<String> params) {
+		return categoryRepository.findAll(categoryRepository.inWithConcatCodeAndSupplier(params));
 	}
 }

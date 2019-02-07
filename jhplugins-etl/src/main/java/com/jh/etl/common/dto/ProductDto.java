@@ -24,4 +24,8 @@ public class ProductDto {
 	private String retailUnit;
 	private String imageLink;
 	private Supplier supplier;
+	
+	public String concatSkuAndSupplier() {
+		return String.format("%s,%s", this.sku, this.supplier);
+	}
 }

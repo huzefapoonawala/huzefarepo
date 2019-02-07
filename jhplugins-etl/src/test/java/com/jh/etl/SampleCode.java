@@ -3,6 +3,7 @@ package com.jh.etl;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,7 +27,6 @@ import com.jh.etl.common.dto.ProductDto;
 import com.jh.etl.common.enums.Supplier;
 import com.jh.etl.datastore.entity.Category;
 import com.jh.etl.datastore.mapper.CategoryMapper;
-import com.jh.etl.datastore.mapper.SampleMapper;
 
 public class SampleCode {
 
@@ -44,18 +44,11 @@ public class SampleCode {
 		List<ProductDto> list = Optional.ofNullable(map).map(m -> new ArrayList<ProductDto>(m.values())).orElse(new ArrayList<ProductDto>());
 		System.out.println(list.toString());
 		
-		CategoryDto categoryDto1 = CategoryDto.builder()
-				.code("catetest1")
-				.name("Test Category 1")
-				.supplier(Supplier.ORGILL)
-				.build();
-		System.out.println(SampleMapper.INSTANCE.toCategory(categoryDto1).toString());
-		
 		Category c = new Category();
 		Optional.ofNullable(c).ifPresentOrElse((cat)->{}, ()->System.out.println("Null"));
 	}
 	
-	@Test
+//	@Test
 	public void testIgnoreFieldMapper() {
 		CategoryDto parentDto = CategoryDto.builder().code("catetestP").name("Test Category Parent").supplier(Supplier.ORGILL).build(),
 				childDto = CategoryDto.builder().code("catetestC").name("Test Category Child").supplier(Supplier.ORGILL).parent(parentDto).build();
@@ -70,7 +63,7 @@ public class SampleCode {
 		assertThat(list, Every.everyItem(Matchers.hasProperty("parent", IsNull.nullValue())));
 	}
 	
-	@Test
+//	@Test
 	public void testConvertList2Map() {
 		List<CategoryDto> list = List.of(
 				CategoryDto.builder().name("c1").code("1").supplier(Supplier.ORGILL).build(),
@@ -81,7 +74,7 @@ public class SampleCode {
 		assertThat(map.keySet(), IsCollectionWithSize.hasSize(3));
 	}
 	
-	@Test
+//	@Test
 	public void testListContainsProperty() {
 		CategoryDto c1 = CategoryDto.builder().name("c1").code("1").supplier(Supplier.ORGILL).build();
 		List<CategoryDto> list = List.of(
@@ -90,5 +83,19 @@ public class SampleCode {
 				CategoryDto.builder().name("c3").code("3").supplier(Supplier.ORGILL).build()
 				);
 		assertThat(list, IsCollectionContaining.hasItem(HasPropertyWithValue.hasProperty("parent", HasPropertyWithValue.hasProperty("code", Is.is("1")))));
+	}
+	
+//	@Test
+	public void testListWithCondition() {
+		List<String> l1 = new ArrayList<>(),
+				l2 = Arrays.asList("aa","bb","aa","cc");
+		l2.forEach(p -> {
+			Optional.ofNullable(p).filter(c -> !l1.contains(c)).ifPresent(c -> l1.add(c));
+		});
+		l1.forEach(System.out::println);
+		
+		String sku = null;
+		Supplier supplier = null;
+		System.out.println(String.format("%s,%s", sku, supplier));
 	}
 }

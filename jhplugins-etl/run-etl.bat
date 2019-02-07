@@ -1,0 +1,1 @@
+java -jar libs\jhplugins-etl-1.0.jar --spring.config.location="file:./configs/"

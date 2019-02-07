@@ -2,20 +2,19 @@ package com.jh.etl;
 
 import static org.junit.Assert.assertThat;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import com.jh.etl.common.dto.CategoryDto;
 import com.jh.etl.common.enums.Supplier;
 import com.jh.etl.common.interfaces.DataExtracter;
-import com.jh.etl.orgilldata.extract.OrgillCategoryDataExtracter;
 
 public class OrgillCategoryDataExtracterTests extends TestSetupWithMockingFtpReader {
 	
@@ -23,15 +22,12 @@ public class OrgillCategoryDataExtracterTests extends TestSetupWithMockingFtpRea
 	
 	@Test
 	public void testTransformData() throws Exception {
-		Mockito.when(this.orgillProductDataFTPReader.downloadFile("WEB_DEPT.TXT")).thenReturn("./sampledata/WEB_DEPT_FOR_UNITTEST.TXT");
 		List<CategoryDto> list = orgillCategoryDataExtracter.extractData();
-		assertThat(list, IsCollectionWithSize.hasSize(10));
-		assertThat(list, IsCollectionContaining.hasItem(new CategoryDto("HANDSAWS","1010110120",Supplier.ORGILL,CategoryDto.builder().code("1010100000").build())));
-	}
-	
-	@Configuration
-	@Import(OrgillCategoryDataExtracter.class)
-	static class Config{
-		
+		int lineCount = 0;
+		try(Stream<String> stream = Files.lines(Paths.get(CATEGORY_FILENAME))) {
+			lineCount = Long.valueOf(stream.map(line -> line.split("~")).filter(strs -> strs.length >= 13 && strs[3].equalsIgnoreCase("000")).count()).intValue();
+		}
+		assertThat(list, IsCollectionWithSize.hasSize(lineCount));
+		assertThat(list, IsCollectionContaining.hasItem(new CategoryDto("HANDSAWS","1010110120",Supplier.ORGILL,CategoryDto.builder().code("1010100000").supplier(Supplier.ORGILL).build())));
 	}
 }

@@ -6,29 +6,31 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
-		/*maven{
-			url "https://plugins.gradle.org/m2/"
-		}*/
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		//classpath("net.ltgt.gradle:gradle-apt-plugin:0.19")
 	}
 }
-
-/*plugins{
-	id 'net.ltgt.apt' version '0.20'
-}*/
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-//apply plugin: 'net.ltgt.apt'
 
 group = 'com.jh'
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
 sourceCompatibility = '1.11'
+archivesBaseName = 'jhplugins-etl'
+
+//sourceSets { 
+	//main { 
+		//java{
+			//resources { 
+				//exclude '**/**' 
+			//}
+		//}
+	//}
+//}
 
 repositories {
 	mavenCentral()
@@ -56,5 +58,6 @@ test {
     testLogging {
         showStandardStreams = true
         exceptionFormat = 'full'
+        events 'started', 'passed', 'failed'
     }
 }

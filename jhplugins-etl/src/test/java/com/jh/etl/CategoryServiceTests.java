@@ -41,7 +41,7 @@ public class CategoryServiceTests extends TestSetupWithMockingFtpReader{
 			c4 = CategoryDto.builder().code("catetest4").name("Test Category 4").supplier(Supplier.ORGILL).parent(unitTestCategory).build();
 		List<CategoryDto> list = List.of(c1,c2,c3, c4,unitTestCategory);		
 		categoryService.persistCategories(list);
-		List<Category> cl = categoryRepository.findBySuppliersAndCodes(list.stream().map(CategoryDto::concatCodeAndSupplier).collect(Collectors.toList()));
+		List<Category> cl = categoryService.getCategoriesByCodesAndSuppliers(list.stream().map(CategoryDto::concatCodeAndSupplier).collect(Collectors.toList()));
 		assertThat(cl, IsCollectionWithSize.hasSize(list.size()));
 		assertThat(cl, IsCollectionContaining.hasItem(HasPropertyWithValue.hasProperty("parent", HasPropertyWithValue.hasProperty("code", Is.is(c3.getParent().getCode())))));
 		cl.removeIf(c -> c.getCode().equals(unitTestCategory.getCode()));
