@@ -1,1 +1,1 @@
-java -jar libs\jhplugins-etl-1.0.jar --spring.config.location="file:./configs/"
+java -jar libs\jhplugins-etl-1.0.jar --spring.config.location="file:./configs/,file:./configs/db-config.properties"

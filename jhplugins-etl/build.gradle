@@ -6,14 +6,19 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+		jcenter()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
+plugins {
+	id 'java'
+	id 'eclipse'
+	//id 'com.bmuschko.docker-spring-boot-application' version '4.4.1'
+}
+
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -25,12 +30,17 @@ archivesBaseName = 'jhplugins-etl'
 //sourceSets { 
 	//main { 
 		//java{
-			//resources { 
-				//exclude '**/**' 
-			//}
+			
+		//}
+		//resources { 
+			//exclude '**/**' 
 		//}
 	//}
 //}
+
+/*bootRun {
+	systemProperty "spring.config.location", "file:./configs/,./configs/db-config.properties"
+}*/
 
 repositories {
 	mavenCentral()
@@ -61,3 +71,13 @@ test {
         events 'started', 'passed', 'failed'
     }
 }
+
+/*docker {
+	springBootApplication {
+		baseImage = 'openjdk:11-jre-slim'
+	}
+}
+
+dockerBuildImage {
+	repositories { jcenter() }
+}*/

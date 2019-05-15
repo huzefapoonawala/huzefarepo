@@ -91,9 +91,19 @@ public class StoreVO {
 	public String getStoreDetails(String lineBreak) {
 		StringBuilder details = new StringBuilder()
 			.append(storeAddress1).append(StringUtils.isNotBlank(storeAddress2)?", ":"").append(storeAddress2).append(lineBreak)
-			.append(storeCity).append(", ").append(storeState).append(" ").append(storeZip).append(lineBreak)
-			.append("Tel. & Fax: ").append(storePhone).append(lineBreak)
-			.append("Email: ").append(storeEmail).append(lineBreak);
+			.append(storeCity).append(", ").append(storeState).append(" ").append(storeZip).append(lineBreak);
+		if (StringUtils.isNoneBlank(storeFax)) {
+			if (storePhone.equalsIgnoreCase(storeFax)) {
+				details.append("Tel. & Fax: ").append(storePhone).append(lineBreak);
+			} else {
+				details.append("Tel.: ").append(storePhone).append(lineBreak)
+						.append("Fax: ").append(storeFax).append(lineBreak);
+			}
+		}
+		else {
+			details.append("Tel.: ").append(storePhone).append(lineBreak);
+		}
+		details.append("Email: ").append(storeEmail).append(lineBreak);
 		if (StringUtils.isNoneBlank(storeWebsite)) {
 			details.append("Website: ").append(storeWebsite).append(lineBreak);
 		}
