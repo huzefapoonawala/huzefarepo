@@ -24,10 +24,37 @@ repositories {
 
 ext {
 	springframework_version="3.1.0.RELEASE"
+	javaHome="C:\\Program Files\\Java\\jdk1.7.0_80"
 }
 
 war {
 	from 'WebContent'
+}
+
+/*def javaExecutablesPath = new File(javaHome, 'bin')
+def javaExecutables = [:].withDefault { execName ->
+    def executable = new File(javaExecutablesPath, execName)
+    assert executable.exists(): "There is no ${execName} executable in ${javaExecutablesPath}"
+    executable
+}*/
+tasks.withType(AbstractCompile) {
+    options.with {
+        fork = true
+        forkOptions.javaHome = file(javaHome)
+    }
+}
+/*tasks.withType(Javadoc) {
+    executable = javaExecutables.javadoc
+}
+tasks.withType(Test) {
+    executable = javaExecutables.java
+}
+tasks.withType(JavaExec) {
+    executable = javaExecutables.java
+}*/
+
+jar {
+	//exclude ('**/*.properties')
 }
 
 task fatJar(type: Jar) {
@@ -88,4 +115,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile group: 'org.springframework', name: 'spring-test', version: springframework_version
    // testCompile group: 'org.springframework.data', name: 'spring-data-mongodb', version: '1.3.5.RELEASE'
+}
+
+task showMeCache {
+  configurations.compile.each { println it }
 }

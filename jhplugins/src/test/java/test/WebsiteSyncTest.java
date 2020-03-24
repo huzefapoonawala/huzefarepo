@@ -29,7 +29,7 @@ public class WebsiteSyncTest extends Setup{
 	
 	@Test
 	public void testDownloadAndSync() throws IOException {
-//		websiteProductsSync.downloadParseAndSyncAllFiles();
+		websiteProductsSync.downloadParseAndSyncAllFiles();
 //		websiteProductsSync.addNewProducts2Website();
 //		websiteProductsSync.downloadParseAndUpdateWebInventory();
 		
@@ -48,7 +48,7 @@ public class WebsiteSyncTest extends Setup{
 //		Assert.assertNotNull(websiteProductsSync.getLocalWarehouses());
 		
 //		System.out.println(Arrays.toString(websiteProductsSync.getLocalWarehouses().toArray()));
-		websiteProductsSync.downloadParseAndSyncProducts();
+//		websiteProductsSync.downloadParseAndSyncProducts();
 	}
 	
 	public static void main(String[] args) {
