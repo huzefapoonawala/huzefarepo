@@ -49,6 +49,7 @@ public class WebsiteSyncTest extends Setup{
 		
 //		System.out.println(Arrays.toString(websiteProductsSync.getLocalWarehouses().toArray()));
 //		websiteProductsSync.downloadParseAndSyncProducts();
+//		websiteProductsSync.downloadParseAndUpdateWebInventory();
 	}
 	
 	public static void main(String[] args) {

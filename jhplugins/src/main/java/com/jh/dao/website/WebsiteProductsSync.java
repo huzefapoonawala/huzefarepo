@@ -27,6 +27,9 @@ import com.jh.vo.FTPUser;
 import com.jh.vo.RequestVO;
 import com.jh.vo.WebCategory;
 import com.jh.vo.WebProduct;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReaderBuilder;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -265,21 +268,25 @@ public class WebsiteProductsSync extends WebsiteProductsDAOImpl {
 							@Override
 							public void callbackWithProducts2Chk(String[] currentCsvLine, String[] previousCsvLine, StringBuilder tmp, List<Object[]> data2Persist, List<String> products2Chk) {
 								if (products2Chk.indexOf(currentCsvLine[0]) > -1) {
-									data2Persist.add(new Object[]{
-											currentCsvLine[1].trim(), //MODEL_NUMBER
-											currentCsvLine[16].trim(), //UPC
-											currentCsvLine[7].trim(), //VENDOR_CODE
-											currentCsvLine[8].trim(), //VENDOR_NAME
-											currentCsvLine[43].trim().equalsIgnoreCase("Y") ? 1 : 0, //IS_SHIPPING_AVAILABLE
-											Float.valueOf(currentCsvLine[15].trim())/100, //RETAIL_PRICE
-											Float.valueOf(currentCsvLine[6].trim()), //WEIGHT
-											Float.valueOf(currentCsvLine[5].trim()), //LENGTH
-											Float.valueOf(currentCsvLine[3].trim()), //WIDTH
-											Float.valueOf(currentCsvLine[4].trim()), //HEIGHT
-											currentCsvLine[12].trim(), //UOM
-											currentCsvLine[2].trim(), //DISPLAY_NAME
-											currentCsvLine[0].trim() //SKU
-									});
+									if (currentCsvLine.length >= 44) {
+										data2Persist.add(new Object[]{
+												currentCsvLine[1].trim(), //MODEL_NUMBER
+												currentCsvLine[16].trim(), //UPC
+												currentCsvLine[7].trim(), //VENDOR_CODE
+												currentCsvLine[8].trim(), //VENDOR_NAME
+												currentCsvLine[43].trim().equalsIgnoreCase("Y") ? 1 : 0, //IS_SHIPPING_AVAILABLE
+												Float.valueOf(currentCsvLine[15].trim())/100, //RETAIL_PRICE
+												Float.valueOf(currentCsvLine[6].trim()), //WEIGHT
+												Float.valueOf(currentCsvLine[5].trim()), //LENGTH
+												Float.valueOf(currentCsvLine[3].trim()), //WIDTH
+												Float.valueOf(currentCsvLine[4].trim()), //HEIGHT
+												currentCsvLine[12].trim(), //UOM
+												currentCsvLine[2].trim(), //DISPLAY_NAME
+												currentCsvLine[0].trim() //SKU
+										});
+									} else {
+										logger.warn("Ignoring SKU "+currentCsvLine[0]+" as values less than 44 ("+currentCsvLine.length+").");
+									}
 								}
 							}
 						}
@@ -429,7 +436,9 @@ public class WebsiteProductsSync extends WebsiteProductsDAOImpl {
 	
 	private void parseAndPersistProductDescWithCallback(String filename, String query, List<String> products2Chk, CsvCallback callback) throws Exception{
 		boolean isLast = false;
-		CSVReader reader = new CSVReader(new FileReader(filename),'~',CSVWriter.NO_QUOTE_CHARACTER);
+		CSVParser parser = new CSVParserBuilder().withSeparator('~').withIgnoreQuotations(true).build();
+//		CSVReader reader = new CSVReader(new FileReader(filename),'~',CSVWriter.NO_QUOTE_CHARACTER);
+		com.opencsv.CSVReader reader = new CSVReaderBuilder(new FileReader(filename)).withCSVParser(parser).build();
 		String[] previousCsvLine = null, currentCsvLine = null;
 		List<Object[]> data2Persist = new ArrayList<Object[]>();
 		StringBuilder tmp = new StringBuilder();
@@ -447,6 +456,7 @@ public class WebsiteProductsSync extends WebsiteProductsDAOImpl {
 			}
 			previousCsvLine = currentCsvLine;
 		}
+		reader.close();
 	}
 	
 	private void updateProductDesc(String query, List<Object[]> data) {
