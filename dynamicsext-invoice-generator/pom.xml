@@ -7,7 +7,7 @@
   <description>Dynamics invoice generator plugin</description>
   
   	<properties>
-		<springframework.version>3.2.2.RELEASE</springframework.version>
+		<springframework.version>5.2.4.RELEASE</springframework.version>
 		<slf4j.version>1.6.4</slf4j.version>
 		<logback.version>1.0.1</logback.version>
 		<junit.version>4.8.1</junit.version>
