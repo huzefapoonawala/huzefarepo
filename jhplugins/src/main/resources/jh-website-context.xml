@@ -26,7 +26,7 @@
 			<property name="ftpWriter" ref="ftpWriter"></property>
 			<property name="localWarehouseList" value="${jhplugins.localwarehouse.orgill}"></property>
 			<property name="productImagePath" value="${jhplugins.path.local.images.orgill}"></property>
-			<property name="emailLogs" value="true"></property>
+			<property name="emailLogs" value="false"></property>
 			<property name="notifyOnError" value="false"></property>
 		</bean>
 
@@ -38,8 +38,8 @@
 			<property name="orgillEdiInvoiceFtpUser" ref="orgillEdiInvoiceFtpUser"></property>
 			<property name="commonUtil" ref="commonUtil"></property>
 			<property name="ediParser" ref="ediParser"></property>
-			<property name="notifyOnError" value="true"></property>
-			<property name="emailLogs" value="true"></property>
+			<property name="notifyOnError" value="false"></property>
+			<property name="emailLogs" value="false"></property>
 			<property name="orders2ProcessFrom">
 				<util:list>
 					<value>orgill</value>

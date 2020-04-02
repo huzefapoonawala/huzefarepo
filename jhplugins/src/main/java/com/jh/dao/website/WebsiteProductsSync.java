@@ -484,10 +484,10 @@ public class WebsiteProductsSync extends WebsiteProductsDAOImpl {
 			emailText.append("Quantity of ").append(cnt).append(" products successfully updated on website.\n\n");
 		}
 		
-		cnt = addNewProducts2Website();
+		/*cnt = addNewProducts2Website();
 		if (isEmailLogs) {
 			emailText.append(cnt).append(" products successfully created on website.\n\n");
-		}
+		}*/
 	}
 	
 	private int activateWebsiteItems(){
