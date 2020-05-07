@@ -3,11 +3,14 @@ package com.dynamicsext.module.ies.test;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dynamicsext.module.ies.util.CommonUtil;
 import com.dynamicsext.module.ies.util.PDFUtil;
+import com.dynamicsext.module.ies.vo.AccountStatementDetailsVO;
 import com.dynamicsext.module.ies.vo.PaymentEntryVO;
 import com.dynamicsext.module.ies.vo.TenderVO;
 import com.dynamicsext.module.ies.vo.TransactionEntryVO;
@@ -23,10 +26,12 @@ public class PDFUtilTest {
 			qty += "ln";
 		}
 		System.out.println(qty);
-		testInvoicePdf();
-		testQuotePdf();
-		testWorkOrderPdf();
-		testAccountPaymentPdf();
+		//testInvoicePdf();
+		//testQuotePdf();
+		//testWorkOrderPdf();
+//		testAccountPaymentPdf();
+		
+		testAccountStatementPDF();
 	}
 	
 	public static Map<String, Object> generateModel() throws Exception {
@@ -324,5 +329,46 @@ public class PDFUtilTest {
 		model.put("tenders", tenders);
 		
 		PDFUtil.generateAccountPayment(new File("./samples/sample-accountpayment.pdf"), model);
+	}
+	
+	public static void testAccountStatementPDF() throws Exception {
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("storeLogoImg", "./configs/jamaicahardwarelogo_218X44.jpg");
+		model.put("storeLogoText", "Jamaica Electrical & Hardware Inc.");
+		model.put("storeAddress", "131-01 Jamaica Ave.\nRichmond Hill, NY 11418\nTel. & Fax: 718-880-1258\nEmail: Sales@JamaicaHardware.com\nWebsite: www.jamaicahardware.com");
+		model.put("storeNotes", "All eligible Returns and Exchanges must be made in 7 days with ORIGINAL Invoice and in original unopened packing. Returns not available on the following products: Custom Tinted Paint, Hand Tools, Power Tools, Electrical.");
+		
+		TransactionVO transactionVO = new TransactionVO();
+		transactionVO.setTransactionNumber(1);
+		transactionVO.setAccountNumber("5166034725");
+		transactionVO.setTransactionDate(new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").parse("06/21/2016 02:19:20 PM"));
+		transactionVO.setCashier("Cashier 1");
+		
+		transactionVO.setBillToCompany("Ezzi & Sons, US.");
+		transactionVO.setBillToName("Shabbir Ezzi");
+		transactionVO.setBillToAddress("2624 flower st");
+		transactionVO.setBillToCity("Westbury");
+		transactionVO.setBillToState("NY");
+		transactionVO.setBillToZip("11590");
+		transactionVO.setBillToPhone("516-603-4725");
+		
+		List<AccountStatementDetailsVO> details = new ArrayList<AccountStatementDetailsVO>();
+		AccountStatementDetailsVO avo = new AccountStatementDetailsVO();
+		avo.setBalance(20.29);
+		avo.setDetails("Test item");
+		avo.setDueDate(new Date());
+		avo.setInvoiceDate(new Date());
+		avo.setInvoiceNumber("TR-TESTINVOICE");
+		details.add(avo);
+		
+		double totalDebit = 0, totalCredit = 0;
+		
+		model.put("customer", transactionVO);
+		model.put("toDate", CommonUtil.convertDateInHtmlFormat(new Date()));
+		model.put("details", details);
+		model.put("totalDebit", CommonUtil.convertAmountInHtmlFormat(totalDebit));
+		model.put("totalCredit", CommonUtil.convertAmountInHtmlFormat(totalCredit));
+		
+		PDFUtil.generateAccountStatement(new File("./samples/sample-accountstmt.pdf"), model);
 	}
 }

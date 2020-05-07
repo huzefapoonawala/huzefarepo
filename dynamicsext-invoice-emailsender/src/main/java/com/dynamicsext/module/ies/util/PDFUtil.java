@@ -93,14 +93,14 @@ public class PDFUtil {
 		cell.setColspan(6);
 		summaryTable.addCell(cell);
 		
-		for (String label : new String[]{"Current","1 - 30 Days","31 - 60 Days","61 - 90 Days","Over 90 Days","Balance Due"}) {
+		/*for (String label : new String[]{"Current","1 - 30 Days","31 - 60 Days","61 - 90 Days","Over 90 Days","Balance Due"}) {
 			cell = new PdfPCell(new Phrase(label));
 			cell.setBackgroundColor(BaseColor.YELLOW);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			summaryTable.addCell(cell);
-		}
+		}*/
 		
-		cell = new PdfPCell(new Phrase(customer.getRange0InHtmlFormat()));
+		/*cell = new PdfPCell(new Phrase(customer.getRange0InHtmlFormat()));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		summaryTable.addCell(cell);
 		
@@ -122,7 +122,7 @@ public class PDFUtil {
 		
 		cell = new PdfPCell(new Phrase(customer.getGrandTotalInHtmlFormatDefaultTo0()));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		summaryTable.addCell(cell);
+		summaryTable.addCell(cell);*/
 		
 		document.add(summaryTable);
 		
